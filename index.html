@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ハイブリッド週案アプリ（履歴＆年間時数 自動化版）</title>
+<title>ハイブリッド週案アプリ（年間時数・残り表示 完成版）</title>
 <link href="https://fonts.googleapis.com/css2?family=Kaisei+Decol:wght@400;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -41,7 +41,7 @@
 
   .wrapper { display: flex; gap: 16px; align-items: flex-start; }
   .left { flex: 3; background: var(--surface); border-radius: 8px; padding: 16px; border: 1px solid var(--border); overflow: auto; }
-  .right { flex: 1; min-width: 290px; display: flex; flex-direction: column; gap: 16px; position: sticky; top: 70px;}
+  .right { flex: 1; min-width: 320px; display: flex; flex-direction: column; gap: 16px; position: sticky; top: 70px;}
 
   /* テーブル */
   table { border-collapse: collapse; width: 100%; table-layout: fixed; margin-bottom: 16px; }
@@ -72,8 +72,12 @@
   .palette-btn { border: 1px solid rgba(0,0,0,0.1); border-radius: 4px; padding: 8px 2px; text-align: center; cursor: pointer; font-size: 11px; font-weight: bold; transition: 0.1s;}
   .palette-btn:hover { transform: translateY(-1px); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
   
-  #subject-counts { display: flex; flex-wrap: wrap; gap: 5px; }
-  .badge { padding: 3px 8px; border-radius: 20px; font-size: 11px; font-weight: bold; border: 1px solid rgba(0,0,0,0.1); display: flex; gap: 4px; }
+  /* 時数エディタ用 */
+  #subject-counts { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 6px; }
+  .count-item { display: flex; justify-content: space-between; align-items: center; background: white; border: 1px solid var(--border); padding: 3px 6px; border-radius: 4px; font-size: 11px; font-weight: bold; box-shadow: 0 1px 2px rgba(0,0,0,0.03);}
+  .count-item input { width: 42px; padding: 2px 4px; border: 1px solid var(--border2); border-radius: 3px; font-size: 12px; text-align: right; background: #faf8f5; font-family: inherit;}
+  .count-item input:focus { border-color: var(--accent); outline: none; background: white;}
+  .count-item input.manual-override { background: #ffeeda; border-color: var(--accent); color: #a04000; }
   
   .action-btn { background: white; border: 1px solid var(--border); padding: 8px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; width: 100%; margin-bottom: 6px; transition: 0.1s;}
   .action-btn:hover { background: #f5efe6; color: var(--accent); border-color: var(--accent); }
@@ -145,7 +149,7 @@
       </div>
 
       <div class="card">
-        <h3>📊 週時数 <span style="font-size:11px; font-weight:normal; color:#888;">自動集計</span></h3>
+        <h3>📊 週時数 <span style="font-size:11px; font-weight:normal; color:#888;">0.5単位で手修正OK</span></h3>
         <div id="subject-counts" style="margin-bottom: 12px; border-bottom: 1px dashed var(--border); padding-bottom: 10px;"></div>
         
         <h3>
@@ -156,7 +160,7 @@
             <option value="4">4年</option><option value="5">5年</option><option value="6">6年</option>
           </select>
         </h3>
-        <div id="yearly-summary" style="max-height: 180px; overflow-y: auto; padding-right:4px;"></div>
+        <div id="yearly-summary" style="max-height: 250px; overflow-y: auto; padding-right:4px;"></div>
       </div>
 
       <div class="card">
@@ -194,10 +198,10 @@ const subjectInfo = {
   "生活": { hira: "せいかつ", color: "var(--seikatsu)", countAs: "生活" },
   "理科": { hira: "りか", color: "var(--rika)", countAs: "理科" },
   "社会": { hira: "しゃかい", color: "var(--shakai)", countAs: "社会" },
-  "家庭科": { hira: "かていか", color: "var(--katei)", countAs: "家庭科" },
-  "体育": { hira: "たいいく", color: "var(--taiiku)", countAs: "体育" },
   "音楽": { hira: "おんがく", color: "var(--ongaku)", countAs: "音楽" },
   "図工": { hira: "ずこう", color: "var(--zukou)", countAs: "図工" },
+  "家庭科": { hira: "かていか", color: "var(--katei)", countAs: "家庭科" },
+  "体育": { hira: "たいいく", color: "var(--taiiku)", countAs: "体育" },
   "道徳": { hira: "どうとく", color: "var(--dotoku)", countAs: "道徳" },
   "外国語": { hira: "がいこくご", color: "var(--gaikokugo)", countAs: "外国語" },
   "総合": { hira: "そうごう", color: "var(--sogo)", countAs: "総合" },
@@ -206,6 +210,12 @@ const subjectInfo = {
   "委員会": { hira: "いいんかい", color: "var(--iinkai)", countAs: "委員会" },
   "クラブ": { hira: "くらぶ", color: "var(--club)", countAs: "クラブ" }
 };
+
+// 見慣れた並び順の定義
+const subjectOrder = [
+  "国語", "算数", "生活", "理科", "社会", "音楽", "図工", 
+  "家庭科", "体育", "道徳", "外国語", "総合", "学活", "行事", "委員会", "クラブ"
+];
 
 // 標準時数データ
 const STANDARD_HOURS = {
@@ -217,7 +227,7 @@ const STANDARD_HOURS = {
   6: { 国語:175, 社会:105, 算数:175, 理科:105, 音楽:50, 図工:50, 家庭科:55, 体育:90,  外国語:70, 道徳:35, 総合:70, 学活:35 }
 };
 
-let store = JSON.parse(localStorage.getItem("weekPlan_final_v3") || "{}");
+let store = JSON.parse(localStorage.getItem("weekPlan_final_v4") || "{}");
 let currentMonday = "";
 let currentCell = null;
 let isHiragana = false;
@@ -238,6 +248,7 @@ function init() {
 
   createPalette();
   renderWeek();
+  updateYearlyCounts(); // 💡 ①初回ロード時に年間時数も計算して表示
 }
 
 function toggleMode() {
@@ -245,7 +256,7 @@ function toggleMode() {
   document.getElementById("mode-btn").innerText = isHiragana ? "漢字モード" : "ひらがなモード";
   createPalette();
   updateCounts();
-  updateYearlyCounts(); // ひらがな表示を反映
+  updateYearlyCounts(); 
 }
 
 function onDateChange() {
@@ -263,7 +274,7 @@ function saveMeta() {
     month: document.getElementById("month-num").value,
     week: document.getElementById("week-num").value
   };
-  localStorage.setItem("weekPlan_final_v3", JSON.stringify(store));
+  localStorage.setItem("weekPlan_final_v4", JSON.stringify(store));
   updateNav();
 }
 
@@ -277,13 +288,13 @@ function shiftWeek(dir) {
 }
 
 function ensureWeek(dateStr) {
-  if(!store[dateStr]) store[dateStr] = { cells: {}, memo: "", notice: "", hasSat: false };
+  if(!store[dateStr]) store[dateStr] = { cells: {}, memo: "", notice: "", hasSat: false, customCounts: {} };
   return store[dateStr];
 }
 
 function toggleSaturday() {
   store[currentMonday].hasSat = document.getElementById("sat-check").checked;
-  localStorage.setItem("weekPlan_final_v3", JSON.stringify(store));
+  localStorage.setItem("weekPlan_final_v4", JSON.stringify(store));
   renderWeek();
 }
 
@@ -372,9 +383,7 @@ function setActiveTD(el) {
   showSuggestionsForActiveCell();
 }
 
-// 修正したキーボード移動ロジック
 function handleKey(e, type) {
-  // [Tab]: 次のマスへ
   if (e.key === 'Tab') {
     e.preventDefault();
     const td = e.target.closest('td');
@@ -396,9 +405,8 @@ function handleKey(e, type) {
     return;
   }
 
-  // [Enter]: 下へ
   if (e.key === 'Enter') {
-    if (e.shiftKey) return; // Shift+Enterは改行
+    if (e.shiftKey) return; 
     e.preventDefault();
 
     if (type === 'sub') {
@@ -428,7 +436,6 @@ function handleKey(e, type) {
     return;
   }
 
-  // [Ctrl+矢印]: 自由移動
   if (e.ctrlKey || e.metaKey) {
     const td = e.target.closest('td');
     const tr = td.closest('tr');
@@ -477,7 +484,7 @@ function handleInput(key) {
   const txt = txtDiv ? txtDiv.innerText : "";
   
   store[currentMonday].cells[key] = { sub, txt };
-  localStorage.setItem("weekPlan_final_v3", JSON.stringify(store));
+  localStorage.setItem("weekPlan_final_v4", JSON.stringify(store));
   
   if (subDiv) applyColor(td);
   updateCounts();
@@ -496,9 +503,11 @@ function applyColor(td) {
   }
 }
 
-// 📌 ご提示いただいたスマートな時数計算
 function updateCounts() {
-  let counts = {};
+  const wdata = store[currentMonday];
+  if (!wdata.customCounts) wdata.customCounts = {};
+  
+  let autoCounts = {};
   document.querySelectorAll('td[data-type="class"]').forEach(td => {
     const subText = td.querySelector('.cell-sub').innerText.trim();
     if (!subText) return;
@@ -507,29 +516,60 @@ function updateCounts() {
     for (let key in subjectInfo) {
       if (subText.includes(key) || subText.includes(subjectInfo[key].hira)) {
         const base = subjectInfo[key].countAs;
-        const countName = isHiragana && subjectInfo[base] ? subjectInfo[base].hira : base;
-        
-        counts[countName] = (counts[countName] || 0) + 1;
+        autoCounts[base] = (autoCounts[base] || 0) + 1;
         matched = true;
         break;
       }
     }
     if (!matched) {
-      const other = isHiragana ? "そのた" : "その他";
-      counts[other] = (counts[other] || 0) + 1;
+      autoCounts["その他"] = (autoCounts["その他"] || 0) + 1;
     }
   });
 
+  const displaySubjects = [...subjectOrder, "その他"];
+  for (let k in autoCounts) if (!displaySubjects.includes(k)) displaySubjects.push(k);
+  for (let k in wdata.customCounts) if (!displaySubjects.includes(k)) displaySubjects.push(k);
+
   const countsDiv = document.getElementById("subject-counts");
   countsDiv.innerHTML = "";
-  for (let name in counts) {
+  
+  displaySubjects.forEach(baseName => {
+    const autoVal = autoCounts[baseName] || 0;
+    const customVal = wdata.customCounts[baseName];
+    const finalVal = customVal !== undefined ? customVal : autoVal;
+    const isManual = customVal !== undefined;
+    
     let color = "#eee";
-    for(let k in subjectInfo) { if(k === name || subjectInfo[k].hira === name) color = subjectInfo[k].color; }
-    countsDiv.innerHTML += `<div class="badge" style="background-color: ${color};">${name} <span>${counts[name]}</span></div>`;
-  }
+    for(let k in subjectInfo) { if(subjectInfo[k].countAs === baseName) { color = subjectInfo[k].color; break; } }
+    if (baseName === "その他") color = "#eee";
+
+    const dispName = isHiragana && subjectInfo[baseName] ? subjectInfo[baseName].hira : baseName;
+
+    countsDiv.innerHTML += `
+      <div class="count-item" style="border-left: 4px solid ${color};">
+        <span>${dispName}</span>
+        <input type="number" step="0.5" min="0" value="${finalVal}" 
+          onchange="manualCountChange('${baseName}', this.value)"
+          class="${isManual ? 'manual-override' : ''}"
+          title="自動集計: ${autoVal} (消去で自動に戻ります)">
+      </div>`;
+  });
 }
 
-// 📌 履歴の保存とサジェスト表示
+function manualCountChange(baseName, val) {
+  const wdata = store[currentMonday];
+  if(!wdata.customCounts) wdata.customCounts = {};
+  
+  if (val === "") {
+    delete wdata.customCounts[baseName];
+  } else {
+    wdata.customCounts[baseName] = parseFloat(val);
+  }
+  localStorage.setItem("weekPlan_final_v4", JSON.stringify(store));
+  updateCounts();
+  updateYearlyCounts();
+}
+
 function saveHistory(key) {
   const td = document.querySelector(`td[data-key="${key}"]`);
   if (!td || td.dataset.type === 'break') return;
@@ -544,7 +584,7 @@ function saveHistory(key) {
   hist.unshift(txt);
   if (hist.length > 20) hist.pop();
   store["_history"][sub] = hist;
-  localStorage.setItem("weekPlan_final_v3", JSON.stringify(store));
+  localStorage.setItem("weekPlan_final_v4", JSON.stringify(store));
 }
 
 function showSuggestionsForActiveCell() {
@@ -598,27 +638,40 @@ function showSuggestionsForActiveCell() {
   if (!hasData) container.innerHTML = "<div style='color:#bbb;font-size:11px;padding:4px;'>履歴なし</div>";
 }
 
-// 📌 自動で全週をなめて集計する最強の年間時数機能
 function updateYearlyCounts() {
   let yearly = {};
+  
   for (let week in store) {
     if (week.startsWith("_")) continue;
-    const cells = store[week].cells || {};
+    const wdata = store[week];
+    const cells = wdata.cells || {};
     
+    let autoC = {};
     for (let key in cells) {
       const rowId = key.split('_')[0];
-      if (["朝", "中", "昼①", "昼②"].includes(rowId)) continue; // 休み時間は除外
+      if (["朝", "中", "昼①", "昼②"].includes(rowId)) continue; 
 
       const sub = cells[key].sub;
       if (!sub) continue;
 
       let matched = Object.keys(subjectInfo).find(k => sub.includes(k) || sub.includes(subjectInfo[k].hira));
-      if (!matched) continue;
-
-      const base = subjectInfo[matched].countAs;
-      yearly[base] = (yearly[base] || 0) + 1;
+      if (matched) {
+        const base = subjectInfo[matched].countAs;
+        autoC[base] = (autoC[base] || 0) + 1;
+      } else {
+        autoC["その他"] = (autoC["その他"] || 0) + 1;
+      }
     }
+
+    const customC = wdata.customCounts || {};
+    const allBases = new Set([...Object.keys(autoC), ...Object.keys(customC)]);
+    
+    allBases.forEach(base => {
+      const val = customC[base] !== undefined ? parseFloat(customC[base]) : (autoC[base] || 0);
+      yearly[base] = (yearly[base] || 0) + val;
+    });
   }
+  
   store["_yearly"] = yearly;
   renderYearly();
 }
@@ -629,7 +682,7 @@ function applyStandardHours(grade) {
     document.getElementById("grade-preset").value = ""; return;
   }
   store["_yearlyPlan"] = STANDARD_HOURS[grade];
-  localStorage.setItem("weekPlan_final_v3", JSON.stringify(store));
+  localStorage.setItem("weekPlan_final_v4", JSON.stringify(store));
   updateYearlyCounts();
   document.getElementById("grade-preset").value = ""; 
 }
@@ -641,9 +694,21 @@ function renderYearly() {
   const plan = store["_yearlyPlan"] || {};
 
   let html = "";
-  const allBases = new Set([...Object.keys(yearly), ...Object.keys(plan)]);
+  
+  // 💡 ③ 並び順の固定（見慣れた順にソート）
+  const allBases = Array.from(new Set([...subjectOrder, ...Object.keys(yearly), ...Object.keys(plan)]));
+  allBases.sort((a, b) => {
+    let idxA = subjectOrder.indexOf(a);
+    let idxB = subjectOrder.indexOf(b);
+    if (idxA === -1) idxA = 999;
+    if (idxB === -1) idxB = 999;
+    return idxA - idxB;
+  });
 
   allBases.forEach(base => {
+    // 💡 ② 「その他」は年間リストに出さない
+    if (base === "その他" || base === "そのた") return;
+
     const done = yearly[base] || 0;
     const target = plan[base] || 0;
     if (done === 0 && target === 0) return;
@@ -651,15 +716,29 @@ function renderYearly() {
     const dispName = isHiragana && subjectInfo[base] ? subjectInfo[base].hira : base;
     const percent = target > 0 ? Math.floor((done / target) * 100) : 0;
     
+    // 💡 ④ 残り時数とオーバー警告のロジック
     let color = "#4caf50";
-    if (percent > 95) color = "#ff9800"; // ギリギリ
-    if (percent >= 100) color = "#e57373"; // 超過
+    let statusText = "";
+    
+    if (target > 0) {
+      const remain = target - done;
+      if (remain > 0) {
+        statusText = `<span style="color:#666; font-size:10px;">（残り <b style="color:#1976d2;">${remain}</b>）</span>`;
+      } else if (remain === 0) {
+        statusText = `<span style="color:#666; font-size:10px;">（<b style="color:#388e3c;">達成!</b>）</span>`;
+      } else {
+        statusText = `<span style="color:#d32f2f; font-size:10px;">（<b>+${-remain} 超過</b>）</span>`;
+        color = "#d32f2f"; // 超過でバーを赤色に
+      }
+      
+      if (percent > 90 && percent < 100) color = "#ff9800"; // ギリギリでオレンジ
+    }
 
     html += `
     <div style="margin-bottom: 8px; font-size: 11px;">
       <div style="display:flex; justify-content:space-between; margin-bottom:2px;">
         <span style="font-weight:bold;">${dispName}</span>
-        <span>${done} / ${target > 0 ? target : '-'}</span>
+        <span>${done} / ${target > 0 ? target : '-'} ${statusText}</span>
       </div>
       <div style="background:#eee; height:6px; border-radius:3px; overflow:hidden;">
         <div style="width:${Math.min(percent, 100)}%; background:${color}; height:100%; transition:0.3s;"></div>
@@ -673,14 +752,14 @@ function renderYearly() {
 
 function saveMemo() {
   store[currentMonday].memo = document.getElementById("memo-pad").value;
-  localStorage.setItem("weekPlan_final_v3", JSON.stringify(store));
+  localStorage.setItem("weekPlan_final_v4", JSON.stringify(store));
 }
 
 function saveNotice() {
   let html = document.getElementById("notice-pad").innerHTML;
   html = html.replace(/<div>/g, "<br>").replace(/<\/div>/g, "");
   store[currentMonday].notice = html;
-  localStorage.setItem("weekPlan_final_v3", JSON.stringify(store));
+  localStorage.setItem("weekPlan_final_v4", JSON.stringify(store));
   adjustNoticeFontSize();
 }
 
@@ -703,7 +782,7 @@ function copyPrev() {
   if(confirm("先週の時間割をコピーしますか？（現在の内容は上書きされます）")) {
     store[currentMonday].cells = JSON.parse(JSON.stringify(store[prevKey].cells));
     store[currentMonday].hasSat = store[prevKey].hasSat;
-    localStorage.setItem("weekPlan_final_v3", JSON.stringify(store));
+    localStorage.setItem("weekPlan_final_v4", JSON.stringify(store));
     renderWeek();
   }
 }
@@ -711,7 +790,7 @@ function copyPrev() {
 function saveAsTemplate() {
   if (confirm("現在の時間割を基本時間割として登録しますか？")) {
     store["_template"] = JSON.parse(JSON.stringify(store[currentMonday].cells));
-    localStorage.setItem("weekPlan_final_v3", JSON.stringify(store));
+    localStorage.setItem("weekPlan_final_v4", JSON.stringify(store));
     alert("登録しました！");
   }
 }
@@ -720,7 +799,7 @@ function loadTemplate() {
   if (!store["_template"]) return alert("基本時間割がありません");
   if (confirm("基本時間割を展開しますか？（現在の内容は上書きされます）")) {
     store[currentMonday].cells = JSON.parse(JSON.stringify(store["_template"]));
-    localStorage.setItem("weekPlan_final_v3", JSON.stringify(store));
+    localStorage.setItem("weekPlan_final_v4", JSON.stringify(store));
     renderWeek();
   }
 }
@@ -749,7 +828,7 @@ function importData(event) {
       const importedData = JSON.parse(e.target.result);
       if (confirm("データファイルを読み込みますか？\n（※現在ブラウザに保存されているデータはすべて上書きされます）")) {
         store = importedData;
-        localStorage.setItem("weekPlan_final_v3", JSON.stringify(store));
+        localStorage.setItem("weekPlan_final_v4", JSON.stringify(store));
         init(); 
         alert("データの読み込みが完了しました！");
       }
