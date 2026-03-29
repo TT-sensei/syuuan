@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ハイブリッド週案アプリ（お知らせ・印刷対応版）</title>
+<title>ハイブリッド週案アプリ（土曜・自動文字サイズ対応版）</title>
 <link href="https://fonts.googleapis.com/css2?family=Kaisei+Decol:wght@400;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -17,7 +17,8 @@
     --shakai:#ffe8e8; --taiiku:#ffe8cc; --ongaku:#ecdeff; 
     --zukou:#ffeedd; --seikatsu:#fff8d6; --katei:#e0f0ff;
     --dotoku:#e8f8ee; --gaikokugo:#d6f0ff; --sogo:#ffe6f5; 
-    --gakkatsu:#eee8ff; --gyoji:#f5f2ee;
+    --gakkatsu:#eee8ff; --gyoji:#f5f2ee; 
+    --iinkai:#e0f7fa; --club:#fce4ec;
   }
 
   body { margin: 0; padding: 0; font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh;}
@@ -35,8 +36,8 @@
 
   /* ツールバー */
   #toolbar { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-  #toolbar label { font-size: 11px; color: var(--subtext); font-weight: 700; }
-  #toolbar input { border: 1.5px solid var(--border2); background: var(--bg); padding: 5px; border-radius: 4px; font-size: 13px; font-family: inherit; }
+  #toolbar label { font-size: 12px; color: var(--text); font-weight: 700; display: flex; align-items: center; gap: 4px; cursor: pointer;}
+  #toolbar input[type="text"], #toolbar input[type="number"], #toolbar input[type="date"] { border: 1.5px solid var(--border2); background: var(--bg); padding: 5px; border-radius: 4px; font-size: 13px; font-family: inherit; }
   .tb-btn { padding: 6px 12px; border-radius: 6px; border: 1.5px solid var(--border2); background: var(--surface); cursor: pointer; font-size: 12px; font-weight: 700; transition: 0.1s; }
   .tb-btn:hover { background: var(--surface2); }
   .tb-btn.primary { background: var(--accent); color: white; border-color: var(--accent); }
@@ -58,7 +59,9 @@
   table { border-collapse: collapse; width: 100%; table-layout: fixed; margin-bottom: 16px; }
   th, td { border: 1px solid var(--border); vertical-align: top; font-size: 13px; }
   th { background: var(--surface2); text-align: center; font-weight: 700; padding: 8px; }
-  .time-col { background: var(--surface2); text-align: center; font-weight: bold; width: 45px; vertical-align: middle; }
+  
+  /* 変更：左の列を細く */
+  .time-col { background: var(--surface2); text-align: center; font-weight: bold; width: 32px; vertical-align: middle; padding: 2px; font-size: 12px; }
   
   /* 編集可能なセル */
   td.editable-cell { cursor: text; transition: 0.2s; padding: 4px; }
@@ -66,6 +69,9 @@
   
   /* 通常授業のセル内部 */
   .cell-sub { font-weight: bold; font-size: 13px; padding-bottom: 2px; border-bottom: 1px dashed rgba(0,0,0,0.15); margin-bottom: 4px; outline: none; }
+  /* 追加：空の時の背景色 */
+  .cell-sub:empty { background: #fff7f0; }
+
   .cell-txt { font-size: 12px; color: #5a4a3a; min-height: 40px; outline: none; line-height: 1.4; }
   
   /* 休み時間・行事のセル */
@@ -76,14 +82,19 @@
 
   /* お知らせ・連絡事項エリア */
   #notice-area h3 { margin: 0 0 8px 0; font-size: 14px; border-bottom: 2px solid var(--border); padding-bottom: 4px; color: var(--text); }
-  #notice-pad { border: 1px solid var(--border); border-radius: 4px; padding: 10px; min-height: 60px; font-size: 13px; outline: none; line-height: 1.5; background: var(--bg); transition: 0.2s; }
+  #notice-pad { 
+    border: 1px solid var(--border); border-radius: 4px; padding: 10px; 
+    height: 120px; /* 固定高さにして自動リサイズを効かせる */
+    overflow: hidden; /* スクロールバーを出さない */
+    font-size: 14px; outline: none; line-height: 1.5; background: var(--bg); transition: 0.2s; 
+  }
   #notice-pad:focus { border-color: var(--accent); background: var(--surface); }
 
   /* パレット・右パネル */
   .card { background: var(--surface); border-radius: 8px; padding: 14px; border: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
   .card h3 { margin: 0 0 10px 0; font-size: 14px; border-bottom: 2px solid var(--border); padding-bottom: 4px;}
   .palette-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
-  .palette-btn { border: 1px solid rgba(0,0,0,0.1); border-radius: 4px; padding: 8px 2px; text-align: center; cursor: pointer; font-size: 12px; font-weight: bold; }
+  .palette-btn { border: 1px solid rgba(0,0,0,0.1); border-radius: 4px; padding: 8px 2px; text-align: center; cursor: pointer; font-size: 11px; font-weight: bold; }
   .palette-btn:hover { transform: translateY(-1px); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
   
   .hint { background: #fffaf0; border: 1px solid #f0e0c0; padding: 8px; font-size: 11px; color: #887766; border-radius: 4px; margin-top: 10px; line-height: 1.4; }
@@ -93,23 +104,14 @@
   textarea { width: 100%; height: 80px; border: 1px solid var(--border); border-radius: 4px; padding: 8px; font-family: inherit; resize: none; background: var(--bg); }
   .action-btn { background: white; border: 1px solid var(--border); padding: 8px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; width: 100%; margin-bottom: 6px; }
 
-  /* =========================================
-     🖨️ 印刷用スタイル（週案とお知らせのみ印刷）
-  ========================================= */
+  /* 印刷用スタイル */
   @media print {
     body { background: white; font-size: 12pt; }
-    /* 不要な要素を非表示 */
     #tabbar, #toolbar, .right, .nav-arrow, .hint { display: none !important; }
-    
-    /* 余白や影を消して紙幅いっぱいに */
     .page { padding: 0; max-width: 100%; }
     .wrapper { display: block; }
     .left { flex: none; width: 100%; box-shadow: none; border: none; padding: 0; overflow: visible; }
-    
-    /* マスのハイライトを消す */
     td.active-cell { box-shadow: none !important; }
-    
-    /* 背景色を強制的に印刷させる（Chrome, Edge, Safari用） */
     * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
   }
 </style>
@@ -126,13 +128,20 @@
 
 <div class="page active" id="main-page">
   <div id="toolbar">
-    <label>学年組</label><input type="text" id="class-name" placeholder="3年1組" style="width:80px" onchange="saveMeta()">
-    <label>月</label><input type="number" id="month-num" style="width:50px" onchange="saveMeta()">
-    <label>週</label><input type="number" id="week-num" style="width:50px" onchange="saveMeta()">
-    <label>月曜日の日付</label><input type="date" id="monday-date" onchange="onDateChange()">
+    <label style="color:var(--subtext); font-weight:normal;">学年組</label><input type="text" id="class-name" placeholder="3年1組" style="width:70px" onchange="saveMeta()">
+    <label style="color:var(--subtext); font-weight:normal;">月</label><input type="number" id="month-num" style="width:45px" onchange="saveMeta()">
+    <label style="color:var(--subtext); font-weight:normal;">週</label><input type="number" id="week-num" style="width:45px" onchange="saveMeta()">
+    <label style="color:var(--subtext); font-weight:normal;">月曜の日付</label><input type="date" id="monday-date" onchange="onDateChange()">
     <button class="tb-btn primary" onclick="renderWeek()">移動</button>
-    <button class="tb-btn" onclick="copyPrev()">🔄 前週をコピー</button>
-    <button class="tb-btn" onclick="window.print()">🖨 印刷</button>
+    
+    <label style="margin-left: 10px; background: #fffaf0; padding: 4px 8px; border-radius: 6px; border: 1px solid #f0e0c0;">
+      <input type="checkbox" id="sat-check" onchange="toggleSaturday()"> 土曜授業
+    </label>
+
+    <div style="margin-left:auto; display:flex; gap:6px;">
+      <button class="tb-btn" onclick="copyPrev()">🔄 前週をコピー</button>
+      <button class="tb-btn" onclick="window.print()">🖨 印刷</button>
+    </div>
   </div>
 
   <div id="week-nav">
@@ -150,20 +159,19 @@
       
       <div id="notice-area">
         <h3>📝 お知らせ・連絡事項</h3>
-        <div id="notice-pad" contenteditable="true" placeholder="保護者や児童へのお知らせ、持参物などを自由に記入できます..." oninput="saveNotice()"></div>
+        <div id="notice-pad" contenteditable="true" placeholder="文字数に合わせて自動で文字サイズが小さくなります。" oninput="saveNotice()"></div>
       </div>
     </div>
 
     <div class="right">
       <div class="card">
         <h3>🎨 教科パレット</h3>
-        <div style="font-size: 11px; color: #888; margin-bottom: 8px;">マスを選択してクリック！</div>
         <div class="palette-grid" id="palette"></div>
         <div class="hint">
           <b>⌨️ キーボード操作</b><br>
           ・[Enter]: 教科から単元へ移動<br>
           ・[Tab]: 次のマスへ移動<br>
-          ・[Ctrl]+[矢印]: 上下左右のマスへ移動
+          ・[Ctrl]+[矢印]: マスを移動
         </div>
       </div>
 
@@ -173,8 +181,8 @@
       </div>
 
       <div class="card">
-        <h3>📌 右側メモ（印刷されません）</h3>
-        <textarea id="memo-pad" oninput="saveMemo()" placeholder="テスト予定のストックや、自分用の非公開メモにご利用ください。"></textarea>
+        <h3>📌 右側メモ（印刷不可）</h3>
+        <textarea id="memo-pad" oninput="saveMemo()" placeholder="非公開のストックメモ"></textarea>
       </div>
 
       <div class="card">
@@ -194,16 +202,20 @@
 </div>
 
 <script>
-const days = ["月", "火", "水", "木", "金"];
+const baseDays = ["月", "火", "水", "木", "金"];
+
+// 変更：昼を分割
 const rows = [
   { id: "朝", type: "break", label: "朝の活動・読書など" },
   { id: "1", type: "class" }, { id: "2", type: "class" },
-  { id: "中", type: "break", label: "中休み・業間体育など" },
+  { id: "中", type: "break", label: "中休み・業間体育" },
   { id: "3", type: "class" }, { id: "4", type: "class" },
-  { id: "昼", type: "break", label: "昼休み・掃除・昼行事" },
+  { id: "昼①", type: "break", label: "給食など" },
+  { id: "昼②", type: "break", label: "昼休み・掃除" },
   { id: "5", type: "class" }, { id: "6", type: "class" }
 ];
 
+// 追加：委員会・クラブ
 const subjectInfo = {
   "国語": { hira: "こくご", color: "var(--kokugo)", countAs: "国語" },
   "書写": { hira: "しょしゃ", color: "var(--kokugo)", countAs: "国語" },
@@ -219,10 +231,12 @@ const subjectInfo = {
   "外国語": { hira: "がいこくご", color: "var(--gaikokugo)", countAs: "外国語" },
   "総合": { hira: "そうごう", color: "var(--sogo)", countAs: "総合" },
   "学活": { hira: "がっかつ", color: "var(--gakkatsu)", countAs: "学活" },
-  "行事": { hira: "ぎょうじ", color: "var(--gyoji)", countAs: "行事" }
+  "行事": { hira: "ぎょうじ", color: "var(--gyoji)", countAs: "行事" },
+  "委員会": { hira: "いいんかい", color: "var(--iinkai)", countAs: "委員会" },
+  "クラブ": { hira: "くらぶ", color: "var(--club)", countAs: "クラブ" }
 };
 
-let store = JSON.parse(localStorage.getItem("weekPlan_hybrid2") || "{}");
+let store = JSON.parse(localStorage.getItem("weekPlan_hybrid3") || "{}");
 let currentMonday = "";
 let currentCell = null;
 let isHiragana = false;
@@ -274,7 +288,7 @@ function saveMeta() {
     month: document.getElementById("month-num").value,
     week: document.getElementById("week-num").value
   };
-  localStorage.setItem("weekPlan_hybrid2", JSON.stringify(store));
+  localStorage.setItem("weekPlan_hybrid3", JSON.stringify(store));
   updateNav();
 }
 
@@ -287,35 +301,50 @@ function shiftWeek(dir) {
   renderWeek();
 }
 
+function ensureWeek(dateStr) {
+  if(!store[dateStr]) store[dateStr] = { cells: {}, memo: "", notice: "", hasSat: false };
+  return store[dateStr];
+}
+
+function toggleSaturday() {
+  const isChecked = document.getElementById("sat-check").checked;
+  store[currentMonday].hasSat = isChecked;
+  localStorage.setItem("weekPlan_hybrid3", JSON.stringify(store));
+  renderWeek();
+}
+
 function updateNav() {
   const meta = store["_meta"] || {};
   document.getElementById("nav-week-label").textContent = `${meta.className || "--年--組"} ${meta.month || "--"}月${meta.week || "--"}週案`;
   if(currentMonday) {
     const start = new Date(currentMonday);
     const end = new Date(currentMonday);
-    end.setDate(end.getDate() + 4);
-    document.getElementById("nav-date-label").textContent = `${start.getMonth()+1}/${start.getDate()} (月) 〜 ${end.getMonth()+1}/${end.getDate()} (金)`;
+    const hasSat = store[currentMonday]?.hasSat || false;
+    end.setDate(end.getDate() + (hasSat ? 5 : 4)); // 土曜がある場合は＋5日
+    const endDayStr = hasSat ? "(土)" : "(金)";
+    document.getElementById("nav-date-label").textContent = `${start.getMonth()+1}/${start.getDate()} (月) 〜 ${end.getMonth()+1}/${end.getDate()} ${endDayStr}`;
   }
-}
-
-function ensureWeek(dateStr) {
-  if(!store[dateStr]) store[dateStr] = { cells: {}, memo: "", notice: "" }; // noticeを追加
-  return store[dateStr];
 }
 
 function renderWeek() {
   currentMonday = document.getElementById("monday-date").value;
   if(!currentMonday) return;
   ensureWeek(currentMonday);
-  updateNav();
   
   const wdata = store[currentMonday];
   document.getElementById("memo-pad").value = wdata.memo || "";
-  document.getElementById("notice-pad").innerHTML = wdata.notice || ""; // お知らせ欄を展開
+  document.getElementById("notice-pad").innerHTML = wdata.notice || ""; 
+  document.getElementById("sat-check").checked = wdata.hasSat || false;
+  
+  adjustNoticeFontSize(); // フォントサイズを自動調整
+  updateNav();
+
+  // 表示する曜日を決定（土曜オンなら「土」を追加）
+  const activeDays = wdata.hasSat ? [...baseDays, "土"] : [...baseDays];
 
   const table = document.getElementById("table");
-  let html = "<tr><th></th>";
-  days.forEach((d, i) => {
+  let html = "<tr><th class='time-col'></th>";
+  activeDays.forEach((d, i) => {
     const dt = new Date(currentMonday);
     dt.setDate(dt.getDate() + i);
     html += `<th>${dt.getDate()}日 (${d})</th>`;
@@ -326,7 +355,8 @@ function renderWeek() {
     const isBreak = r.type === "break";
     html += `<tr class="${isBreak ? 'break-row' : ''}">`;
     html += `<td class="time-col">${r.id}</td>`;
-    days.forEach(d => {
+    
+    activeDays.forEach(d => {
       const key = `${r.id}_${d}`;
       const cellData = wdata.cells[key] || { sub: "", txt: "" };
       
@@ -426,7 +456,7 @@ function handleInput(key) {
   const txt = txtDiv ? txtDiv.innerText : "";
   
   store[currentMonday].cells[key] = { sub, txt };
-  localStorage.setItem("weekPlan_hybrid2", JSON.stringify(store));
+  localStorage.setItem("weekPlan_hybrid3", JSON.stringify(store));
   
   if (subDiv) applyColor(td);
   updateCounts();
@@ -472,13 +502,31 @@ function updateCounts() {
 
 function saveMemo() {
   store[currentMonday].memo = document.getElementById("memo-pad").value;
-  localStorage.setItem("weekPlan_hybrid2", JSON.stringify(store));
+  localStorage.setItem("weekPlan_hybrid3", JSON.stringify(store));
 }
 
+// 変更：改行対応と文字サイズ自動調整
 function saveNotice() {
-  // お知らせ欄のHTMLを保存
-  store[currentMonday].notice = document.getElementById("notice-pad").innerHTML;
-  localStorage.setItem("weekPlan_hybrid2", JSON.stringify(store));
+  let html = document.getElementById("notice-pad").innerHTML;
+  html = html.replace(/<div>/g, "<br>").replace(/<\/div>/g, "");
+  store[currentMonday].notice = html;
+  localStorage.setItem("weekPlan_hybrid3", JSON.stringify(store));
+  
+  adjustNoticeFontSize();
+}
+
+// 追加：はみ出した時に文字を小さくする機能
+function adjustNoticeFontSize() {
+  const pad = document.getElementById("notice-pad");
+  // 一旦リセット
+  pad.style.fontSize = "14px";
+  let size = 14;
+  
+  // 文字が入力されすぎて縦に溢れた場合、限界（9px）まで小さくする
+  while (pad.scrollHeight > pad.clientHeight && size > 9) {
+    size -= 0.5;
+    pad.style.fontSize = size + "px";
+  }
 }
 
 function copyPrev() {
@@ -490,8 +538,8 @@ function copyPrev() {
   
   if(confirm("先週の時間割をコピーしますか？（今の内容は上書きされます）")) {
     store[currentMonday].cells = JSON.parse(JSON.stringify(store[prevKey].cells));
-    // お知らせ欄も引っ張ってくるかはお好みですが、今回はセルだけコピーします
-    localStorage.setItem("weekPlan_hybrid2", JSON.stringify(store));
+    store[currentMonday].hasSat = store[prevKey].hasSat; // 土曜の設定もコピー
+    localStorage.setItem("weekPlan_hybrid3", JSON.stringify(store));
     renderWeek();
   }
 }
@@ -499,7 +547,7 @@ function copyPrev() {
 function saveAsTemplate() {
   if (confirm("現在の時間割を「基本時間割」として登録しますか？")) {
     store["_template"] = JSON.parse(JSON.stringify(store[currentMonday].cells));
-    localStorage.setItem("weekPlan_hybrid2", JSON.stringify(store));
+    localStorage.setItem("weekPlan_hybrid3", JSON.stringify(store));
     alert("登録しました！");
   }
 }
@@ -508,7 +556,7 @@ function loadTemplate() {
   if (!store["_template"]) return alert("基本時間割がまだ登録されていません。");
   if (confirm("基本時間割を展開しますか？（現在の内容は上書きされます）")) {
     store[currentMonday].cells = JSON.parse(JSON.stringify(store["_template"]));
-    localStorage.setItem("weekPlan_hybrid2", JSON.stringify(store));
+    localStorage.setItem("weekPlan_hybrid3", JSON.stringify(store));
     renderWeek();
   }
 }
