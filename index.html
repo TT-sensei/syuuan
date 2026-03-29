@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ハイブリッド週案アプリ</title>
+<title>ハイブリッド週案アプリ（お知らせ・印刷対応版）</title>
 <link href="https://fonts.googleapis.com/css2?family=Kaisei+Decol:wght@400;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -49,24 +49,35 @@
   #nav-week-label { font-family: 'Kaisei Decol', serif; font-size: 18px; font-weight: 700; color: var(--accent); }
   #nav-date-label { font-size: 12px; color: var(--subtext); display: block; }
 
-  /* サクサク版の2カラムレイアウト */
+  /* レイアウト */
   .wrapper { display: flex; gap: 16px; align-items: flex-start; }
   .left { flex: 3; background: var(--surface); border-radius: 8px; padding: 16px; border: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,0.05); overflow: auto; }
   .right { flex: 1; min-width: 280px; display: flex; flex-direction: column; gap: 16px; position: sticky; top: 50px;}
 
-  /* テーブル（サクサク分割版） */
-  table { border-collapse: collapse; width: 100%; table-layout: fixed; }
+  /* テーブル */
+  table { border-collapse: collapse; width: 100%; table-layout: fixed; margin-bottom: 16px; }
   th, td { border: 1px solid var(--border); vertical-align: top; font-size: 13px; }
   th { background: var(--surface2); text-align: center; font-weight: 700; padding: 8px; }
   .time-col { background: var(--surface2); text-align: center; font-weight: bold; width: 45px; vertical-align: middle; }
-  tr.break-row td { background: #faf8f5; font-size: 12px; padding: 4px; color: #888; text-align: center; }
   
+  /* 編集可能なセル */
   td.editable-cell { cursor: text; transition: 0.2s; padding: 4px; }
-  td.active-cell { box-shadow: inset 0 0 0 2px var(--accent) !important; background-color: #fffaf0; }
+  td.active-cell { box-shadow: inset 0 0 0 2px var(--accent) !important; background-color: #fffaf0 !important; }
   
+  /* 通常授業のセル内部 */
   .cell-sub { font-weight: bold; font-size: 13px; padding-bottom: 2px; border-bottom: 1px dashed rgba(0,0,0,0.15); margin-bottom: 4px; outline: none; }
   .cell-txt { font-size: 12px; color: #5a4a3a; min-height: 40px; outline: none; line-height: 1.4; }
+  
+  /* 休み時間・行事のセル */
+  tr.break-row td.editable-cell { background: #faf8f5; padding: 6px; }
+  tr.break-row .cell-txt { min-height: 24px; color: #665544; font-size: 11px; text-align: center; }
+
   [contenteditable]:empty:before { content: attr(placeholder); color: #bcaaa4; pointer-events: none; display: block; }
+
+  /* お知らせ・連絡事項エリア */
+  #notice-area h3 { margin: 0 0 8px 0; font-size: 14px; border-bottom: 2px solid var(--border); padding-bottom: 4px; color: var(--text); }
+  #notice-pad { border: 1px solid var(--border); border-radius: 4px; padding: 10px; min-height: 60px; font-size: 13px; outline: none; line-height: 1.5; background: var(--bg); transition: 0.2s; }
+  #notice-pad:focus { border-color: var(--accent); background: var(--surface); }
 
   /* パレット・右パネル */
   .card { background: var(--surface); border-radius: 8px; padding: 14px; border: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
@@ -75,11 +86,32 @@
   .palette-btn { border: 1px solid rgba(0,0,0,0.1); border-radius: 4px; padding: 8px 2px; text-align: center; cursor: pointer; font-size: 12px; font-weight: bold; }
   .palette-btn:hover { transform: translateY(-1px); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
   
+  .hint { background: #fffaf0; border: 1px solid #f0e0c0; padding: 8px; font-size: 11px; color: #887766; border-radius: 4px; margin-top: 10px; line-height: 1.4; }
+
   #subject-counts { display: flex; flex-wrap: wrap; gap: 5px; }
   .badge { padding: 3px 8px; border-radius: 20px; font-size: 11px; font-weight: bold; border: 1px solid rgba(0,0,0,0.1); display: flex; gap: 4px; }
   textarea { width: 100%; height: 80px; border: 1px solid var(--border); border-radius: 4px; padding: 8px; font-family: inherit; resize: none; background: var(--bg); }
   .action-btn { background: white; border: 1px solid var(--border); padding: 8px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; width: 100%; margin-bottom: 6px; }
 
+  /* =========================================
+     🖨️ 印刷用スタイル（週案とお知らせのみ印刷）
+  ========================================= */
+  @media print {
+    body { background: white; font-size: 12pt; }
+    /* 不要な要素を非表示 */
+    #tabbar, #toolbar, .right, .nav-arrow, .hint { display: none !important; }
+    
+    /* 余白や影を消して紙幅いっぱいに */
+    .page { padding: 0; max-width: 100%; }
+    .wrapper { display: block; }
+    .left { flex: none; width: 100%; box-shadow: none; border: none; padding: 0; overflow: visible; }
+    
+    /* マスのハイライトを消す */
+    td.active-cell { box-shadow: none !important; }
+    
+    /* 背景色を強制的に印刷させる（Chrome, Edge, Safari用） */
+    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  }
 </style>
 </head>
 <body>
@@ -93,7 +125,6 @@
 </div>
 
 <div class="page active" id="main-page">
-  
   <div id="toolbar">
     <label>学年組</label><input type="text" id="class-name" placeholder="3年1組" style="width:80px" onchange="saveMeta()">
     <label>月</label><input type="number" id="month-num" style="width:50px" onchange="saveMeta()">
@@ -116,6 +147,11 @@
   <div class="wrapper">
     <div class="left">
       <table id="table"></table>
+      
+      <div id="notice-area">
+        <h3>📝 お知らせ・連絡事項</h3>
+        <div id="notice-pad" contenteditable="true" placeholder="保護者や児童へのお知らせ、持参物などを自由に記入できます..." oninput="saveNotice()"></div>
+      </div>
     </div>
 
     <div class="right">
@@ -123,6 +159,12 @@
         <h3>🎨 教科パレット</h3>
         <div style="font-size: 11px; color: #888; margin-bottom: 8px;">マスを選択してクリック！</div>
         <div class="palette-grid" id="palette"></div>
+        <div class="hint">
+          <b>⌨️ キーボード操作</b><br>
+          ・[Enter]: 教科から単元へ移動<br>
+          ・[Tab]: 次のマスへ移動<br>
+          ・[Ctrl]+[矢印]: 上下左右のマスへ移動
+        </div>
       </div>
 
       <div class="card">
@@ -131,8 +173,8 @@
       </div>
 
       <div class="card">
-        <h3>📌 メモ（今週の未定予定など）</h3>
-        <textarea id="memo-pad" oninput="saveMemo()" placeholder="ここに書いたメモはこの週に保存されます"></textarea>
+        <h3>📌 右側メモ（印刷されません）</h3>
+        <textarea id="memo-pad" oninput="saveMemo()" placeholder="テスト予定のストックや、自分用の非公開メモにご利用ください。"></textarea>
       </div>
 
       <div class="card">
@@ -152,14 +194,13 @@
 </div>
 
 <script>
-// --- データ・設定 ---
 const days = ["月", "火", "水", "木", "金"];
 const rows = [
-  { id: "朝", type: "break" },
+  { id: "朝", type: "break", label: "朝の活動・読書など" },
   { id: "1", type: "class" }, { id: "2", type: "class" },
-  { id: "中", type: "break" },
+  { id: "中", type: "break", label: "中休み・業間体育など" },
   { id: "3", type: "class" }, { id: "4", type: "class" },
-  { id: "昼", type: "break" },
+  { id: "昼", type: "break", label: "昼休み・掃除・昼行事" },
   { id: "5", type: "class" }, { id: "6", type: "class" }
 ];
 
@@ -181,15 +222,12 @@ const subjectInfo = {
   "行事": { hira: "ぎょうじ", color: "var(--gyoji)", countAs: "行事" }
 };
 
-// 全データは store オブジェクトに保存 (キーは月曜日の日付 YYYY-MM-DD)
-let store = JSON.parse(localStorage.getItem("weekPlan_hybrid") || "{}");
+let store = JSON.parse(localStorage.getItem("weekPlan_hybrid2") || "{}");
 let currentMonday = "";
 let currentCell = null;
 let isHiragana = false;
 
-// --- 初期化 ---
 function init() {
-  // 今日を基準に直近の月曜日を計算
   const today = new Date();
   const diff = today.getDay() === 0 ? -6 : 1 - today.getDay();
   const monday = new Date(today);
@@ -198,7 +236,6 @@ function init() {
   currentMonday = monday.toISOString().slice(0,10);
   document.getElementById("monday-date").value = currentMonday;
   
-  // 保存されてる学年などがあれば復元
   const meta = store["_meta"] || { className: "", month: monday.getMonth()+1, week: Math.ceil(monday.getDate()/7) };
   document.getElementById("class-name").value = meta.className;
   document.getElementById("month-num").value = meta.month;
@@ -208,7 +245,6 @@ function init() {
   renderWeek();
 }
 
-// --- タブ・UI切り替え ---
 function switchTab(id) {
   document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
   event.target.classList.add("active");
@@ -223,7 +259,6 @@ function toggleMode() {
   updateCounts();
 }
 
-// --- 週・日付の操作 ---
 function onDateChange() {
   const v = document.getElementById("monday-date").value;
   if(!v) return;
@@ -239,7 +274,7 @@ function saveMeta() {
     month: document.getElementById("month-num").value,
     week: document.getElementById("week-num").value
   };
-  localStorage.setItem("weekPlan_hybrid", JSON.stringify(store));
+  localStorage.setItem("weekPlan_hybrid2", JSON.stringify(store));
   updateNav();
 }
 
@@ -254,11 +289,7 @@ function shiftWeek(dir) {
 
 function updateNav() {
   const meta = store["_meta"] || {};
-  const cName = meta.className || "--年--組";
-  const m = meta.month || "--";
-  const w = meta.week || "--";
-  document.getElementById("nav-week-label").textContent = `${cName} ${m}月${w}週案`;
-
+  document.getElementById("nav-week-label").textContent = `${meta.className || "--年--組"} ${meta.month || "--"}月${meta.week || "--"}週案`;
   if(currentMonday) {
     const start = new Date(currentMonday);
     const end = new Date(currentMonday);
@@ -267,23 +298,20 @@ function updateNav() {
   }
 }
 
-// --- 描画ロジック ---
 function ensureWeek(dateStr) {
-  if(!store[dateStr]) {
-    store[dateStr] = { cells: {}, memo: "" };
-  }
+  if(!store[dateStr]) store[dateStr] = { cells: {}, memo: "", notice: "" }; // noticeを追加
   return store[dateStr];
 }
 
 function renderWeek() {
   currentMonday = document.getElementById("monday-date").value;
   if(!currentMonday) return;
-  
   ensureWeek(currentMonday);
   updateNav();
   
   const wdata = store[currentMonday];
   document.getElementById("memo-pad").value = wdata.memo || "";
+  document.getElementById("notice-pad").innerHTML = wdata.notice || ""; // お知らせ欄を展開
 
   const table = document.getElementById("table");
   let html = "<tr><th></th>";
@@ -303,11 +331,14 @@ function renderWeek() {
       const cellData = wdata.cells[key] || { sub: "", txt: "" };
       
       if (isBreak) {
-        html += `<td>${r.id}</td>`;
+        const val = cellData.txt || cellData.sub || ""; 
+        html += `<td class="editable-cell break-cell" data-key="${key}" data-type="break" onclick="setActiveTD(this)">
+                  <div class="cell-txt" contenteditable="true" placeholder="${r.label}" onfocus="setActiveTD(this)" oninput="handleInput('${key}')" onkeydown="handleKey(event, 'txt')">${val}</div>
+                 </td>`;
       } else {
-        html += `<td class="editable-cell" data-key="${key}" data-type="class" onclick="setActive(this)">
-                  <div class="cell-sub" contenteditable="true" placeholder="教科" oninput="handleInput('${key}')">${cellData.sub}</div>
-                  <div class="cell-txt" contenteditable="true" placeholder="単元・内容" oninput="handleInput('${key}')">${cellData.txt}</div>
+        html += `<td class="editable-cell class-cell" data-key="${key}" data-type="class" onclick="setActiveTD(this)">
+                  <div class="cell-sub" contenteditable="true" placeholder="教科" onfocus="setActiveTD(this)" oninput="handleInput('${key}')" onkeydown="handleKey(event, 'sub')">${cellData.sub}</div>
+                  <div class="cell-txt" contenteditable="true" placeholder="単元・内容" onfocus="setActiveTD(this)" oninput="handleInput('${key}')" onkeydown="handleKey(event, 'txt')">${cellData.txt}</div>
                  </td>`;
       }
     });
@@ -315,11 +346,10 @@ function renderWeek() {
   });
   table.innerHTML = html;
   
-  document.querySelectorAll('td.editable-cell').forEach(td => applyColor(td));
+  document.querySelectorAll('td.class-cell').forEach(td => applyColor(td));
   updateCounts();
 }
 
-// --- サクサク入力ロジック ---
 function createPalette() {
   const palette = document.getElementById("palette");
   let html = "";
@@ -331,14 +361,50 @@ function createPalette() {
   palette.innerHTML = html;
 }
 
-function setActive(el) {
+function setActiveTD(el) {
+  const td = el.tagName === 'TD' ? el : el.closest('td');
   if (currentCell) currentCell.classList.remove('active-cell');
-  currentCell = el;
+  currentCell = td;
   currentCell.classList.add('active-cell');
+}
+
+function handleKey(e, type) {
+  if (e.key === 'Enter' && type === 'sub') {
+    e.preventDefault(); 
+    const td = e.target.closest('td');
+    const txtDiv = td.querySelector('.cell-txt');
+    if (txtDiv) txtDiv.focus();
+    return;
+  }
+  if (e.ctrlKey || e.metaKey) {
+    const td = e.target.closest('td');
+    const tr = td.closest('tr');
+    const colIdx = Array.from(tr.children).indexOf(td);
+    
+    let targetTd = null;
+    if (e.key === 'ArrowRight') targetTd = td.nextElementSibling;
+    if (e.key === 'ArrowLeft') targetTd = td.previousElementSibling;
+    if (e.key === 'ArrowDown') {
+      const nextTr = tr.nextElementSibling;
+      if (nextTr) targetTd = nextTr.children[colIdx];
+    }
+    if (e.key === 'ArrowUp') {
+      const prevTr = tr.previousElementSibling;
+      if (prevTr) targetTd = prevTr.children[colIdx];
+    }
+
+    if (targetTd && targetTd.classList.contains('editable-cell')) {
+      e.preventDefault();
+      const targetDiv = targetTd.querySelector(type === 'sub' ? '.cell-sub' : '.cell-txt') || targetTd.querySelector('.cell-txt');
+      if (targetDiv) targetDiv.focus();
+    }
+  }
 }
 
 function insertSubject(subj) {
   if (!currentCell) return alert("入力したいマスをクリックして選んでください");
+  if (currentCell.dataset.type === 'break') return alert("休み時間・行事の枠にはパレットから教科を入力できません。直接入力してください。");
+  
   const key = currentCell.dataset.key;
   const subDiv = currentCell.querySelector('.cell-sub');
   const txtDiv = currentCell.querySelector('.cell-txt');
@@ -356,10 +422,13 @@ function handleInput(key) {
   const subDiv = td.querySelector('.cell-sub');
   const txtDiv = td.querySelector('.cell-txt');
   
-  store[currentMonday].cells[key] = { sub: subDiv.innerText, txt: txtDiv.innerText };
-  localStorage.setItem("weekPlan_hybrid", JSON.stringify(store));
+  const sub = subDiv ? subDiv.innerText : "";
+  const txt = txtDiv ? txtDiv.innerText : "";
   
-  applyColor(td);
+  store[currentMonday].cells[key] = { sub, txt };
+  localStorage.setItem("weekPlan_hybrid2", JSON.stringify(store));
+  
+  if (subDiv) applyColor(td);
   updateCounts();
 }
 
@@ -403,23 +472,26 @@ function updateCounts() {
 
 function saveMemo() {
   store[currentMonday].memo = document.getElementById("memo-pad").value;
-  localStorage.setItem("weekPlan_hybrid", JSON.stringify(store));
+  localStorage.setItem("weekPlan_hybrid2", JSON.stringify(store));
 }
 
-// --- 便利機能 ---
+function saveNotice() {
+  // お知らせ欄のHTMLを保存
+  store[currentMonday].notice = document.getElementById("notice-pad").innerHTML;
+  localStorage.setItem("weekPlan_hybrid2", JSON.stringify(store));
+}
+
 function copyPrev() {
   const d = new Date(currentMonday);
   d.setDate(d.getDate() - 7);
   const prevKey = d.toISOString().slice(0,10);
   
-  if(!store[prevKey] || Object.keys(store[prevKey].cells).length === 0) {
-    alert("先週のデータがありません！");
-    return;
-  }
+  if(!store[prevKey] || Object.keys(store[prevKey].cells).length === 0) return alert("先週のデータがありません！");
+  
   if(confirm("先週の時間割をコピーしますか？（今の内容は上書きされます）")) {
-    // ディープコピー
     store[currentMonday].cells = JSON.parse(JSON.stringify(store[prevKey].cells));
-    localStorage.setItem("weekPlan_hybrid", JSON.stringify(store));
+    // お知らせ欄も引っ張ってくるかはお好みですが、今回はセルだけコピーします
+    localStorage.setItem("weekPlan_hybrid2", JSON.stringify(store));
     renderWeek();
   }
 }
@@ -427,7 +499,7 @@ function copyPrev() {
 function saveAsTemplate() {
   if (confirm("現在の時間割を「基本時間割」として登録しますか？")) {
     store["_template"] = JSON.parse(JSON.stringify(store[currentMonday].cells));
-    localStorage.setItem("weekPlan_hybrid", JSON.stringify(store));
+    localStorage.setItem("weekPlan_hybrid2", JSON.stringify(store));
     alert("登録しました！");
   }
 }
@@ -436,12 +508,11 @@ function loadTemplate() {
   if (!store["_template"]) return alert("基本時間割がまだ登録されていません。");
   if (confirm("基本時間割を展開しますか？（現在の内容は上書きされます）")) {
     store[currentMonday].cells = JSON.parse(JSON.stringify(store["_template"]));
-    localStorage.setItem("weekPlan_hybrid", JSON.stringify(store));
+    localStorage.setItem("weekPlan_hybrid2", JSON.stringify(store));
     renderWeek();
   }
 }
 
-// 起動
 init();
 </script>
 </body>
