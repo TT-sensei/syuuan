@@ -3,122 +3,156 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>サクサク週案アプリ（教科・単元 分割版）</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+<title>ハイブリッド週案アプリ</title>
+<link href="https://fonts.googleapis.com/css2?family=Kaisei+Decol:wght@400;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #fdf8f2; --surface: #ffffff;
-    --border: #e0d5c5; --text: #3d3228;
-    --accent: #c07850;
+    --bg:#fdf8f2; --surface:#fffcf7; --surface2:#f5efe6;
+    --border:#e0d5c5; --border2:#ccc0ad;
+    --text:#3d3228; --subtext:#8a7a6a;
+    --accent:#c07850; --accent2:#e8a878; --accent-bg:#fef0e6;
     
-    --kokugo: #fff1d6; --sansu: #ddeeff; --rika: #ddf4e4; 
-    --shakai: #ffe8e8; --taiiku: #ffe8cc; --ongaku: #ecdeff; 
-    --zukou: #ffeedd; --seikatsu: #fff8d6; --katei: #e0f0ff;
-    --dotoku: #e8f8ee; --gaikokugo: #d6f0ff; --sogo: #ffe6f5; 
-    --gakkatsu: #eee8ff; --gyoji: #f5f2ee;
+    /* 教科カラー */
+    --kokugo:#fff1d6; --sansu:#ddeeff; --rika:#ddf4e4; 
+    --shakai:#ffe8e8; --taiiku:#ffe8cc; --ongaku:#ecdeff; 
+    --zukou:#ffeedd; --seikatsu:#fff8d6; --katei:#e0f0ff;
+    --dotoku:#e8f8ee; --gaikokugo:#d6f0ff; --sogo:#ffe6f5; 
+    --gakkatsu:#eee8ff; --gyoji:#f5f2ee;
   }
 
-  body { margin: 0; padding: 16px; font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--text); }
+  body { margin: 0; padding: 0; font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh;}
+  *{ box-sizing: border-box; }
+
+  /* タブバー */
+  #tabbar { background: var(--surface2); border-bottom: 2px solid var(--border2); display: flex; padding: 0 14px; position: sticky; top: 0; z-index: 50; }
+  .tab { padding: 10px 18px 8px; font-size: 13px; font-weight: 700; cursor: pointer; border: none; background: transparent; color: var(--subtext); border-bottom: 3px solid transparent; transition: 0.2s; }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .tab:hover { color: var(--accent); }
+
+  /* ページ切り替え */
+  .page { display: none; padding: 14px; max-width: 1400px; margin: 0 auto; }
+  .page.active { display: block; }
+
+  /* ツールバー */
+  #toolbar { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+  #toolbar label { font-size: 11px; color: var(--subtext); font-weight: 700; }
+  #toolbar input { border: 1.5px solid var(--border2); background: var(--bg); padding: 5px; border-radius: 4px; font-size: 13px; font-family: inherit; }
+  .tb-btn { padding: 6px 12px; border-radius: 6px; border: 1.5px solid var(--border2); background: var(--surface); cursor: pointer; font-size: 12px; font-weight: 700; transition: 0.1s; }
+  .tb-btn:hover { background: var(--surface2); }
+  .tb-btn.primary { background: var(--accent); color: white; border-color: var(--accent); }
   
-  .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
-  h2 { margin: 0; color: var(--accent); font-size: 1.5rem; }
+  /* 週ナビゲーター */
+  #week-nav { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+  .nav-arrow { width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid var(--border2); background: var(--surface); cursor: pointer; font-size: 16px; font-weight: bold; }
+  .nav-arrow:hover { background: var(--surface2); }
+  #nav-center { flex: 1; text-align: center; }
+  #nav-week-label { font-family: 'Kaisei Decol', serif; font-size: 18px; font-weight: 700; color: var(--accent); }
+  #nav-date-label { font-size: 12px; color: var(--subtext); display: block; }
 
-  .mode-switch {
-    background: var(--surface); padding: 5px 15px; border-radius: 20px;
-    border: 2px solid var(--accent); cursor: pointer; font-weight: bold;
-    font-size: 14px; transition: 0.2s;
-  }
-  .mode-switch:hover { background: var(--accent); color: white; }
+  /* サクサク版の2カラムレイアウト */
+  .wrapper { display: flex; gap: 16px; align-items: flex-start; }
+  .left { flex: 3; background: var(--surface); border-radius: 8px; padding: 16px; border: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,0.05); overflow: auto; }
+  .right { flex: 1; min-width: 280px; display: flex; flex-direction: column; gap: 16px; position: sticky; top: 50px;}
 
-  .wrapper { display: flex; gap: 20px; height: calc(100vh - 100px); }
-
-  .left { flex: 3; background: var(--surface); border-radius: 12px; padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); overflow: auto; }
-
+  /* テーブル（サクサク分割版） */
   table { border-collapse: collapse; width: 100%; table-layout: fixed; }
-  th, td { border: 1px solid var(--border); vertical-align: top; font-size: 14px; }
-  th { background: #f5efe6; text-align: center; font-weight: 700; padding: 12px; }
-  .time-col { background: #f5efe6; text-align: center; font-weight: bold; width: 50px; vertical-align: middle; }
+  th, td { border: 1px solid var(--border); vertical-align: top; font-size: 13px; }
+  th { background: var(--surface2); text-align: center; font-weight: 700; padding: 8px; }
+  .time-col { background: var(--surface2); text-align: center; font-weight: bold; width: 45px; vertical-align: middle; }
+  tr.break-row td { background: #faf8f5; font-size: 12px; padding: 4px; color: #888; text-align: center; }
   
-  tr.break-row td { background: #faf8f5; font-size: 12px; padding: 4px 8px; color: #888; }
-
-  /* セル内の分割スタイル */
-  td.editable-cell { cursor: text; transition: background-color 0.2s; padding: 6px; }
+  td.editable-cell { cursor: text; transition: 0.2s; padding: 4px; }
   td.active-cell { box-shadow: inset 0 0 0 2px var(--accent) !important; background-color: #fffaf0; }
-
-  .cell-sub {
-    font-weight: bold; font-size: 13px; padding-bottom: 4px;
-    border-bottom: 1px dashed rgba(0,0,0,0.15); margin-bottom: 4px; outline: none;
-  }
-  .cell-txt { font-size: 12px; color: #5a4a3a; min-height: 40px; outline: none; line-height: 1.4; }
   
-  /* プレースホルダー（未入力時の薄い文字） */
+  .cell-sub { font-weight: bold; font-size: 13px; padding-bottom: 2px; border-bottom: 1px dashed rgba(0,0,0,0.15); margin-bottom: 4px; outline: none; }
+  .cell-txt { font-size: 12px; color: #5a4a3a; min-height: 40px; outline: none; line-height: 1.4; }
   [contenteditable]:empty:before { content: attr(placeholder); color: #bcaaa4; pointer-events: none; display: block; }
 
-  .right { flex: 1; min-width: 280px; display: flex; flex-direction: column; gap: 16px; overflow-y: auto; }
-  .card { background: var(--surface); border-radius: 12px; padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-  .card h3 { margin: 0 0 12px 0; font-size: 15px; border-bottom: 2px solid var(--border); padding-bottom: 4px;}
-
+  /* パレット・右パネル */
+  .card { background: var(--surface); border-radius: 8px; padding: 14px; border: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+  .card h3 { margin: 0 0 10px 0; font-size: 14px; border-bottom: 2px solid var(--border); padding-bottom: 4px;}
   .palette-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
-  .palette-btn {
-    border: 1px solid rgba(0,0,0,0.1); border-radius: 6px;
-    padding: 10px 2px; text-align: center; cursor: pointer;
-    font-size: 12px; font-weight: bold; transition: 0.1s;
-  }
-  .palette-btn:hover { transform: translateY(-2px); box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
-
-  #subject-counts { display: flex; flex-wrap: wrap; gap: 6px; }
-  .badge { padding: 4px 8px; border-radius: 20px; font-size: 12px; font-weight: bold; border: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center; gap: 4px; }
+  .palette-btn { border: 1px solid rgba(0,0,0,0.1); border-radius: 4px; padding: 8px 2px; text-align: center; cursor: pointer; font-size: 12px; font-weight: bold; }
+  .palette-btn:hover { transform: translateY(-1px); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
   
-  textarea { width: 100%; height: 80px; border: 1px solid var(--border); border-radius: 6px; padding: 8px; font-family: inherit; resize: none; background: var(--bg); }
+  #subject-counts { display: flex; flex-wrap: wrap; gap: 5px; }
+  .badge { padding: 3px 8px; border-radius: 20px; font-size: 11px; font-weight: bold; border: 1px solid rgba(0,0,0,0.1); display: flex; gap: 4px; }
+  textarea { width: 100%; height: 80px; border: 1px solid var(--border); border-radius: 4px; padding: 8px; font-family: inherit; resize: none; background: var(--bg); }
+  .action-btn { background: white; border: 1px solid var(--border); padding: 8px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; width: 100%; margin-bottom: 6px; }
 
-  .action-btn { background: white; border: 1px solid var(--border); padding: 8px; border-radius: 6px; cursor: pointer; font-family: inherit; font-size: 12px; font-weight: bold; width: 100%; margin-bottom: 6px; }
-  .danger { color: #d32f2f; background: #fff5f5; }
-
-  @media (max-width: 800px) { .wrapper { flex-direction: column; height: auto; } }
 </style>
 </head>
-
 <body>
 
-<div class="header">
-  <h2>📅 サクサク週案</h2>
-  <div style="display: flex; gap: 10px; align-items: center;">
-    <button class="mode-switch" onclick="toggleMode()" id="mode-btn">ひらがなにする</button>
-    <div id="total-count" style="font-weight: bold;">合計: 0コマ</div>
+<div id="tabbar">
+  <button class="tab active" onclick="switchTab('main')">📅 週案作成</button>
+  <button class="tab" onclick="switchTab('jisu')">📊 時数管理（準備中）</button>
+  <div style="margin-left:auto; display:flex; align-items:center;">
+    <button class="tb-btn" onclick="toggleMode()" id="mode-btn">ひらがなモード</button>
   </div>
 </div>
 
-<div class="wrapper">
-  <div class="left">
-    <table id="table"></table>
+<div class="page active" id="main-page">
+  
+  <div id="toolbar">
+    <label>学年組</label><input type="text" id="class-name" placeholder="3年1組" style="width:80px" onchange="saveMeta()">
+    <label>月</label><input type="number" id="month-num" style="width:50px" onchange="saveMeta()">
+    <label>週</label><input type="number" id="week-num" style="width:50px" onchange="saveMeta()">
+    <label>月曜日の日付</label><input type="date" id="monday-date" onchange="onDateChange()">
+    <button class="tb-btn primary" onclick="renderWeek()">移動</button>
+    <button class="tb-btn" onclick="copyPrev()">🔄 前週をコピー</button>
+    <button class="tb-btn" onclick="window.print()">🖨 印刷</button>
   </div>
 
-  <div class="right">
-    <div class="card">
-      <h3>🎨 教科パレット</h3>
-      <div style="font-size: 11px; color: #888; margin-bottom: 8px;">マスを選択してクリック！単元入力へ自動で移ります</div>
-      <div class="palette-grid" id="palette"></div>
+  <div id="week-nav">
+    <button class="nav-arrow" onclick="shiftWeek(-1)">‹</button>
+    <div id="nav-center">
+      <span id="nav-week-label">--年--組 --月--週案</span>
+      <span id="nav-date-label">--/-- (月) 〜 --/-- (金)</span>
+    </div>
+    <button class="nav-arrow" onclick="shiftWeek(1)">›</button>
+  </div>
+
+  <div class="wrapper">
+    <div class="left">
+      <table id="table"></table>
     </div>
 
-    <div class="card">
-      <h3>📊 時数カウント</h3>
-      <div id="subject-counts"></div>
-    </div>
+    <div class="right">
+      <div class="card">
+        <h3>🎨 教科パレット</h3>
+        <div style="font-size: 11px; color: #888; margin-bottom: 8px;">マスを選択してクリック！</div>
+        <div class="palette-grid" id="palette"></div>
+      </div>
 
-    <div class="card">
-      <h3>📌 メモ</h3>
-      <textarea id="memo-pad" oninput="saveMemo()" placeholder="未定の予定など..."></textarea>
-    </div>
+      <div class="card">
+        <h3>📊 今週のコマ数</h3>
+        <div id="subject-counts"></div>
+      </div>
 
-    <div class="card">
-      <button class="action-btn" onclick="saveAsTemplate()">📥 基本時間割に登録</button>
-      <button class="action-btn" onclick="loadTemplate()">📤 基本時間割を呼出</button>
-      <button class="action-btn danger" onclick="clearData()">🗑 全消去</button>
+      <div class="card">
+        <h3>📌 メモ（今週の未定予定など）</h3>
+        <textarea id="memo-pad" oninput="saveMemo()" placeholder="ここに書いたメモはこの週に保存されます"></textarea>
+      </div>
+
+      <div class="card">
+        <h3>⚙️ テンプレート</h3>
+        <button class="action-btn" onclick="saveAsTemplate()">📥 今の状態を「基本」に登録</button>
+        <button class="action-btn" onclick="loadTemplate()">📤 「基本時間割」を展開</button>
+      </div>
     </div>
+  </div>
+</div>
+
+<div class="page" id="jisu-page">
+  <div class="card">
+    <h2 style="color: var(--accent);">📊 時数管理</h2>
+    <p>（※ここに年間目標に対するプログレスバーなどが表示されます）</p>
   </div>
 </div>
 
 <script>
+// --- データ・設定 ---
 const days = ["月", "火", "水", "木", "金"];
 const rows = [
   { id: "朝", type: "break" },
@@ -130,50 +164,134 @@ const rows = [
 ];
 
 const subjectInfo = {
-  "国語": { hira: "こくご", color: "var(--kokugo)", icon: "📖", countAs: "国語" },
-  "書写": { hira: "しょしゃ", color: "var(--kokugo)", icon: "✏️", countAs: "国語" },
-  "算数": { hira: "さんすう", color: "var(--sansu)", icon: "🔢", countAs: "算数" },
-  "生活": { hira: "せいかつ", color: "var(--seikatsu)", icon: "🌱", countAs: "生活" },
-  "理科": { hira: "りか", color: "var(--rika)", icon: "🔬", countAs: "理科" },
-  "社会": { hira: "しゃかい", color: "var(--shakai)", icon: "🌍", countAs: "社会" },
-  "家庭科": { hira: "かていか", color: "var(--katei)", icon: "🍳", countAs: "家庭科" },
-  "体育": { hira: "たいいく", color: "var(--taiiku)", icon: "⚽", countAs: "体育" },
-  "音楽": { hira: "おんがく", color: "var(--ongaku)", icon: "🎵", countAs: "音楽" },
-  "図工": { hira: "ずこう", color: "var(--zukou)", icon: "🎨", countAs: "図工" },
-  "道徳": { hira: "どうとく", color: "var(--dotoku)", icon: "🌸", countAs: "道徳" },
-  "外国語": { hira: "がいこくご", color: "var(--gaikokugo)", icon: "🌐", countAs: "外国語" },
-  "総合": { hira: "そうごう", color: "var(--sogo)", icon: "💡", countAs: "総合" },
-  "学活": { hira: "がっかつ", color: "var(--gakkatsu)", icon: "🏫", countAs: "学活" },
-  "行事": { hira: "ぎょうじ", color: "var(--gyoji)", icon: "🚩", countAs: "行事" }
+  "国語": { hira: "こくご", color: "var(--kokugo)", countAs: "国語" },
+  "書写": { hira: "しょしゃ", color: "var(--kokugo)", countAs: "国語" },
+  "算数": { hira: "さんすう", color: "var(--sansu)", countAs: "算数" },
+  "生活": { hira: "せいかつ", color: "var(--seikatsu)", countAs: "生活" },
+  "理科": { hira: "りか", color: "var(--rika)", countAs: "理科" },
+  "社会": { hira: "しゃかい", color: "var(--shakai)", countAs: "社会" },
+  "家庭科": { hira: "かていか", color: "var(--katei)", countAs: "家庭科" },
+  "体育": { hira: "たいいく", color: "var(--taiiku)", countAs: "体育" },
+  "音楽": { hira: "おんがく", color: "var(--ongaku)", countAs: "音楽" },
+  "図工": { hira: "ずこう", color: "var(--zukou)", countAs: "図工" },
+  "道徳": { hira: "どうとく", color: "var(--dotoku)", countAs: "道徳" },
+  "外国語": { hira: "がいこくご", color: "var(--gaikokugo)", countAs: "外国語" },
+  "総合": { hira: "そうごう", color: "var(--sogo)", countAs: "総合" },
+  "学活": { hira: "がっかつ", color: "var(--gakkatsu)", countAs: "学活" },
+  "行事": { hira: "ぎょうじ", color: "var(--gyoji)", countAs: "行事" }
 };
 
-let isHiragana = false;
-// データ構造を { sub: "教科", txt: "単元" } に変更
-let data = JSON.parse(localStorage.getItem("plan_v4") || "{}");
+// 全データは store オブジェクトに保存 (キーは月曜日の日付 YYYY-MM-DD)
+let store = JSON.parse(localStorage.getItem("weekPlan_hybrid") || "{}");
+let currentMonday = "";
 let currentCell = null;
+let isHiragana = false;
+
+// --- 初期化 ---
+function init() {
+  // 今日を基準に直近の月曜日を計算
+  const today = new Date();
+  const diff = today.getDay() === 0 ? -6 : 1 - today.getDay();
+  const monday = new Date(today);
+  monday.setDate(today.getDate() + diff);
+  
+  currentMonday = monday.toISOString().slice(0,10);
+  document.getElementById("monday-date").value = currentMonday;
+  
+  // 保存されてる学年などがあれば復元
+  const meta = store["_meta"] || { className: "", month: monday.getMonth()+1, week: Math.ceil(monday.getDate()/7) };
+  document.getElementById("class-name").value = meta.className;
+  document.getElementById("month-num").value = meta.month;
+  document.getElementById("week-num").value = meta.week;
+
+  createPalette();
+  renderWeek();
+}
+
+// --- タブ・UI切り替え ---
+function switchTab(id) {
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+  event.target.classList.add("active");
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  document.getElementById(id + "-page").classList.add("active");
+}
 
 function toggleMode() {
   isHiragana = !isHiragana;
-  document.getElementById("mode-btn").innerText = isHiragana ? "漢字にする" : "ひらがなにする";
+  document.getElementById("mode-btn").innerText = isHiragana ? "漢字モード" : "ひらがなモード";
   createPalette();
   updateCounts();
 }
 
-function createPalette() {
-  const palette = document.getElementById("palette");
-  let html = "";
-  for (let key in subjectInfo) {
-    const label = isHiragana ? subjectInfo[key].hira : key;
-    html += `<div class="palette-btn" style="background-color: ${subjectInfo[key].color};" onclick="insertSubject('${label}')">${label}</div>`;
-  }
-  html += `<div class="palette-btn" style="background-color: #eee;" onclick="insertSubject('')">消去</div>`;
-  palette.innerHTML = html;
+// --- 週・日付の操作 ---
+function onDateChange() {
+  const v = document.getElementById("monday-date").value;
+  if(!v) return;
+  const d = new Date(v);
+  document.getElementById("month-num").value = d.getMonth() + 1;
+  document.getElementById("week-num").value = Math.ceil(d.getDate() / 7);
+  saveMeta();
 }
 
-function createTable() {
+function saveMeta() {
+  store["_meta"] = {
+    className: document.getElementById("class-name").value,
+    month: document.getElementById("month-num").value,
+    week: document.getElementById("week-num").value
+  };
+  localStorage.setItem("weekPlan_hybrid", JSON.stringify(store));
+  updateNav();
+}
+
+function shiftWeek(dir) {
+  if(!currentMonday) return;
+  const d = new Date(currentMonday);
+  d.setDate(d.getDate() + dir * 7);
+  document.getElementById("monday-date").value = d.toISOString().slice(0,10);
+  onDateChange();
+  renderWeek();
+}
+
+function updateNav() {
+  const meta = store["_meta"] || {};
+  const cName = meta.className || "--年--組";
+  const m = meta.month || "--";
+  const w = meta.week || "--";
+  document.getElementById("nav-week-label").textContent = `${cName} ${m}月${w}週案`;
+
+  if(currentMonday) {
+    const start = new Date(currentMonday);
+    const end = new Date(currentMonday);
+    end.setDate(end.getDate() + 4);
+    document.getElementById("nav-date-label").textContent = `${start.getMonth()+1}/${start.getDate()} (月) 〜 ${end.getMonth()+1}/${end.getDate()} (金)`;
+  }
+}
+
+// --- 描画ロジック ---
+function ensureWeek(dateStr) {
+  if(!store[dateStr]) {
+    store[dateStr] = { cells: {}, memo: "" };
+  }
+  return store[dateStr];
+}
+
+function renderWeek() {
+  currentMonday = document.getElementById("monday-date").value;
+  if(!currentMonday) return;
+  
+  ensureWeek(currentMonday);
+  updateNav();
+  
+  const wdata = store[currentMonday];
+  document.getElementById("memo-pad").value = wdata.memo || "";
+
   const table = document.getElementById("table");
   let html = "<tr><th></th>";
-  days.forEach(d => html += `<th>${d}</th>`);
+  days.forEach((d, i) => {
+    const dt = new Date(currentMonday);
+    dt.setDate(dt.getDate() + i);
+    html += `<th>${dt.getDate()}日 (${d})</th>`;
+  });
   html += "</tr>";
 
   rows.forEach(r => {
@@ -182,7 +300,7 @@ function createTable() {
     html += `<td class="time-col">${r.id}</td>`;
     days.forEach(d => {
       const key = `${r.id}_${d}`;
-      const cellData = data[key] || { sub: "", txt: "" };
+      const cellData = wdata.cells[key] || { sub: "", txt: "" };
       
       if (isBreak) {
         html += `<td>${r.id}</td>`;
@@ -201,46 +319,46 @@ function createTable() {
   updateCounts();
 }
 
+// --- サクサク入力ロジック ---
+function createPalette() {
+  const palette = document.getElementById("palette");
+  let html = "";
+  for (let key in subjectInfo) {
+    const label = isHiragana ? subjectInfo[key].hira : key;
+    html += `<div class="palette-btn" style="background-color: ${subjectInfo[key].color};" onclick="insertSubject('${label}')">${label}</div>`;
+  }
+  html += `<div class="palette-btn" style="background-color: #eee;" onclick="insertSubject('')">消去</div>`;
+  palette.innerHTML = html;
+}
+
 function setActive(el) {
   if (currentCell) currentCell.classList.remove('active-cell');
   currentCell = el;
   currentCell.classList.add('active-cell');
 }
 
-// パレットから教科を入力したときの処理
 function insertSubject(subj) {
   if (!currentCell) return alert("入力したいマスをクリックして選んでください");
-  
   const key = currentCell.dataset.key;
   const subDiv = currentCell.querySelector('.cell-sub');
   const txtDiv = currentCell.querySelector('.cell-txt');
   
-  subDiv.innerText = subj; // 教科をセット
-  if (subj === "") txtDiv.innerText = ""; // 消去ボタンなら単元も消す
+  subDiv.innerText = subj;
+  if (subj === "") txtDiv.innerText = "";
   
-  handleInput(key); // 保存・色付け
-  
-  // 入力後、すぐに「単元」が打ち込めるようにフォーカスを移動する！
-  if (subj !== "") {
-    txtDiv.focus();
-  }
+  handleInput(key);
+  if (subj !== "") txtDiv.focus();
 }
 
-// 入力されるたびにデータを保存し、色とカウントを更新
 function handleInput(key) {
-  // TD要素を探す
   const td = document.querySelector(`td[data-key="${key}"]`);
   if (!td) return;
-  
   const subDiv = td.querySelector('.cell-sub');
   const txtDiv = td.querySelector('.cell-txt');
   
-  data[key] = {
-    sub: subDiv.innerText,
-    txt: txtDiv.innerText
-  };
+  store[currentMonday].cells[key] = { sub: subDiv.innerText, txt: txtDiv.innerText };
+  localStorage.setItem("weekPlan_hybrid", JSON.stringify(store));
   
-  localStorage.setItem("plan_v4", JSON.stringify(data));
   applyColor(td);
   updateCounts();
 }
@@ -258,75 +376,73 @@ function applyColor(td) {
 
 function updateCounts() {
   let counts = {};
-  let totalClasses = 0;
-
   document.querySelectorAll('td[data-type="class"]').forEach(td => {
     const subText = td.querySelector('.cell-sub').innerText.trim();
-    const txtText = td.querySelector('.cell-txt').innerText.trim();
-    if (!subText && !txtText) return; // 空なら無視
+    if (!subText) return;
     
-    totalClasses++;
-    
-    // 集計は「教科欄（上段）」の文字を見て判断する
-    if (subText) {
-      let matched = false;
-      for (let key in subjectInfo) {
-        if (subText.includes(key) || subText.includes(subjectInfo[key].hira)) {
-          const countName = isHiragana ? subjectInfo[subjectInfo[key].countAs].hira : subjectInfo[key].countAs;
-          counts[countName] = (counts[countName] || 0) + 1;
-          matched = true;
-          break;
-        }
+    let matched = false;
+    for (let key in subjectInfo) {
+      if (subText.includes(key) || subText.includes(subjectInfo[key].hira)) {
+        const countName = isHiragana ? subjectInfo[subjectInfo[key].countAs].hira : subjectInfo[key].countAs;
+        counts[countName] = (counts[countName] || 0) + 1;
+        matched = true;
+        break;
       }
-      if (!matched) {
-        counts[isHiragana ? "そのた" : "その他"] = (counts[isHiragana ? "そのた" : "その他"] || 0) + 1;
-      }
-    } else {
-      counts[isHiragana ? "そのた" : "その他"] = (counts[isHiragana ? "そのた" : "その他"] || 0) + 1;
     }
+    if (!matched) counts[isHiragana ? "そのた" : "その他"] = (counts[isHiragana ? "そのた" : "その他"] || 0) + 1;
   });
 
-  document.getElementById("total-count").innerText = `合計: ${totalClasses}コマ`;
   const countsDiv = document.getElementById("subject-counts");
   countsDiv.innerHTML = "";
-  
   for (let name in counts) {
     let color = "#eee";
-    for(let k in subjectInfo) { 
-      if(k === name || subjectInfo[k].hira === name) color = subjectInfo[k].color;
-    }
+    for(let k in subjectInfo) { if(k === name || subjectInfo[k].hira === name) color = subjectInfo[k].color; }
     countsDiv.innerHTML += `<div class="badge" style="background-color: ${color};">${name} <span>${counts[name]}</span></div>`;
   }
 }
 
-function saveMemo() { localStorage.setItem("plan_memo_v4", document.getElementById("memo-pad").value); }
-document.getElementById("memo-pad").value = localStorage.getItem("plan_memo_v4") || "";
+function saveMemo() {
+  store[currentMonday].memo = document.getElementById("memo-pad").value;
+  localStorage.setItem("weekPlan_hybrid", JSON.stringify(store));
+}
+
+// --- 便利機能 ---
+function copyPrev() {
+  const d = new Date(currentMonday);
+  d.setDate(d.getDate() - 7);
+  const prevKey = d.toISOString().slice(0,10);
+  
+  if(!store[prevKey] || Object.keys(store[prevKey].cells).length === 0) {
+    alert("先週のデータがありません！");
+    return;
+  }
+  if(confirm("先週の時間割をコピーしますか？（今の内容は上書きされます）")) {
+    // ディープコピー
+    store[currentMonday].cells = JSON.parse(JSON.stringify(store[prevKey].cells));
+    localStorage.setItem("weekPlan_hybrid", JSON.stringify(store));
+    renderWeek();
+  }
+}
 
 function saveAsTemplate() {
-  if (confirm("現在の状態を「基本時間割」として保存します。")) {
-    localStorage.setItem("plan_template_v4", JSON.stringify(data));
+  if (confirm("現在の時間割を「基本時間割」として登録しますか？")) {
+    store["_template"] = JSON.parse(JSON.stringify(store[currentMonday].cells));
+    localStorage.setItem("weekPlan_hybrid", JSON.stringify(store));
+    alert("登録しました！");
   }
 }
 
 function loadTemplate() {
-  const template = localStorage.getItem("plan_template_v4");
-  if (!template) return alert("保存された時間割がありません");
-  if (confirm("基本時間割を読み込みますか？")) {
-    data = JSON.parse(template);
-    localStorage.setItem("plan_v4", JSON.stringify(data));
-    createTable();
+  if (!store["_template"]) return alert("基本時間割がまだ登録されていません。");
+  if (confirm("基本時間割を展開しますか？（現在の内容は上書きされます）")) {
+    store[currentMonday].cells = JSON.parse(JSON.stringify(store["_template"]));
+    localStorage.setItem("weekPlan_hybrid", JSON.stringify(store));
+    renderWeek();
   }
 }
 
-function clearData() {
-  if (confirm("すべて消去しますか？")) {
-    data = {}; localStorage.removeItem("plan_v4"); createTable();
-  }
-}
-
-createPalette();
-createTable();
+// 起動
+init();
 </script>
-
 </body>
 </html>
