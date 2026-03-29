@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>サクサク週案アプリ（教科・単元 分割版）</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fdf8f2; --surface: #ffffff;
+    --border: #e0d5c5; --text: #3d3228;
+    --accent: #c07850;
+    
+    --kokugo: #fff1d6; --sansu: #ddeeff; --rika: #ddf4e4; 
+    --shakai: #ffe8e8; --taiiku: #ffe8cc; --ongaku: #ecdeff; 
+    --zukou: #ffeedd; --seikatsu: #fff8d6; --katei: #e0f0ff;
+    --dotoku: #e8f8ee; --gaikokugo: #d6f0ff; --sogo: #ffe6f5; 
+    --gakkatsu: #eee8ff; --gyoji: #f5f2ee;
+  }
+
+  body { margin: 0; padding: 16px; font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--text); }
+  
+  .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
+  h2 { margin: 0; color: var(--accent); font-size: 1.5rem; }
+
+  .mode-switch {
+    background: var(--surface); padding: 5px 15px; border-radius: 20px;
+    border: 2px solid var(--accent); cursor: pointer; font-weight: bold;
+    font-size: 14px; transition: 0.2s;
+  }
+  .mode-switch:hover { background: var(--accent); color: white; }
+
+  .wrapper { display: flex; gap: 20px; height: calc(100vh - 100px); }
+
+  .left { flex: 3; background: var(--surface); border-radius: 12px; padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); overflow: auto; }
+
+  table { border-collapse: collapse; width: 100%; table-layout: fixed; }
+  th, td { border: 1px solid var(--border); vertical-align: top; font-size: 14px; }
+  th { background: #f5efe6; text-align: center; font-weight: 700; padding: 12px; }
+  .time-col { background: #f5efe6; text-align: center; font-weight: bold; width: 50px; vertical-align: middle; }
+  
+  tr.break-row td { background: #faf8f5; font-size: 12px; padding: 4px 8px; color: #888; }
+
+  /* セル内の分割スタイル */
+  td.editable-cell { cursor: text; transition: background-color 0.2s; padding: 6px; }
+  td.active-cell { box-shadow: inset 0 0 0 2px var(--accent) !important; background-color: #fffaf0; }
+
+  .cell-sub {
+    font-weight: bold; font-size: 13px; padding-bottom: 4px;
+    border-bottom: 1px dashed rgba(0,0,0,0.15); margin-bottom: 4px; outline: none;
+  }
+  .cell-txt { font-size: 12px; color: #5a4a3a; min-height: 40px; outline: none; line-height: 1.4; }
+  
+  /* プレースホルダー（未入力時の薄い文字） */
+  [contenteditable]:empty:before { content: attr(placeholder); color: #bcaaa4; pointer-events: none; display: block; }
+
+  .right { flex: 1; min-width: 280px; display: flex; flex-direction: column; gap: 16px; overflow-y: auto; }
+  .card { background: var(--surface); border-radius: 12px; padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+  .card h3 { margin: 0 0 12px 0; font-size: 15px; border-bottom: 2px solid var(--border); padding-bottom: 4px;}
+
+  .palette-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .palette-btn {
+    border: 1px solid rgba(0,0,0,0.1); border-radius: 6px;
+    padding: 10px 2px; text-align: center; cursor: pointer;
+    font-size: 12px; font-weight: bold; transition: 0.1s;
+  }
+  .palette-btn:hover { transform: translateY(-2px); box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+
+  #subject-counts { display: flex; flex-wrap: wrap; gap: 6px; }
+  .badge { padding: 4px 8px; border-radius: 20px; font-size: 12px; font-weight: bold; border: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center; gap: 4px; }
+  
+  textarea { width: 100%; height: 80px; border: 1px solid var(--border); border-radius: 6px; padding: 8px; font-family: inherit; resize: none; background: var(--bg); }
+
+  .action-btn { background: white; border: 1px solid var(--border); padding: 8px; border-radius: 6px; cursor: pointer; font-family: inherit; font-size: 12px; font-weight: bold; width: 100%; margin-bottom: 6px; }
+  .danger { color: #d32f2f; background: #fff5f5; }
+
+  @media (max-width: 800px) { .wrapper { flex-direction: column; height: auto; } }
+</style>
+</head>
+
+<body>
+
+<div class="header">
+  <h2>📅 サクサク週案</h2>
+  <div style="display: flex; gap: 10px; align-items: center;">
+    <button class="mode-switch" onclick="toggleMode()" id="mode-btn">ひらがなにする</button>
+    <div id="total-count" style="font-weight: bold;">合計: 0コマ</div>
+  </div>
+</div>
+
+<div class="wrapper">
+  <div class="left">
+    <table id="table"></table>
+  </div>
+
+  <div class="right">
+    <div class="card">
+      <h3>🎨 教科パレット</h3>
+      <div style="font-size: 11px; color: #888; margin-bottom: 8px;">マスを選択してクリック！単元入力へ自動で移ります</div>
+      <div class="palette-grid" id="palette"></div>
+    </div>
+
+    <div class="card">
+      <h3>📊 時数カウント</h3>
+      <div id="subject-counts"></div>
+    </div>
+
+    <div class="card">
+      <h3>📌 メモ</h3>
+      <textarea id="memo-pad" oninput="saveMemo()" placeholder="未定の予定など..."></textarea>
+    </div>
+
+    <div class="card">
+      <button class="action-btn" onclick="saveAsTemplate()">📥 基本時間割に登録</button>
+      <button class="action-btn" onclick="loadTemplate()">📤 基本時間割を呼出</button>
+      <button class="action-btn danger" onclick="clearData()">🗑 全消去</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const days = ["月", "火", "水", "木", "金"];
+const rows = [
+  { id: "朝", type: "break" },
+  { id: "1", type: "class" }, { id: "2", type: "class" },
+  { id: "中", type: "break" },
+  { id: "3", type: "class" }, { id: "4", type: "class" },
+  { id: "昼", type: "break" },
+  { id: "5", type: "class" }, { id: "6", type: "class" }
+];
+
+const subjectInfo = {
+  "国語": { hira: "こくご", color: "var(--kokugo)", icon: "📖", countAs: "国語" },
+  "書写": { hira: "しょしゃ", color: "var(--kokugo)", icon: "✏️", countAs: "国語" },
+  "算数": { hira: "さんすう", color: "var(--sansu)", icon: "🔢", countAs: "算数" },
+  "生活": { hira: "せいかつ", color: "var(--seikatsu)", icon: "🌱", countAs: "生活" },
+  "理科": { hira: "りか", color: "var(--rika)", icon: "🔬", countAs: "理科" },
+  "社会": { hira: "しゃかい", color: "var(--shakai)", icon: "🌍", countAs: "社会" },
+  "家庭科": { hira: "かていか", color: "var(--katei)", icon: "🍳", countAs: "家庭科" },
+  "体育": { hira: "たいいく", color: "var(--taiiku)", icon: "⚽", countAs: "体育" },
+  "音楽": { hira: "おんがく", color: "var(--ongaku)", icon: "🎵", countAs: "音楽" },
+  "図工": { hira: "ずこう", color: "var(--zukou)", icon: "🎨", countAs: "図工" },
+  "道徳": { hira: "どうとく", color: "var(--dotoku)", icon: "🌸", countAs: "道徳" },
+  "外国語": { hira: "がいこくご", color: "var(--gaikokugo)", icon: "🌐", countAs: "外国語" },
+  "総合": { hira: "そうごう", color: "var(--sogo)", icon: "💡", countAs: "総合" },
+  "学活": { hira: "がっかつ", color: "var(--gakkatsu)", icon: "🏫", countAs: "学活" },
+  "行事": { hira: "ぎょうじ", color: "var(--gyoji)", icon: "🚩", countAs: "行事" }
+};
+
+let isHiragana = false;
+// データ構造を { sub: "教科", txt: "単元" } に変更
+let data = JSON.parse(localStorage.getItem("plan_v4") || "{}");
+let currentCell = null;
+
+function toggleMode() {
+  isHiragana = !isHiragana;
+  document.getElementById("mode-btn").innerText = isHiragana ? "漢字にする" : "ひらがなにする";
+  createPalette();
+  updateCounts();
+}
+
+function createPalette() {
+  const palette = document.getElementById("palette");
+  let html = "";
+  for (let key in subjectInfo) {
+    const label = isHiragana ? subjectInfo[key].hira : key;
+    html += `<div class="palette-btn" style="background-color: ${subjectInfo[key].color};" onclick="insertSubject('${label}')">${label}</div>`;
+  }
+  html += `<div class="palette-btn" style="background-color: #eee;" onclick="insertSubject('')">消去</div>`;
+  palette.innerHTML = html;
+}
+
+function createTable() {
+  const table = document.getElementById("table");
+  let html = "<tr><th></th>";
+  days.forEach(d => html += `<th>${d}</th>`);
+  html += "</tr>";
+
+  rows.forEach(r => {
+    const isBreak = r.type === "break";
+    html += `<tr class="${isBreak ? 'break-row' : ''}">`;
+    html += `<td class="time-col">${r.id}</td>`;
+    days.forEach(d => {
+      const key = `${r.id}_${d}`;
+      const cellData = data[key] || { sub: "", txt: "" };
+      
+      if (isBreak) {
+        html += `<td>${r.id}</td>`;
+      } else {
+        html += `<td class="editable-cell" data-key="${key}" data-type="class" onclick="setActive(this)">
+                  <div class="cell-sub" contenteditable="true" placeholder="教科" oninput="handleInput('${key}')">${cellData.sub}</div>
+                  <div class="cell-txt" contenteditable="true" placeholder="単元・内容" oninput="handleInput('${key}')">${cellData.txt}</div>
+                 </td>`;
+      }
+    });
+    html += "</tr>";
+  });
+  table.innerHTML = html;
+  
+  document.querySelectorAll('td.editable-cell').forEach(td => applyColor(td));
+  updateCounts();
+}
+
+function setActive(el) {
+  if (currentCell) currentCell.classList.remove('active-cell');
+  currentCell = el;
+  currentCell.classList.add('active-cell');
+}
+
+// パレットから教科を入力したときの処理
+function insertSubject(subj) {
+  if (!currentCell) return alert("入力したいマスをクリックして選んでください");
+  
+  const key = currentCell.dataset.key;
+  const subDiv = currentCell.querySelector('.cell-sub');
+  const txtDiv = currentCell.querySelector('.cell-txt');
+  
+  subDiv.innerText = subj; // 教科をセット
+  if (subj === "") txtDiv.innerText = ""; // 消去ボタンなら単元も消す
+  
+  handleInput(key); // 保存・色付け
+  
+  // 入力後、すぐに「単元」が打ち込めるようにフォーカスを移動する！
+  if (subj !== "") {
+    txtDiv.focus();
+  }
+}
+
+// 入力されるたびにデータを保存し、色とカウントを更新
+function handleInput(key) {
+  // TD要素を探す
+  const td = document.querySelector(`td[data-key="${key}"]`);
+  if (!td) return;
+  
+  const subDiv = td.querySelector('.cell-sub');
+  const txtDiv = td.querySelector('.cell-txt');
+  
+  data[key] = {
+    sub: subDiv.innerText,
+    txt: txtDiv.innerText
+  };
+  
+  localStorage.setItem("plan_v4", JSON.stringify(data));
+  applyColor(td);
+  updateCounts();
+}
+
+function applyColor(td) {
+  const subText = td.querySelector('.cell-sub').innerText;
+  td.style.backgroundColor = "";
+  for (let key in subjectInfo) {
+    if (subText.includes(key) || subText.includes(subjectInfo[key].hira)) {
+      td.style.backgroundColor = subjectInfo[key].color;
+      break;
+    }
+  }
+}
+
+function updateCounts() {
+  let counts = {};
+  let totalClasses = 0;
+
+  document.querySelectorAll('td[data-type="class"]').forEach(td => {
+    const subText = td.querySelector('.cell-sub').innerText.trim();
+    const txtText = td.querySelector('.cell-txt').innerText.trim();
+    if (!subText && !txtText) return; // 空なら無視
+    
+    totalClasses++;
+    
+    // 集計は「教科欄（上段）」の文字を見て判断する
+    if (subText) {
+      let matched = false;
+      for (let key in subjectInfo) {
+        if (subText.includes(key) || subText.includes(subjectInfo[key].hira)) {
+          const countName = isHiragana ? subjectInfo[subjectInfo[key].countAs].hira : subjectInfo[key].countAs;
+          counts[countName] = (counts[countName] || 0) + 1;
+          matched = true;
+          break;
+        }
+      }
+      if (!matched) {
+        counts[isHiragana ? "そのた" : "その他"] = (counts[isHiragana ? "そのた" : "その他"] || 0) + 1;
+      }
+    } else {
+      counts[isHiragana ? "そのた" : "その他"] = (counts[isHiragana ? "そのた" : "その他"] || 0) + 1;
+    }
+  });
+
+  document.getElementById("total-count").innerText = `合計: ${totalClasses}コマ`;
+  const countsDiv = document.getElementById("subject-counts");
+  countsDiv.innerHTML = "";
+  
+  for (let name in counts) {
+    let color = "#eee";
+    for(let k in subjectInfo) { 
+      if(k === name || subjectInfo[k].hira === name) color = subjectInfo[k].color;
+    }
+    countsDiv.innerHTML += `<div class="badge" style="background-color: ${color};">${name} <span>${counts[name]}</span></div>`;
+  }
+}
+
+function saveMemo() { localStorage.setItem("plan_memo_v4", document.getElementById("memo-pad").value); }
+document.getElementById("memo-pad").value = localStorage.getItem("plan_memo_v4") || "";
+
+function saveAsTemplate() {
+  if (confirm("現在の状態を「基本時間割」として保存します。")) {
+    localStorage.setItem("plan_template_v4", JSON.stringify(data));
+  }
+}
+
+function loadTemplate() {
+  const template = localStorage.getItem("plan_template_v4");
+  if (!template) return alert("保存された時間割がありません");
+  if (confirm("基本時間割を読み込みますか？")) {
+    data = JSON.parse(template);
+    localStorage.setItem("plan_v4", JSON.stringify(data));
+    createTable();
+  }
+}
+
+function clearData() {
+  if (confirm("すべて消去しますか？")) {
+    data = {}; localStorage.removeItem("plan_v4"); createTable();
+  }
+}
+
+createPalette();
+createTable();
+</script>
+
+</body>
+</html>
