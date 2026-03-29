@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ハイブリッド週案アプリ（完全版）</title>
+<title>ハイブリッド週案アプリ（完全版・データ入出力対応）</title>
 <link href="https://fonts.googleapis.com/css2?family=Kaisei+Decol:wght@400;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -34,12 +34,14 @@
   #toolbar { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 14px; }
   #toolbar label { font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 4px; cursor: pointer;}
   #toolbar input { border: 1.5px solid var(--border2); background: var(--bg); padding: 5px; border-radius: 4px; font-size: 13px; font-family: inherit; }
-  .tb-btn { padding: 6px 12px; border-radius: 6px; border: 1.5px solid var(--border2); background: var(--surface); cursor: pointer; font-size: 12px; font-weight: 700; }
+  .tb-btn { padding: 6px 12px; border-radius: 6px; border: 1.5px solid var(--border2); background: var(--surface); cursor: pointer; font-size: 12px; font-weight: 700; transition: 0.1s;}
+  .tb-btn:hover { background: var(--surface2); }
   .tb-btn.primary { background: var(--accent); color: white; border-color: var(--accent); }
   
   /* ナビゲーター */
   #week-nav { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; }
-  .nav-arrow { width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid var(--border2); background: var(--surface); cursor: pointer; font-size: 16px; font-weight: bold; }
+  .nav-arrow { width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid var(--border2); background: var(--surface); cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.1s;}
+  .nav-arrow:hover { background: var(--surface2); }
   #nav-center { flex: 1; text-align: center; }
   #nav-week-label { font-family: 'Kaisei Decol', serif; font-size: 18px; font-weight: 700; color: var(--accent); }
   #nav-date-label { font-size: 12px; color: var(--subtext); display: block; }
@@ -78,12 +80,14 @@
   .card { background: var(--surface); border-radius: 8px; padding: 14px; border: 1px solid var(--border); }
   .card h3 { margin: 0 0 10px 0; font-size: 14px; border-bottom: 2px solid var(--border); padding-bottom: 4px;}
   .palette-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
-  .palette-btn { border: 1px solid rgba(0,0,0,0.1); border-radius: 4px; padding: 8px 2px; text-align: center; cursor: pointer; font-size: 11px; font-weight: bold; }
+  .palette-btn { border: 1px solid rgba(0,0,0,0.1); border-radius: 4px; padding: 8px 2px; text-align: center; cursor: pointer; font-size: 11px; font-weight: bold; transition: 0.1s;}
+  .palette-btn:hover { transform: translateY(-1px); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
   
   #subject-counts { display: flex; flex-wrap: wrap; gap: 5px; }
   .badge { padding: 3px 8px; border-radius: 20px; font-size: 11px; font-weight: bold; border: 1px solid rgba(0,0,0,0.1); display: flex; gap: 4px; }
   textarea { width: 100%; height: 80px; border: 1px solid var(--border); border-radius: 4px; padding: 8px; font-family: inherit; resize: none; background: var(--bg); }
-  .action-btn { background: white; border: 1px solid var(--border); padding: 8px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; width: 100%; margin-bottom: 6px; }
+  .action-btn { background: white; border: 1px solid var(--border); padding: 8px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; width: 100%; margin-bottom: 6px; transition: 0.1s;}
+  .action-btn:hover { background: #f5efe6; color: var(--accent); border-color: var(--accent); }
 
   @media print {
     body { background: white; font-size: 12pt; }
@@ -166,9 +170,18 @@
       </div>
 
       <div class="card">
+        <h3>⚙️ テンプレート</h3>
         <button class="action-btn" onclick="saveAsTemplate()">📥 今の状態を「基本」に登録</button>
         <button class="action-btn" onclick="loadTemplate()">📤 「基本時間割」を展開</button>
       </div>
+
+      <div class="card">
+        <h3>💾 データ保存・復元</h3>
+        <button class="action-btn" onclick="exportData()">⬇️ 全データを書き出し</button>
+        <button class="action-btn" onclick="document.getElementById('import-file').click()">⬆️ データを読み込み</button>
+        <input type="file" id="import-file" style="display:none" accept=".json" onchange="importData(event)">
+      </div>
+
     </div>
   </div>
 </div>
@@ -496,7 +509,6 @@ function applyColor(td) {
   }
 }
 
-// 修正された updateCounts
 function updateCounts() {
   let counts = {};
   document.querySelectorAll('td[data-type="class"]').forEach(td => {
@@ -534,7 +546,7 @@ function saveMemo() {
   localStorage.setItem("weekPlan_final_v2", JSON.stringify(store));
 }
 
-// 改行置換の対応とフォントリサイズ
+// お知らせの保存（<div>タグを<br>に変換）と文字サイズ自動調整
 function saveNotice() {
   let html = document.getElementById("notice-pad").innerHTML;
   html = html.replace(/<div>/g, "<br>").replace(/<\/div>/g, "");
@@ -559,7 +571,7 @@ function copyPrev() {
   const prevKey = d.toISOString().slice(0,10);
   if(!store[prevKey] || Object.keys(store[prevKey].cells).length === 0) return alert("先週のデータがありません");
   
-  if(confirm("先週の時間割をコピーしますか？")) {
+  if(confirm("先週の時間割をコピーしますか？（現在の内容は上書きされます）")) {
     store[currentMonday].cells = JSON.parse(JSON.stringify(store[prevKey].cells));
     store[currentMonday].hasSat = store[prevKey].hasSat;
     localStorage.setItem("weekPlan_final_v2", JSON.stringify(store));
@@ -571,19 +583,69 @@ function saveAsTemplate() {
   if (confirm("現在の時間割を基本時間割として登録しますか？")) {
     store["_template"] = JSON.parse(JSON.stringify(store[currentMonday].cells));
     localStorage.setItem("weekPlan_final_v2", JSON.stringify(store));
-    alert("登録しました");
+    alert("登録しました！");
   }
 }
 
 function loadTemplate() {
   if (!store["_template"]) return alert("基本時間割がありません");
-  if (confirm("基本時間割を展開しますか？")) {
+  if (confirm("基本時間割を展開しますか？（現在の内容は上書きされます）")) {
     store[currentMonday].cells = JSON.parse(JSON.stringify(store["_template"]));
     localStorage.setItem("weekPlan_final_v2", JSON.stringify(store));
     renderWeek();
   }
 }
 
+// ----------------------------------------
+// 新機能：データの書き出し・読み込み処理
+// ----------------------------------------
+
+function exportData() {
+  // storeをJSON文字列に変換
+  const dataStr = JSON.stringify(store, null, 2);
+  // Blobを作成してダウンロードリンクを生成
+  const blob = new Blob([dataStr], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  
+  const a = document.createElement("a");
+  a.href = url;
+  
+  // ファイル名に学年や月曜日の日付を入れると整理しやすい
+  const meta = store["_meta"] || {};
+  const cName = meta.className || "未設定";
+  a.download = `週案バックアップ_${cName}_${currentMonday}.json`;
+  
+  document.body.appendChild(a);
+  a.click();
+  
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function importData(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const importedData = JSON.parse(e.target.result);
+      if (confirm("データファイルを読み込みますか？\n（※現在ブラウザに保存されているデータはすべて上書きされます！）")) {
+        store = importedData;
+        localStorage.setItem("weekPlan_final_v2", JSON.stringify(store));
+        init(); // データを読み込んだ後、画面を再描画
+        alert("データの読み込みが完了しました！");
+      }
+    } catch (error) {
+      alert("ファイルの読み込みに失敗しました。\n正しい週案データファイル（.json）を選択してください。");
+    }
+    // 同じファイルを再度選べるようにリセットしておく
+    event.target.value = "";
+  };
+  reader.readAsText(file);
+}
+
+// アプリの起動
 init();
 </script>
 </body>
