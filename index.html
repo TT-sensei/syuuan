@@ -11,25 +11,13 @@
   --border:#c8bfb0; --border2:#b0a090;
   --text:#3d3228; --subtext:#8a7a6a;
   --accent:#c07850;
-  /* 教科色（色被りなし・印刷でも識別できる彩度） */
-  --kokugo:   #fff0c8; /* 国語  ：黄 */
-  --syasya:   #d4f0e0; /* 書写  ：緑（国語と別） */
-  --sansu:    #cce4ff; /* 算数  ：青 */
-  --seikatsu: #fff8c0; /* 生活  ：淡黄緑 */
-  --rika:     #c8f0d8; /* 理科  ：緑 */
-  --shakai:   #ffd8d8; /* 社会  ：赤 */
-  --ongaku:   #e8d4ff; /* 音楽  ：紫 */
-  --zukou:    #ffd8b0; /* 図工  ：橙 */
-  --katei:    #b8e4ff; /* 家庭科：水 */
-  --taiiku:   #ffe0b0; /* 体育  ：薄橙（図工と差あり） */
-  --dotoku:   #d0f4e8; /* 道徳  ：青緑 */
-  --gaikokugo:#d8f0c0; /* 外国語：黄緑 */
-  --sogo:     #ffd8f0; /* 総合  ：ピンク */
-  --gakkatsu: #ddd8ff; /* 学活  ：藤 */
-  --gyoji:    #ffe8c8; /* 行事  ：ペールオレンジ */
-  --iinkai:   #b8f0f8; /* 委員会：シアン */
-  --club:     #ffc8d8; /* クラブ：ローズ */
-  --kekka:    #d8d4ce; /* 欠課  ：グレー */
+  /* 教科色 */
+  --kokugo:   #fff0c8; --syasya:   #d4f0e0; --sansu:    #cce4ff;
+  --seikatsu: #fff8c0; --rika:     #c8f0d8; --shakai:   #ffd8d8;
+  --ongaku:   #e8d4ff; --zukou:    #ffd8b0; --katei:    #b8e4ff;
+  --taiiku:   #ffe0b0; --dotoku:   #d0f4e8; --gaikokugo:#d8f0c0;
+  --sogo:     #ffd8f0; --gakkatsu: #ddd8ff; --gyoji:    #ffe8c8;
+  --iinkai:   #b8f0f8; --club:     #ffc8d8; --kekka:    #d8d4ce;
   --radius:8px;
 }
 *{ box-sizing:border-box; margin:0; padding:0; }
@@ -100,10 +88,7 @@ body{ font-family:'Noto Sans JP',sans-serif; background:var(--bg); color:var(--t
 #nav-week-label{ font-family:'Kaisei Decol',serif; font-size:18px; font-weight:700; color:var(--accent); display:block; }
 #nav-date-label{ font-size:11px; color:var(--subtext); display:block; margin-top:1px; }
 .nav-dots{ display:flex; justify-content:center; gap:5px; margin-top:4px; }
-.nav-dot{
-  width:7px; height:7px; border-radius:50%; background:var(--border2);
-  cursor:pointer; transition:.2s;
-}
+.nav-dot{ width:7px; height:7px; border-radius:50%; background:var(--border2); cursor:pointer; transition:.2s; }
 .nav-dot.active{ background:var(--accent); transform:scale(1.3); }
 .nav-dot.has-data{ background:#c0a080; }
 
@@ -138,7 +123,6 @@ tr.break-row td.editable-cell{
   background:#f7f3ed; padding:5px 8px;
   border-top:1px dashed var(--border2); border-bottom:1px dashed var(--border2);
 }
-/* 持ち物行は少し高め・左揃え */
 tr.break-row.items-row td.editable-cell{ background:#fdfaf5; }
 tr.break-row.items-row .cell-txt{ min-height:32px; text-align:left; font-style:normal; font-size:12px; }
 td.items-cell .cell-txt{ min-height:32px !important; text-align:left !important; font-style:normal !important; }
@@ -166,7 +150,7 @@ td.furikyu-cell{
   pointer-events:none;
 }
 
-/* フローティングボックス（祝日・振休） */
+/* フローティングボックス */
 .day-float-box{
   position:absolute; background:#fff; border:2px solid #ccc; border-radius:10px;
   box-shadow:2px 2px 10px rgba(0,0,0,.12); z-index:10;
@@ -188,8 +172,7 @@ td.kekka-cell::after{
   background:repeating-linear-gradient(135deg,transparent,transparent 6px,rgba(120,100,80,.3) 6px,rgba(120,100,80,.3) 8px);
   pointer-events:none; z-index:1;
 }
-td.kekka-cell .cell-sub,
-td.kekka-cell .cell-txt{ position:relative; z-index:2; color:#777 !important; }
+td.kekka-cell .cell-sub, td.kekka-cell .cell-txt{ position:relative; z-index:2; color:#777 !important; }
 td.kekka-cell .cell-sub{ border-bottom-color:rgba(0,0,0,.15) !important; }
 
 /* 空欄強調 */
@@ -208,7 +191,6 @@ td.cell-empty .cell-sub{ background:repeating-linear-gradient(45deg,#fdf0e8,#fdf
   text-align:center; cursor:pointer; font-size:11px; font-weight:700; transition:.1s;
 }
 .palette-btn:hover{ transform:translateY(-1px); box-shadow:0 2px 4px rgba(0,0,0,.1); }
-
 #history-suggests{ margin-top:8px; border-top:1px dashed var(--border); padding-top:7px; }
 
 /* ===== 時数 ===== */
@@ -218,8 +200,6 @@ td.cell-empty .cell-sub{ background:repeating-linear-gradient(45deg,#fdf0e8,#fdf
 .jisu-table td:first-child{ font-weight:700; }
 .jisu-table td.num{ text-align:right; font-variant-numeric:tabular-nums; }
 .jisu-table td.num.warn{ color:#c05030; font-weight:700; }
-.jisu-bar-wrap{ height:5px; background:var(--border); border-radius:3px; overflow:hidden; margin-top:2px; }
-.jisu-bar-fill{ height:100%; border-radius:3px; transition:.3s; }
 .jisu-plan-input{
   width:44px; padding:2px 4px; border:1px solid var(--border2); border-radius:3px;
   font-size:11px; text-align:right; background:#faf8f5; font-family:inherit;
@@ -289,157 +269,121 @@ td.cell-empty .cell-sub{ background:repeating-linear-gradient(45deg,#fdf0e8,#fdf
 }
 
 /* =====================================================
-   修正版：印刷 — A4縦レイアウト
-   視認性向上・単元幅の適正化・お知らせ欄の拡大
+   印刷 — A4縦 (余白2cm・視認性最大化・斜め字禁止)
    ===================================================== */
 @media print {
-  @page { 
-    size: A4 portrait; 
-    margin: 8mm 7mm 8mm 7mm; /* 余白は広めに確保 */
+  @page{ size:A4 portrait; margin:20mm; } /* 余白2cm */
+
+  html,body{
+    width:auto !important; 
+    background:#fff !important; 
+    color:#000 !important;
+    font-family:'Noto Sans JP',sans-serif !important;
+    -webkit-print-color-adjust:exact !important; 
+    print-color-adjust:exact !important;
   }
 
-  html, body {
-    width: 210mm; 
-    background: #fff !important; 
-    color: #000 !important;
-    font-size: 10pt;
-    font-family: 'Noto Sans JP', sans-serif !important;
-    -webkit-print-color-adjust: exact !important; 
-    print-color-adjust: exact !important;
-  }
-
-  /* 画面用要素を消去・「＋」ボタンも非表示 */
+  /* 非表示要素 */
   #toolbar, #tabbar, .right, .nav-arrow, #nav-dots,
-  #mobile-bar, #bottom-sheet, #bs-overlay, #_toast,
-  .th-badge.clear { 
-    display: none !important; 
+  #mobile-bar, #bottom-sheet, #bs-overlay, #_toast, .th-badge.clear { display:none !important; }
+
+  .page{ display:block !important; padding:0 !important; max-width:100% !important; }
+  .wrapper{ display:block !important; }
+  .left{ flex:none !important; width:100% !important; box-shadow:none !important; border:none !important; padding:0 !important; overflow:visible !important; }
+
+  #week-nav{
+    display:flex !important; justify-content:center; align-items:center;
+    border:none !important; box-shadow:none !important; background:none !important;
+    padding:0 !important; margin:0 0 6pt !important; min-height:0 !important;
+  }
+  #nav-center{ text-align:center; }
+  #nav-week-label{ font-size:16pt !important; font-weight:900 !important; color:#000 !important; display:block; }
+  #nav-date-label{ font-size:11pt !important; font-weight:700 !important; color:#000 !important; display:block; }
+
+  #table-wrapper{ position:relative; }
+  table{
+    width:100%; table-layout:fixed; border-collapse:collapse;
+    margin-bottom:6pt; page-break-inside:avoid;
   }
 
-  /* レイアウト調整 */
-  .page { display: block !important; padding: 0 !important; max-width: 100% !important; }
-  .wrapper { display: block !important; }
-  .left { width: 100% !important; border: none !important; padding: 0 !important; overflow: visible !important; }
-
-  /* タイトル周りの高さ調整 */
-  #week-nav {
-    display: flex !important; 
-    justify-content: center; 
-    margin: 0 0 8pt !important;
-    border: none !important;
-    box-shadow: none !important;
+  thead tr th, th{
+    background:#e0dbd2 !important; font-weight:900 !important; text-align:center;
+    padding:4pt 2pt !important; font-size:11pt !important; color:#000 !important;
+    border:1pt solid #222 !important; border-bottom:2pt solid #000 !important; height:20pt !important;
   }
-  #nav-week-label { font-size: 18pt !important; font-weight: 900 !important; color: #000 !important; }
-  #nav-date-label { font-size: 10pt !important; color: #444 !important; }
-
-  /* テーブル設定 */
-  #table-wrapper { position: relative; }
-  table {
-    width: 100%; 
-    table-layout: fixed; 
-    border-collapse: collapse;
-    margin-bottom: 6pt;
+  .time-col{
+    background:#d4cfc6 !important; width:18pt !important; font-size:10pt !important;
+    font-weight:900 !important; text-align:center; vertical-align:middle !important;
+    color:#000 !important; border-right:2pt solid #000 !important; padding:1pt !important;
   }
 
-  /* ヘッダー（曜日行） */
-  th {
-    background: #e6e0d8 !important;
-    height: 22pt !important; 
-    font-size: 10pt !important;
-    font-weight: 900 !important;
-    border: 1pt solid #444 !important;
-    padding: 3pt 2pt !important;
+  tr.class-row td{
+    height:56pt !important; max-height:60pt !important;
+    border:1pt solid #444 !important; padding:3pt 4pt !important;
+    vertical-align:top; overflow:hidden;
   }
-  .time-col {
-    width: 18pt !important; 
-    font-size: 9pt !important;
-    font-weight: 900 !important;
-    border-right: 1.5pt solid #000 !important;
-    background: #ddd !important;
-    color: #000 !important;
+  tr.break-row td{
+    height:15pt !important; max-height:16pt !important;
+    border:1pt solid #444 !important; padding:1pt 3pt !important;
+    background:#f4f0ea !important; overflow:hidden;
+  }
+  tr.break-row.items-row td{
+    height:28pt !important; max-height:30pt !important; background:#faf8f4 !important;
   }
 
-  /* ★行の高さ調整（単元を少し狭く）★ */
-  
-  /* 授業コマ（1〜6校時） */
-  tr.class-row td {
-    height: 72pt !important; /* 85pt → 72pt に縮小 */
-    border: 1pt solid #444 !important;
-    padding: 3pt 4pt !important;
-    vertical-align: top;
+  /* テキストのスタイル（真っ黒・太字・斜め字禁止） */
+  .cell-sub{
+    font-size:12pt !important; font-weight:900 !important; line-height:1.2 !important;
+    border-bottom:1pt solid #000 !important; padding-bottom:1pt !important;
+    margin-bottom:2pt !important; color:#000 !important; letter-spacing:0;
+    display:block; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;
+    font-style:normal !important;
+  }
+  .cell-txt{
+    font-size:9.5pt !important; font-weight:900 !important; color:#000 !important; line-height:1.3 !important;
+    min-height:0 !important; display:block; overflow:hidden;
+    font-style:normal !important;
+  }
+  td.editable-cell{ padding:2pt 3pt !important; }
+  td.active-cell{ box-shadow:none !important; background:inherit !important; }
+
+  tr.break-row td.editable-cell{ padding:1pt 3pt !important; }
+  tr.break-row .cell-txt{
+    font-size:9pt !important; font-weight:900 !important; color:#000 !important;
+    text-align:center !important; min-height:0 !important; line-height:1.2 !important;
+    font-style:normal !important;
+  }
+  tr.break-row.items-row .cell-txt{ text-align:left !important; font-style:normal !important; font-size:10pt !important; }
+
+  [contenteditable]:empty:before{ content:"" !important; }
+
+  td.holiday-cell{ background:repeating-linear-gradient(135deg,#fff0f0,#fff0f0 4pt,#ffcccc 4pt,#ffcccc 6pt) !important; }
+  td.furikyu-cell{ background:repeating-linear-gradient(135deg,#f0f0ff,#f0f0ff 4pt,#ccccff 4pt,#ccccff 6pt) !important; }
+
+  .day-float-box{
+    position:absolute !important; border-radius:4pt !important;
+    border-width:1pt !important; border-color:#000 !important; box-shadow:none !important; padding:3pt 2pt !important;
+  }
+  .day-float-inner{ font-size:16pt !important; font-weight:900 !important; color:#000 !important; font-style:normal !important; }
+
+  td.kekka-cell{ background:#c0b8b0 !important; position:relative !important; }
+  td.kekka-cell::after{ background:repeating-linear-gradient(135deg,transparent,transparent 4pt,rgba(0,0,0,.15) 4pt,rgba(0,0,0,.15) 6pt) !important; }
+  td.kekka-cell .cell-sub, td.kekka-cell .cell-txt{ color:#000 !important; font-style:normal !important; }
+
+  #notice-wrap{
+    display:block !important; margin-top:4pt; border:1.5pt solid #000 !important; border-radius:0; padding:6pt 8pt; page-break-inside:avoid;
+  }
+  #notice-wrap > div:first-child{ 
+    font-size:11pt !important; font-weight:900 !important; color:#000 !important; 
+    padding-bottom:2pt !important; margin-bottom:4pt !important; border-bottom:1pt solid #000 !important; 
+  }
+  #notice-pad{
+    border:none !important; height:auto !important; min-height:100pt; padding:0 !important; 
+    font-size:10.5pt !important; font-weight:900 !important; line-height:1.6 !important;
+    color:#000 !important; background:transparent !important; overflow:hidden !important; font-style:normal !important;
   }
 
-  /* 休み時間（朝・中・昼） */
-  tr.break-row td {
-    height: 14pt !important;
-    background: #f0f0f0 !important;
-    border: 1pt solid #666 !important;
-    padding: 1pt 3pt !important;
-  }
-
-  /* 持ち物行 */
-  tr.break-row.items-row td {
-    height: 32pt !important;
-    background: #fff !important;
-  }
-
-  /* セル内テキスト（斜体禁止、視認性アップ） */
-  .cell-sub {
-    font-size: 11.5pt !important; 
-    font-weight: 900 !important;
-    border-bottom: 1pt solid #000 !important;
-    margin-bottom: 3pt !important;
-    padding-bottom: 1pt !important;
-    color: #000 !important;
-    display: block;
-    font-style: normal !important;
-  }
-  .cell-txt {
-    font-size: 9.5pt !important; 
-    font-weight: 500 !important; /* 視認性を高く */
-    line-height: 1.3 !important;
-    color: #000 !important;
-    min-height: 0 !important;
-    font-style: normal !important; /* 斜め字の解除 */
-  }
-
-  /* 休み時間の文字もまっすぐに */
-  tr.break-row .cell-txt {
-    font-size: 9pt !important;
-    font-weight: 700 !important;
-    font-style: normal !important;
-    color: #222 !important;
-  }
-
-  /* ★おしらせ欄（紙面の1/4程度に広く）★ */
-  #notice-wrap {
-    display: block !important;
-    margin-top: 8pt; 
-    border: 1.5pt solid #000;
-    padding: 6pt;
-  }
-  #notice-pad {
-    height: auto !important;
-    min-height: 180pt; /* ここを180ptに大きく確保 */
-    font-size: 10pt !important;
-    font-weight: 500 !important;
-    line-height: 1.6 !important;
-    border: none !important;
-    background: transparent !important;
-    font-style: normal !important;
-  }
-
-  /* 祝日・振休の背景 */
-  td.holiday-cell { background: repeating-linear-gradient(135deg,#fff0f0,#fff0f0 4pt,#ffcccc 4pt,#ffcccc 6pt) !important; }
-  td.furikyu-cell { background: repeating-linear-gradient(135deg,#f0f0ff,#f0f0ff 4pt,#ccccff 4pt,#ccccff 6pt) !important; }
-  
-  .day-float-box { border-width: 1pt !important; box-shadow: none !important; }
-  .day-float-inner { font-size: 18pt !important; font-weight: 900 !important; }
-
-  /* 欠課セル */
-  td.kekka-cell { background: #c0b8b0 !important; position: relative !important; }
-  td.kekka-cell::after { background: repeating-linear-gradient(135deg,transparent,transparent 4pt,rgba(60,40,20,.35) 4pt,rgba(60,40,20,.35) 6pt) !important; }
-
-  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  *{ -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important; }
 }
 </style>
 </head>
@@ -533,9 +477,6 @@ td.cell-empty .cell-sub{ background:repeating-linear-gradient(45deg,#fdf0e8,#fdf
 <div id="bottom-sheet"><div id="bs-handle"></div><div id="bs-content"></div></div>
 
 <script>
-/* ============================================================
-   定数・データ
-   ============================================================ */
 const BASE_DAYS = ["月","火","水","木","金"];
 const ROWS = [
   { id:"朝",    type:"break", label:"朝の活動" },
@@ -571,39 +512,20 @@ const SUBJECTS = [
 ];
 const SUBJ_ORDER = SUBJECTS.map(s=>s.countAs).filter((v,i,a)=>a.indexOf(v)===i);
 
-const STANDARD_HOURS = {
-  1:{ 国語:306,算数:136,生活:102,音楽:68,図工:68,体育:102,道徳:34,学活:34 },
-  2:{ 国語:315,算数:175,生活:105,音楽:70,図工:70,体育:105,道徳:35,学活:35 },
-  3:{ 国語:245,社会:70,算数:175,理科:90,音楽:60,図工:60,体育:105,道徳:35,外国語:35,総合:70,学活:35 },
-  4:{ 国語:245,社会:90,算数:175,理科:105,音楽:60,図工:60,体育:105,道徳:35,外国語:35,総合:70,学活:35 },
-  5:{ 国語:175,社会:105,算数:175,理科:105,音楽:50,図工:50,家庭科:60,体育:90,道徳:35,外国語:70,総合:70,学活:35 },
-  6:{ 国語:175,社会:105,算数:175,理科:105,音楽:50,図工:50,家庭科:60,体育:90,道徳:35,外国語:70,総合:70,学活:35 },
-};
-
-/* ============================================================
-   ストア
-   ============================================================ */
 let store = JSON.parse(localStorage.getItem("sakusaku_v1") || "{}");
 let currentMonday = null;
 let currentCell   = null;
 let isHiragana    = false;
 
 function save(){ localStorage.setItem("sakusaku_v1", JSON.stringify(store)); }
-
 function ensureWeek(key){
   if(!store[key]) store[key]={ cells:{}, notice:"", hasSat:false, dayFlags:{}, dayLabels:{} };
   if(!store[key].dayFlags)  store[key].dayFlags={};
   if(!store[key].dayLabels) store[key].dayLabels={};
   return store[key];
 }
-function ensureJisu(){
-  if(!store["_jisu"]) store["_jisu"]={};
-  return store["_jisu"];
-}
+function ensureJisu(){ if(!store["_jisu"]) store["_jisu"]={}; return store["_jisu"]; }
 
-/* ============================================================
-   初期化
-   ============================================================ */
 window.onload = () => {
   const meta = store["_meta"] || {};
   if(meta.className) document.getElementById("class-name").value = meta.className;
@@ -616,14 +538,9 @@ window.onload = () => {
   const mon   = new Date(today); mon.setDate(today.getDate() + diff);
   document.getElementById("monday-date").value = mon.toISOString().slice(0,10);
 
-  renderPalette();
-  onDateChange();
-  setupDrop();
+  renderPalette(); onDateChange(); setupDrop();
 };
 
-/* ============================================================
-   タブ切替
-   ============================================================ */
 function switchTab(id){
   document.querySelectorAll(".tab").forEach((t,i)=>t.classList.toggle("active",(i===0&&id==="main")||(i===1&&id==="jisu")));
   document.getElementById("main-page").classList.toggle("active", id==="main");
@@ -631,9 +548,6 @@ function switchTab(id){
   if(id==="jisu") renderJisuPage();
 }
 
-/* ============================================================
-   メタ保存
-   ============================================================ */
 function saveMeta(){
   store["_meta"] = {
     className: document.getElementById("class-name").value,
@@ -643,17 +557,13 @@ function saveMeta(){
   save(); updateNav();
 }
 
-/* ============================================================
-   日付・週操作
-   ============================================================ */
 function onDateChange(){
   currentMonday = document.getElementById("monday-date").value;
   if(!currentMonday) return;
   const d = new Date(currentMonday);
   document.getElementById("month-num").value = d.getMonth()+1;
   document.getElementById("week-num").value  = Math.ceil(d.getDate()/7);
-  saveMeta();
-  renderWeek();
+  saveMeta(); renderWeek();
 }
 
 function shiftWeek(dir){
@@ -669,24 +579,17 @@ function toggleSat(){
   save(); renderWeek(); toast("保存しました",1400);
 }
 
-/* ============================================================
-   週ナビ更新
-   ============================================================ */
 function updateNav(){
   const meta = store["_meta"] || {};
-  document.getElementById("nav-week-label").textContent =
-    `${meta.className||"--年--組"} ${meta.month||"--"}月${meta.week||"--"}週案`;
+  document.getElementById("nav-week-label").textContent = `${meta.className||"--年--組"} ${meta.month||"--"}月${meta.week||"--"}週案`;
 
   if(currentMonday){
-    const s = new Date(currentMonday);
-    const e = new Date(currentMonday);
+    const s = new Date(currentMonday); const e = new Date(currentMonday);
     const hasSat = store[currentMonday]?.hasSat;
     e.setDate(e.getDate() + (hasSat?5:4));
-    document.getElementById("nav-date-label").textContent =
-      `${s.getMonth()+1}/${s.getDate()}(月) 〜 ${e.getMonth()+1}/${e.getDate()}(${hasSat?"土":"金"})`;
+    document.getElementById("nav-date-label").textContent = `${s.getMonth()+1}/${s.getDate()}(月) 〜 ${e.getMonth()+1}/${e.getDate()}(${hasSat?"土":"金"})`;
   }
 
-  // ドット（前後3週）
   const dots = document.getElementById("nav-dots"); dots.innerHTML="";
   for(let i=-3; i<=3; i++){
     const d = new Date(currentMonday); d.setDate(d.getDate()+i*7);
@@ -694,15 +597,11 @@ function updateNav(){
     const dot = document.createElement("div");
     const hasData = store[iso] && Object.values(store[iso].cells||{}).some(c=>c.sub||c.txt);
     dot.className = "nav-dot" + (i===0?" active":"") + (hasData&&i!==0?" has-data":"");
-    dot.title = iso;
     dot.onclick = (()=>{ const k=iso; return ()=>{ document.getElementById("monday-date").value=k; onDateChange(); }; })();
     dots.appendChild(dot);
   }
 }
 
-/* ============================================================
-   フラグ（祝日↔振休↔なし）
-   ============================================================ */
 function cycleFlag(day){
   const w = ensureWeek(currentMonday);
   const cur = w.dayFlags[day] || null;
@@ -719,9 +618,6 @@ function editDayLabel(e, day){
   if(next !== null){ w.dayLabels[day]=next; save(); renderWeek(); }
 }
 
-/* ============================================================
-   テーブル描画
-   ============================================================ */
 function renderWeek(){
   currentMonday = document.getElementById("monday-date").value;
   if(!currentMonday) return;
@@ -741,21 +637,19 @@ function renderWeek(){
     const cls  = flag ? `${flag}-col` : "";
     const dStr = `${dt.getMonth()+1}/${dt.getDate()}(${d})`;
     let badge;
-    if      (flag==="holiday") badge=`<span class="th-badge holiday" onclick="cycleFlag('${d}')" oncontextmenu="editDayLabel(event,'${d}')" title="右クリックで名前変更">祝</span>`;
-    else if (flag==="furikyu") badge=`<span class="th-badge furikyu" onclick="cycleFlag('${d}')" oncontextmenu="editDayLabel(event,'${d}')" title="右クリックで名前変更">振</span>`;
+    if      (flag==="holiday") badge=`<span class="th-badge holiday" onclick="cycleFlag('${d}')" oncontextmenu="editDayLabel(event,'${d}')">祝</span>`;
+    else if (flag==="furikyu") badge=`<span class="th-badge furikyu" onclick="cycleFlag('${d}')" oncontextmenu="editDayLabel(event,'${d}')">振</span>`;
     else                       badge=`<span class="th-badge clear"   onclick="cycleFlag('${d}')">＋</span>`;
     html += `<th class="${cls}">${dStr} ${badge}</th>`;
   });
   html += "</tr>";
 
   ROWS.forEach(r=>{
-    const isBreak  = r.type==="break";
-    const isItems  = r.id==="持物";
-    const rowCls   = isBreak ? ("break-row" + (isItems?" items-row":"")) : "class-row";
+    const isBreak = r.type==="break"; const isItems = r.id==="持物";
+    const rowCls  = isBreak ? ("break-row" + (isItems?" items-row":"")) : "class-row";
     html += `<tr class="${rowCls}"><td class="time-col">${r.id}</td>`;
     days.forEach(d=>{
-      const key  = `${r.id}_${d}`;
-      const cell = w.cells[key]||{sub:"",txt:""};
+      const key  = `${r.id}_${d}`; const cell = w.cells[key]||{sub:"",txt:""};
       const flag = w.dayFlags[d]||null;
 
       if(flag==="holiday"||flag==="furikyu"){
@@ -769,19 +663,12 @@ function renderWeek(){
 
       if(isBreak){
         html += `<td class="editable-cell break-cell${kCls}${isItems?" items-cell":""}" data-key="${key}" data-type="break" style="position:relative;">
-          <div class="cell-txt" contenteditable="true" placeholder="${ph}"
-            onfocus="setActive(this)" onblur="saveHist('${key}')"
-            oninput="onInput('${key}')" onkeydown="onKey(event,'txt')">${cell.txt||cell.sub||""}</div>
+          <div class="cell-txt" contenteditable="true" placeholder="${ph}" onfocus="setActive(this)" onblur="saveHist('${key}')" oninput="onInput('${key}')" onkeydown="onKey(event,'txt')">${cell.txt||cell.sub||""}</div>
         </td>`;
       } else {
-        html += `<td class="editable-cell class-cell${kCls}" data-key="${key}" data-type="class"
-          onclick="setActive(this)" style="position:relative;">
-          <div class="cell-sub" contenteditable="true" placeholder="教科"
-            onfocus="setActive(this)" onblur="saveHist('${key}')"
-            oninput="onInput('${key}')" onkeydown="onKey(event,'sub')">${cell.sub}</div>
-          <div class="cell-txt" contenteditable="true" placeholder="単元・内容"
-            onfocus="setActive(this)" onblur="saveHist('${key}')"
-            oninput="onInput('${key}')" onkeydown="onKey(event,'txt')">${cell.txt}</div>
+        html += `<td class="editable-cell class-cell${kCls}" data-key="${key}" data-type="class" onclick="setActive(this)" style="position:relative;">
+          <div class="cell-sub" contenteditable="true" placeholder="教科" onfocus="setActive(this)" onblur="saveHist('${key}')" oninput="onInput('${key}')" onkeydown="onKey(event,'sub')">${cell.sub}</div>
+          <div class="cell-txt" contenteditable="true" placeholder="単元・内容" onfocus="setActive(this)" onblur="saveHist('${key}')" oninput="onInput('${key}')" onkeydown="onKey(event,'txt')">${cell.txt}</div>
         </td>`;
       }
     });
@@ -794,9 +681,6 @@ function renderWeek(){
   renderJisuWeek();
 }
 
-/* ============================================================
-   フローティングボックス
-   ============================================================ */
 function renderFloats(w, days){
   document.querySelectorAll(".day-float-box").forEach(el=>el.remove());
   const wrapper = document.getElementById("table-wrapper");
@@ -808,10 +692,8 @@ function renderFloats(w, days){
     if(flag!=="holiday"&&flag!=="furikyu") return;
     const th = table.querySelector("tr").children[ci+1];
     if(!th) return;
-    const thr  = th.getBoundingClientRect();
-    const tbr  = table.getBoundingClientRect();
-    const left = thr.left - wr.left;
-    const top  = thr.bottom - wr.top;
+    const thr  = th.getBoundingClientRect(); const tbr  = table.getBoundingClientRect();
+    const left = thr.left - wr.left; const top  = thr.bottom - wr.top;
     const h    = tbr.bottom - wr.top - top;
     const label = w.dayLabels[d] || (flag==="holiday"?"祝日":"振休");
 
@@ -825,26 +707,14 @@ function renderFloats(w, days){
     inner.textContent     = label;
     inner.addEventListener("input",()=>{ w.dayLabels[d]=inner.textContent.trim(); save(); toast("保存しました",1200); });
     inner.addEventListener("keydown",e=>{ if(e.key==="Enter"){e.preventDefault();inner.blur();} });
-    box.appendChild(inner);
-    wrapper.appendChild(box);
+    box.appendChild(inner); wrapper.appendChild(box);
   });
 }
-window.addEventListener("resize",()=>{
-  if(!currentMonday||!store[currentMonday]) return;
-  const w = store[currentMonday];
-  renderFloats(w, w.hasSat?[...BASE_DAYS,"土"]:[...BASE_DAYS]);
-});
 
-/* ============================================================
-   セル操作
-   ============================================================ */
 function setActive(el){
   document.querySelectorAll(".active-cell").forEach(e=>e.classList.remove("active-cell"));
   const td = el.tagName==="TD" ? el : el.closest("td");
-  if(!td) return;
-  td.classList.add("active-cell");
-  currentCell = td;
-  renderSuggestions();
+  if(!td) return; td.classList.add("active-cell"); currentCell = td; renderSuggestions();
 }
 
 function onKey(e, type){
@@ -855,8 +725,7 @@ function onKey(e, type){
     const txt = e.target.closest("td").querySelector(".cell-txt");
     if(txt) txt.focus();
   } else {
-    const td  = e.target.closest("td");
-    const tr  = td.closest("tr");
+    const td  = e.target.closest("td"); const tr  = td.closest("tr");
     const ci  = Array.from(tr.children).indexOf(td);
     let nx    = tr.nextElementSibling;
     while(nx){
@@ -871,17 +740,11 @@ function onKey(e, type){
 }
 
 function onInput(key){
-  const w  = store[currentMonday];
-  const td = document.querySelector(`td[data-key="${key}"]`);
+  const w  = store[currentMonday]; const td = document.querySelector(`td[data-key="${key}"]`);
   if(!td||!w) return;
-  const s = td.querySelector(".cell-sub");
-  const t = td.querySelector(".cell-txt");
+  const s = td.querySelector(".cell-sub"); const t = td.querySelector(".cell-txt");
   w.cells[key] = { sub:s?s.innerText:"", txt:t?t.innerText:"" };
-  save();
-  if(s) applyColor(td);
-  renderJisuWeek();
-  renderSuggestions();
-  toast("✓",900);
+  save(); if(s) applyColor(td); renderJisuWeek(); renderSuggestions(); toast("✓",900);
 }
 
 function applyColor(td){
@@ -891,20 +754,15 @@ function applyColor(td){
   td.classList.toggle("kekka-cell", isKekka);
   if(isKekka){ td.style.backgroundColor=""; return; }
   td.style.backgroundColor="";
-  for(const s of SUBJECTS){
-    if(sub.includes(s.name)||sub.includes(s.hira)){
-      td.style.backgroundColor = s.color; break;
-    }
-  }
+  for(const s of SUBJECTS){ if(sub.includes(s.name)||sub.includes(s.hira)){ td.style.backgroundColor = s.color; break; } }
 }
 
 function insertSubject(name){
-  if(!currentCell)                          { toast("マスを選んでください"); return; }
-  if(currentCell.dataset.type==="break")    { toast("休み時間枠には直接入力してください"); return; }
+  if(!currentCell){ toast("マスを選んでください"); return; }
+  if(currentCell.dataset.type==="break"){ toast("休み時間枠には直接入力してください"); return; }
   const sub = currentCell.querySelector(".cell-sub");
   const txt = currentCell.querySelector(".cell-txt");
-  sub.innerText = name;
-  if(!name) txt.innerText="";
+  sub.innerText = name; if(!name) txt.innerText="";
   onInput(currentCell.dataset.key);
   if(name) txt.focus();
 }
@@ -938,47 +796,29 @@ function renderSuggestions(){
 
 function insertHist(sub, txt){
   if(!currentCell) return;
-  const s=currentCell.querySelector(".cell-sub");
-  const t=currentCell.querySelector(".cell-txt");
-  if(s) s.innerText=sub;
-  if(t) t.innerText=txt;
+  const s=currentCell.querySelector(".cell-sub"); const t=currentCell.querySelector(".cell-txt");
+  if(s) s.innerText=sub; if(t) t.innerText=txt;
   onInput(currentCell.dataset.key);
 }
 
-/* ============================================================
-   パレット
-   ============================================================ */
 function renderPalette(){
   const p = document.getElementById("palette"); p.innerHTML="";
   SUBJECTS.forEach(s=>{
-    const label = isHiragana ? s.hira : s.name;
-    const isK   = s.name==="欠課";
-    const style = isK
-      ? `background:repeating-linear-gradient(135deg,#ddd,#ddd 5px,#bbb 5px,#bbb 7px);color:#666;`
-      : `background:${s.color};`;
+    const label = isHiragana ? s.hira : s.name; const isK = s.name==="欠課";
+    const style = isK ? `background:repeating-linear-gradient(135deg,#ddd,#ddd 5px,#bbb 5px,#bbb 7px);color:#666;` : `background:${s.color};`;
     p.innerHTML+=`<div class="palette-btn" style="${style}" onclick="insertSubject('${label}')">${label}</div>`;
   });
   p.innerHTML+=`<div class="palette-btn" style="background:#eee;" onclick="insertSubject('')">消去</div>`;
 }
 
-function toggleMode(){
-  isHiragana=!isHiragana;
-  document.getElementById("mode-btn").textContent=isHiragana?"漢字モード":"ひらがなモード";
-  renderPalette(); renderWeek();
-}
+function toggleMode(){ isHiragana=!isHiragana; document.getElementById("mode-btn").textContent=isHiragana?"漢字モード":"ひらがなモード"; renderPalette(); renderWeek(); }
 
-/* ============================================================
-   時数（週案ページの小テーブル）
-   ============================================================ */
 function countThisWeek(){
-  const w = store[currentMonday];
-  const cnt={};
+  const w = store[currentMonday]; const cnt={};
   if(!w) return cnt;
   for(const key in w.cells){
-    const rid = key.split("_")[0];
-    if(BREAK_IDS.has(rid)) continue;
-    const sub = w.cells[key].sub;
-    if(!sub) continue;
+    const rid = key.split("_")[0]; if(BREAK_IDS.has(rid)) continue;
+    const sub = w.cells[key].sub; if(!sub) continue;
     const s = SUBJECTS.find(x=>sub.includes(x.name)||sub.includes(x.hira));
     if(s){ const base=s.countAs; cnt[base]=(cnt[base]||0)+1; }
   }
@@ -989,13 +829,10 @@ function countAllWeeks(){
   const cnt={};
   for(const dateKey in store){
     if(dateKey.startsWith("_")) continue;
-    const w = store[dateKey];
-    if(!w?.cells) continue;
+    const w = store[dateKey]; if(!w?.cells) continue;
     for(const key in w.cells){
-      const rid=key.split("_")[0];
-      if(BREAK_IDS.has(rid)) continue;
-      const sub=w.cells[key].sub;
-      if(!sub) continue;
+      const rid=key.split("_")[0]; if(BREAK_IDS.has(rid)) continue;
+      const sub=w.cells[key].sub; if(!sub) continue;
       const s=SUBJECTS.find(x=>sub.includes(x.name)||sub.includes(x.hira));
       if(s){ const base=s.countAs; cnt[base]=(cnt[base]||0)+1; }
     }
@@ -1004,30 +841,15 @@ function countAllWeeks(){
 }
 
 function renderJisuWeek(){
-  const tbody = document.getElementById("jisu-week-body");
-  if(!tbody) return;
-  const thisW  = countThisWeek();
-  const allW   = countAllWeeks();
-  const jisu   = ensureJisu();
-  const used   = Array.from(new Set([...Object.keys(thisW),...Object.keys(allW)]))
-    .filter(b=>SUBJ_ORDER.includes(b))
-    .sort((a,b)=>SUBJ_ORDER.indexOf(a)-SUBJ_ORDER.indexOf(b));
+  const tbody = document.getElementById("jisu-week-body"); if(!tbody) return;
+  const thisW = countThisWeek(); const allW = countAllWeeks(); const jisu = ensureJisu();
+  const used = Array.from(new Set([...Object.keys(thisW),...Object.keys(allW)])).filter(b=>SUBJ_ORDER.includes(b)).sort((a,b)=>SUBJ_ORDER.indexOf(a)-SUBJ_ORDER.indexOf(b));
 
   let html="";
   used.forEach(base=>{
-    const tw = thisW[base]||0;
-    const all= allW[base]||0;
-    const plan=(jisu[base]?.plan)||0;
-    const rem = plan>0 ? plan-all : null;
-    const warnRem = rem!==null && rem<0;
-    html+=`<tr>
-      <td>${base}</td>
-      <td class="num">${tw}</td>
-      <td class="num">${all}</td>
-      <td class="num${warnRem?" warn":""}">${rem!==null?(warnRem?"超過":"あと"+rem):"—"}</td>
-      <td><input class="jisu-plan-input" type="number" min="0" value="${plan}"
-        onchange="setPlan('${base}',this.value)" title="計画時数を入力"></td>
-    </tr>`;
+    const tw = thisW[base]||0; const all= allW[base]||0; const plan=(jisu[base]?.plan)||0;
+    const rem = plan>0 ? plan-all : null; const warnRem = rem!==null && rem<0;
+    html+=`<tr><td>${base}</td><td class="num">${tw}</td><td class="num">${all}</td><td class="num${warnRem?" warn":""}">${rem!==null?(warnRem?"超過":"あと"+rem):"—"}</td><td><input class="jisu-plan-input" type="number" min="0" value="${plan}" onchange="setPlan('${base}',this.value)" title="計画時数を入力"></td></tr>`;
   });
   tbody.innerHTML = html||`<tr><td colspan="5" style="text-align:center;color:#bbb;font-size:11px;padding:8px;">教科を入力すると集計されます</td></tr>`;
 }
@@ -1039,177 +861,148 @@ function setPlan(base, val){
   save(); renderJisuWeek(); renderJisuPage();
 }
 
-/* ============================================================
-   時数管理ページ
-   ============================================================ */
 function renderJisuPage(){
-  const allW  = countAllWeeks();
-  const jisu  = ensureJisu();
-  const grid  = document.getElementById("jisu-full-grid");
-  if(!grid) return;
-  grid.innerHTML="";
+  const allW = countAllWeeks(); const jisu = ensureJisu();
+  const grid = document.getElementById("jisu-full-grid"); if(!grid) return; grid.innerHTML="";
 
   const used = SUBJ_ORDER.filter(base=>allW[base]||(jisu[base]?.plan));
-  if(!used.length){
-    grid.innerHTML="<div style='color:#aaa;font-size:13px;'>週案に教科を入力すると自動集計されます</div>"; return;
-  }
+  if(!used.length){ grid.innerHTML="<div style='color:#aaa;font-size:13px;'>週案に教科を入力すると自動集計されます</div>"; return; }
 
   used.forEach(base=>{
-    const all  = allW[base]||0;
-    const plan = jisu[base]?.plan||0;
-    const rem  = plan>0 ? plan-all : null;
-    const pct  = plan>0 ? Math.min(100,Math.round(all/plan*100)) : 0;
-    const s    = SUBJECTS.find(x=>x.countAs===base)||{color:"var(--other)",name:base};
+    const all = allW[base]||0; const plan = jisu[base]?.plan||0;
+    const rem = plan>0 ? plan-all : null; const pct = plan>0 ? Math.min(100,Math.round(all/plan*100)) : 0;
+    const s = SUBJECTS.find(x=>x.countAs===base)||{color:"var(--other)",name:base};
     const warn = rem!==null&&rem<0;
 
     const card=document.createElement("div");
     card.style.cssText=`background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:0 1px 4px rgba(100,70,30,.08);`;
-    card.innerHTML=`
-      <div style="background:${s.color};padding:8px 12px;font-weight:700;font-size:13px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px;">
-        ${base}
-      </div>
-      <div style="padding:10px 12px;">
-        <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px;">
-          <span>計画</span>
-          <span><input class="jisu-plan-input" type="number" min="0" value="${plan}" onchange="setPlan('${base}',this.value)"> 時間</span>
+    card.innerHTML=`<div style="background:${s.color};padding:8px 12px;font-weight:900;font-size:14px;border-bottom:1px solid var(--border);">${base}</div>
+      <div style="padding:12px;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:13px;">
+          <span>実施累計: <strong style="font-size:18px;">${all}</strong></span>
+          <span style="color:var(--subtext)">計画: <strong>${plan||"未設定"}</strong></span>
         </div>
-        <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px;">
-          <span>累計</span><span style="font-weight:700;">${all} 時間</span>
+        <div style="height:8px;background:var(--border);border-radius:4px;overflow:hidden;margin-bottom:6px;">
+          <div style="height:100%;width:${pct}%;background:${warn?"#e05030":"var(--accent)"};transition:.3s;"></div>
         </div>
-        <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:8px;">
-          <span>残り</span>
-          <span style="font-weight:700;color:${warn?"#c05030":"var(--text)"};">
-            ${rem!==null?(warn?"⚠ 超過 "+(Math.abs(rem))+"時間":`あと ${rem} 時間`):"計画未設定"}
-          </span>
-        </div>
-        <div class="jisu-bar-wrap">
-          <div class="jisu-bar-fill" style="width:${pct}%;background:${s.color};filter:saturate(1.5);"></div>
-        </div>
-        <div style="text-align:right;font-size:10px;color:var(--subtext);margin-top:3px;">${pct}%</div>
+        <div style="text-align:right;font-size:11px;font-weight:700;color:${warn?"#e05030":"var(--subtext)"}">${rem!==null?(warn?"超過 "+Math.abs(rem):"残り "+rem):"計画未設定"}</div>
       </div>`;
     grid.appendChild(card);
   });
 }
 
-/* ============================================================
-   おしらせ欄
-   ============================================================ */
 function saveNotice(){
-  if(!currentMonday||!store[currentMonday]) return;
-  let h = document.getElementById("notice-pad").innerHTML;
-  h = h.replace(/<div>/g,"<br>").replace(/<\/div>/g,"");
-  store[currentMonday].notice = h;
-  save(); toast("✓",900);
+  if(!currentMonday) return;
+  store[currentMonday].notice = document.getElementById("notice-pad").innerHTML;
+  save(); adjustNotice();
 }
 
 function adjustNotice(){
-  const p = document.getElementById("notice-pad");
-  p.style.fontSize="13px";
-  let sz=13;
-  while(p.scrollHeight>p.clientHeight&&sz>8){ sz-=0.5; p.style.fontSize=sz+"px"; }
+  const pad = document.getElementById("notice-pad");
+  pad.style.height = "auto";
+  pad.style.height = (pad.scrollHeight + 5) + "px";
 }
 
-/* ============================================================
-   前週コピー・テンプレート
-   ============================================================ */
+function toggleEmpty(){
+  const show = document.getElementById("show-empty").checked;
+  document.querySelectorAll("td.class-cell").forEach(td=>{
+    if(td.classList.contains("holiday-cell")||td.classList.contains("furikyu-cell")) return;
+    const s=td.querySelector(".cell-sub").innerText.trim();
+    td.classList.toggle("cell-empty", show && !s);
+  });
+}
+
 function copyPrev(){
   if(!currentMonday) return;
-  const prev = new Date(currentMonday); prev.setDate(prev.getDate()-7);
-  const pk   = prev.toISOString().slice(0,10);
-  if(!store[pk]||!Object.keys(store[pk].cells||{}).length){ toast("先週のデータがありません"); return; }
-  if(!confirm("先週の時間割をコピーしますか？")) return;
-  store[currentMonday].cells  = JSON.parse(JSON.stringify(store[pk].cells));
-  store[currentMonday].hasSat = store[pk].hasSat;
-  save(); renderWeek(); toast("コピーしました");
+  if(!confirm("前週の【教科】のみをコピーしますか？（現在の内容は上書きされます）")) return;
+  const d = new Date(currentMonday); d.setDate(d.getDate()-7);
+  const prevKey = d.toISOString().slice(0,10);
+  const pw = store[prevKey];
+  if(!pw||!pw.cells){ toast("前週のデータがありません"); return; }
+  const cw = ensureWeek(currentMonday);
+  for(let k in pw.cells){
+    if(k.startsWith("朝_")||k.startsWith("中_")||k.startsWith("昼①_")||k.startsWith("昼②_")||k.startsWith("持物_")) continue;
+    if(pw.cells[k].sub) cw.cells[k] = { sub:pw.cells[k].sub, txt:"" };
+  }
+  save(); renderWeek(); toast("前週から教科をコピーしました");
 }
 
 function saveTemplate(){
-  if(!confirm("現在の時間割を基本として登録しますか？")) return;
-  store["_tpl"] = JSON.parse(JSON.stringify(store[currentMonday].cells));
-  save(); toast("登録しました！");
+  if(!currentMonday) return;
+  if(!confirm("現在の週を【基本時間割】として登録しますか？")) return;
+  const w = store[currentMonday];
+  const tpl = {};
+  for(let k in w.cells){
+    if(k.startsWith("朝_")||k.startsWith("中_")||k.startsWith("昼①_")||k.startsWith("昼②_")||k.startsWith("持物_")) continue;
+    if(w.cells[k].sub) tpl[k] = w.cells[k].sub;
+  }
+  store["_template"] = tpl; save(); toast("基本時間割を登録しました");
 }
 
 function loadTemplate(){
-  if(!store["_tpl"]){ toast("基本時間割がありません"); return; }
-  if(!confirm("基本時間割を展開しますか？")) return;
-  store[currentMonday].cells = JSON.parse(JSON.stringify(store["_tpl"]));
-  save(); renderWeek(); toast("展開しました");
+  if(!currentMonday) return;
+  const tpl = store["_template"];
+  if(!tpl){ toast("基本時間割が登録されていません"); return; }
+  if(!confirm("基本時間割を展開しますか？（現在のマスは上書きされます）")) return;
+  const w = ensureWeek(currentMonday);
+  for(let k in tpl){ w.cells[k] = { sub:tpl[k], txt:w.cells[k]?.txt||"" }; }
+  save(); renderWeek(); toast("基本時間割を展開しました");
 }
 
-/* ============================================================
-   保存・復元
-   ============================================================ */
 function exportData(){
-  const blob = new Blob([JSON.stringify(store,null,2)],{type:"application/json"});
-  const a    = document.createElement("a");
-  a.href     = URL.createObjectURL(blob);
-  a.download = `sakusaku_${currentMonday||"data"}.json`;
-  a.click();
+  const j = JSON.stringify(store); const b = new Blob([j],{type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(b); a.download = `週案_${new Date().toISOString().slice(0,10)}.json`;
+  a.click(); toast("保存しました");
 }
 
 function importData(e){
-  const f=e.target.files[0]; if(!f) return;
-  loadFile(f);
-}
-
-function loadFile(file){
-  const r=new FileReader();
-  r.onload=ev=>{
-    try{
-      const data=JSON.parse(ev.target.result);
-      if(!confirm("データを復元しますか？（現在のデータは上書きされます）")) return;
-      store=data; save(); toast("復元しました"); setTimeout(()=>location.reload(),700);
-    }catch{ toast("読み込みに失敗しました"); }
+  const f = e.target.files[0]; if(!f) return;
+  const r = new FileReader();
+  r.onload = e=>{
+    try{ const d=JSON.parse(e.target.result); store=d; save(); location.reload(); }
+    catch(err){ alert("ファイルの読み込みに失敗しました"); }
   };
-  r.readAsText(file);
+  r.readAsText(f);
 }
 
 function setupDrop(){
-  const dz=document.getElementById("drop-zone");
-  if(!dz) return;
-  dz.addEventListener("dragover", e=>{ e.preventDefault(); dz.classList.add("drag-over"); });
-  dz.addEventListener("dragleave",()=>dz.classList.remove("drag-over"));
+  const dz = document.getElementById("drop-zone");
+  dz.addEventListener("dragover",e=>{ e.preventDefault(); dz.classList.add("drag-over"); });
+  dz.addEventListener("dragleave",()=>{ dz.classList.remove("drag-over"); });
   dz.addEventListener("drop",e=>{
     e.preventDefault(); dz.classList.remove("drag-over");
-    const f=e.dataTransfer.files[0]; if(f) loadFile(f);
+    const f=e.dataTransfer.files[0]; if(!f) return;
+    const r=new FileReader();
+    r.onload=ev=>{
+      try{ const d=JSON.parse(ev.target.result); store=d; save(); location.reload(); }
+      catch(err){ alert("ファイルの読み込みに失敗しました"); }
+    };
+    r.readAsText(f);
   });
 }
 
-/* ============================================================
-   空欄強調
-   ============================================================ */
-function toggleEmpty(){
-  const on=document.getElementById("show-empty").checked;
-  document.querySelectorAll("td.class-cell").forEach(td=>{
-    td.classList.toggle("cell-empty", on&&td.querySelector(".cell-sub").innerText.trim()==="");
-  });
-}
+function mobileSheet(id){
+  document.querySelectorAll("#mobile-bar button").forEach(b=>b.classList.remove("active"));
+  document.getElementById("mb-"+id).classList.add("active");
+  const c = document.getElementById("bs-content"); c.innerHTML="";
 
-/* ============================================================
-   モバイルシート
-   ============================================================ */
-function mobileSheet(type){
-  const c=document.getElementById("bs-content");
-  ["palette","jisu","tools"].forEach(id=>document.getElementById("mb-"+id)?.classList.remove("active"));
-  document.getElementById("mb-"+type)?.classList.add("active");
-
-  if(type==="palette"){
-    let html=`<div style="font-weight:700;font-size:14px;margin-bottom:8px;">🎨 教科入力</div>
-      <div class="palette-grid" style="grid-template-columns:repeat(4,1fr);gap:7px;">`;
+  if(id==="palette"){
+    c.innerHTML=`<div class="card" style="border:none;box-shadow:none;padding:0;"><h3 style="margin-top:0;">🎨 教科入力</h3><div class="palette-grid" id="mb-palette-grid"></div></div>`;
+    const p = document.getElementById("mb-palette-grid");
     SUBJECTS.forEach(s=>{
-      const label=isHiragana?s.hira:s.name;
-      const isK=s.name==="欠課";
-      const style=isK?`background:repeating-linear-gradient(135deg,#ddd,#ddd 5px,#bbb 5px,#bbb 7px);color:#666;`:`background:${s.color};`;
-      html+=`<div class="palette-btn" style="${style}padding:11px 2px;font-size:11px;" onclick="insertSubject('${label}');closeSheet();">${label}</div>`;
+      const label = isHiragana?s.hira:s.name; const isK=s.name==="欠課";
+      const style = isK?`background:repeating-linear-gradient(135deg,#ddd,#ddd 5px,#bbb 5px,#bbb 7px);color:#666;`:`background:${s.color};`;
+      p.innerHTML+=`<div class="palette-btn" style="${style}" onclick="insertSubject('${label}');closeSheet();">${label}</div>`;
     });
-    html+=`<div class="palette-btn" style="background:#eee;padding:11px 2px;" onclick="insertSubject('');closeSheet();">消去</div></div>`;
-    c.innerHTML=html;
-  } else if(type==="jisu"){
-    c.innerHTML=`<div style="font-weight:700;font-size:14px;margin-bottom:8px;">📊 時数</div>`+
-      document.getElementById("jisu-week-table").outerHTML;
-  } else if(type==="tools"){
-    c.innerHTML=`<div style="font-weight:700;font-size:14px;margin-bottom:8px;">📌 ツール</div>
-      <button class="action-btn" onclick="saveTemplate();closeSheet();">📥 基本として登録</button>
+    p.innerHTML+=`<div class="palette-btn" style="background:#eee;" onclick="insertSubject('');closeSheet();">消去</div>`;
+  }
+  else if(id==="jisu"){
+    switchTab('jisu'); closeSheet(); return;
+  }
+  else if(id==="tools"){
+    c.innerHTML=`
+      <button class="action-btn" onclick="saveTemplate();closeSheet();">📥 基本を登録</button>
       <button class="action-btn" onclick="loadTemplate();closeSheet();">📤 基本を展開</button>
       <button class="action-btn" onclick="exportData();closeSheet();">⬇️ データを保存</button>
       <div class="action-btn" style="text-align:center;" onclick="document.getElementById('import-file').click();">📂 JSONを選択</div>`;
@@ -1225,9 +1018,6 @@ function closeSheet(){
   ["palette","jisu","tools"].forEach(id=>document.getElementById("mb-"+id)?.classList.remove("active"));
 }
 
-/* ============================================================
-   トースト
-   ============================================================ */
 function toast(msg, ms=2200){
   let el=document.getElementById("_toast");
   if(!el){
@@ -1235,9 +1025,10 @@ function toast(msg, ms=2200){
     el.style.cssText="position:fixed;bottom:22px;right:18px;background:var(--accent);color:#fff;padding:7px 16px;border-radius:20px;font-size:12px;font-weight:700;box-shadow:0 4px 12px rgba(0,0,0,.18);transition:opacity .3s,transform .3s;z-index:1000;opacity:0;transform:translateY(10px);pointer-events:none;";
     document.body.appendChild(el);
   }
-  el.textContent=msg; el.style.opacity="1"; el.style.transform="translateY(0)";
-  clearTimeout(el._t);
-  el._t=setTimeout(()=>{ el.style.opacity="0"; el.style.transform="translateY(10px)"; }, ms);
+  el.textContent = msg;
+  el.style.opacity="1"; el.style.transform="translateY(0)";
+  clearTimeout(el.timer);
+  el.timer = setTimeout(()=>{ el.style.opacity="0"; el.style.transform="translateY(10px)"; }, ms);
 }
 </script>
 </body>
