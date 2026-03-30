@@ -11,13 +11,25 @@
   --border:#c8bfb0; --border2:#b0a090;
   --text:#3d3228; --subtext:#8a7a6a;
   --accent:#c07850;
-  --kokugo:#fff1d6; --sansu:#ddeeff; --rika:#ddf4e4;
-  --shakai:#ffe8e8; --taiiku:#ffe8cc; --ongaku:#ecdeff;
-  --zukou:#ffeedd; --seikatsu:#fff8d6; --katei:#e0f0ff;
-  --dotoku:#e8f8ee; --gaikokugo:#d6f0ff; --sogo:#ffe6f5;
-  --gakkatsu:#eee8ff; --gyoji:#f5f2ee;
-  --iinkai:#e0f7fa; --club:#fce4ec;
-  --kekka:#e0e0e0;
+  /* 教科色（色被りなし・印刷でも識別できる彩度） */
+  --kokugo:   #fff0c8; /* 国語  ：黄 */
+  --syasya:   #d4f0e0; /* 書写  ：緑（国語と別） */
+  --sansu:    #cce4ff; /* 算数  ：青 */
+  --seikatsu: #fff8c0; /* 生活  ：淡黄緑 */
+  --rika:     #c8f0d8; /* 理科  ：緑 */
+  --shakai:   #ffd8d8; /* 社会  ：赤 */
+  --ongaku:   #e8d4ff; /* 音楽  ：紫 */
+  --zukou:    #ffd8b0; /* 図工  ：橙 */
+  --katei:    #b8e4ff; /* 家庭科：水 */
+  --taiiku:   #ffe0b0; /* 体育  ：薄橙（図工と差あり） */
+  --dotoku:   #d0f4e8; /* 道徳  ：青緑 */
+  --gaikokugo:#d8f0c0; /* 外国語：黄緑 */
+  --sogo:     #ffd8f0; /* 総合  ：ピンク */
+  --gakkatsu: #ddd8ff; /* 学活  ：藤 */
+  --gyoji:    #ffe8c8; /* 行事  ：ペールオレンジ */
+  --iinkai:   #b8f0f8; /* 委員会：シアン */
+  --club:     #ffc8d8; /* クラブ：ローズ */
+  --kekka:    #d8d4ce; /* 欠課  ：グレー */
   --radius:8px;
 }
 *{ box-sizing:border-box; margin:0; padding:0; }
@@ -110,23 +122,27 @@ th{
   width:28px; vertical-align:middle; padding:2px; font-size:13px;
   color:var(--accent); border-right:2px solid var(--border2);
 }
-td.editable-cell{ cursor:text; padding:5px 6px; }
+td.editable-cell{ cursor:text; padding:6px 8px; }
 td.active-cell{ box-shadow:inset 0 0 0 2px var(--accent) !important; background-color:#fffaf0 !important; }
 
 .cell-sub{
-  font-weight:700; font-size:14px; padding-bottom:3px;
-  border-bottom:1.5px solid rgba(0,0,0,.18); margin-bottom:4px;
+  font-weight:700; font-size:16px; padding-bottom:4px;
+  border-bottom:1.5px solid rgba(0,0,0,.18); margin-bottom:5px;
   outline:none; letter-spacing:.03em; color:#2a2018; position:relative; z-index:2;
 }
 .cell-txt{
-  font-size:12px; color:#5a4a3a; min-height:36px; outline:none; line-height:1.5;
+  font-size:13px; color:#5a4a3a; min-height:38px; outline:none; line-height:1.6;
   position:relative; z-index:2;
 }
 tr.break-row td.editable-cell{
-  background:#f7f3ed; padding:5px 6px;
+  background:#f7f3ed; padding:5px 8px;
   border-top:1px dashed var(--border2); border-bottom:1px dashed var(--border2);
 }
-tr.break-row .cell-txt{ min-height:20px; color:#7a6a5a; font-size:11px; text-align:center; font-style:italic; }
+/* 持ち物行は少し高め・左揃え */
+tr.break-row.items-row td.editable-cell{ background:#fdfaf5; }
+tr.break-row.items-row .cell-txt{ min-height:32px; text-align:left; font-style:normal; font-size:12px; }
+td.items-cell .cell-txt{ min-height:32px !important; text-align:left !important; font-style:normal !important; }
+tr.break-row .cell-txt{ min-height:22px; color:#7a6a5a; font-size:12px; text-align:center; font-style:italic; }
 [contenteditable]:empty:before{ content:attr(placeholder); color:#c8bab0; pointer-events:none; display:block; }
 
 /* ===== ヘッダーフラグ ===== */
@@ -211,8 +227,8 @@ td.cell-empty .cell-sub{ background:repeating-linear-gradient(45deg,#fdf0e8,#fdf
 .jisu-plan-input:focus{ border-color:var(--accent); outline:none; }
 
 #notice-pad{
-  border:1px solid var(--border); border-radius:4px; padding:8px;
-  height:100px; overflow:hidden; font-size:13px; outline:none; line-height:1.6;
+  border:1px solid var(--border); border-radius:4px; padding:10px;
+  height:140px; overflow:hidden; font-size:14px; outline:none; line-height:1.7;
   background:var(--bg); transition:.2s; width:100%;
 }
 #notice-pad:focus{ border-color:var(--accent); background:var(--surface); }
@@ -273,7 +289,7 @@ td.cell-empty .cell-sub{ background:repeating-linear-gradient(45deg,#fdf0e8,#fdf
 }
 
 /* =====================================================
-   印刷 — A4縦 1ページ
+   修正後：印刷 — A4縦にぴったり収める設定
    ===================================================== */
 @media print {
   @page { 
@@ -285,17 +301,18 @@ td.cell-empty .cell-sub{ background:repeating-linear-gradient(45deg,#fdf0e8,#fdf
     width: 210mm; 
     background: #fff !important; 
     color: #000 !important;
-    font-size: 10pt; /* 全体的に少し読みやすく */
+    font-size: 10pt;
     -webkit-print-color-adjust: exact !important; 
     print-color-adjust: exact !important;
   }
 
-  /* 不要な要素を消去 */
+  /* 不要な要素を非表示 */
   #toolbar, #tabbar, .right, .nav-arrow, #nav-dots,
   #mobile-bar, #bottom-sheet, #bs-overlay, #_toast { 
     display: none !important; 
   }
 
+  /* レイアウト調整 */
   .page { display: block !important; padding: 0 !important; max-width: 100% !important; }
   .wrapper { display: block !important; }
   .left { width: 100% !important; border: none !important; padding: 0 !important; overflow: visible !important; }
@@ -305,9 +322,11 @@ td.cell-empty .cell-sub{ background:repeating-linear-gradient(45deg,#fdf0e8,#fdf
     display: flex !important; 
     justify-content: center; 
     margin: 0 0 10pt !important;
+    border: none !important;
+    box-shadow: none !important;
   }
-  #nav-week-label { font-size: 18pt !important; font-weight: 900 !important; }
-  #nav-date-label { font-size: 10pt !important; }
+  #nav-week-label { font-size: 18pt !important; font-weight: 900 !important; color: #000 !important; }
+  #nav-date-label { font-size: 10pt !important; color: #444 !important; }
 
   /* テーブル設定 */
   #table-wrapper { position: relative; }
@@ -318,55 +337,64 @@ td.cell-empty .cell-sub{ background:repeating-linear-gradient(45deg,#fdf0e8,#fdf
     margin-bottom: 8pt;
   }
 
-  /* ヘッダー（曜日行）の高さ */
+  /* ヘッダー（曜日行） */
   th {
     background: #e0dbd2 !important;
     height: 24pt !important; 
     font-size: 10pt !important;
     border: 1pt solid #666 !important;
+    padding: 3pt 2pt !important;
   }
   .time-col {
     width: 18pt !important; 
     font-size: 9pt !important;
     border-right: 2pt solid #888 !important;
+    background: #d4cfc6 !important;
+    color: #000 !important;
   }
 
-  /* ★ここが重要：各行の高さを大幅にアップ★ */
+  /* ★行の高さ調整（A4縦いっぱいに広げる）★ */
   
-  /* 授業コマ（1〜6校時）：46pt → 85pt へ */
+  /* 授業コマ（1〜6校時） */
   tr.class-row td {
     height: 85pt !important; 
     border: 1pt solid #888 !important;
+    padding: 3pt 4pt !important;
     vertical-align: top;
   }
 
-  /* 休み時間（朝・中・昼）：10pt → 15pt へ */
+  /* 休み時間（朝・中・昼） */
   tr.break-row td {
     height: 15pt !important;
     background: #f4f0ea !important;
     border: 1pt solid #aaa !important;
+    padding: 1pt 3pt !important;
   }
 
-  /* 持ち物行：22pt → 45pt へ */
+  /* 持ち物行 */
   tr.break-row.items-row td {
     height: 45pt !important;
     background: #faf8f4 !important;
   }
 
-  /* セル内テキストの調整 */
+  /* セル内テキスト */
   .cell-sub {
     font-size: 11pt !important; 
     font-weight: 900 !important;
     border-bottom: 0.5pt solid #bbb !important;
-    margin-bottom: 3pt !important;
+    margin-bottom: 4pt !important;
     padding-bottom: 2pt !important;
+    color: #000 !important;
+    display: block;
   }
   .cell-txt {
     font-size: 9pt !important; 
     line-height: 1.4 !important;
+    color: #222 !important;
+    min-height: 0 !important;
   }
 
-  /* おしらせ欄の高さ：52pt → 100pt程度へ */
+  /* おしらせ欄 */
   #notice-wrap {
     display: block !important;
     margin-top: 10pt; 
@@ -378,111 +406,22 @@ td.cell-empty .cell-sub{ background:repeating-linear-gradient(45deg,#fdf0e8,#fdf
     min-height: 100pt; 
     font-size: 10pt !important;
     line-height: 1.6 !important;
+    border: none !important;
+    background: transparent !important;
   }
 
   /* 祝日・振休の背景 */
   td.holiday-cell { background: repeating-linear-gradient(135deg,#fff0f0,#fff0f0 4pt,#ffd8d8 4pt,#ffd8d8 6pt) !important; }
   td.furikyu-cell { background: repeating-linear-gradient(135deg,#f0f0ff,#f0f0ff 4pt,#d8e0ff 4pt,#d8e0ff 6pt) !important; }
+  
+  .day-float-box { border-width: 1pt !important; box-shadow: none !important; }
   .day-float-inner { font-size: 18pt !important; }
 
+  /* 欠課セル */
+  td.kekka-cell { background: #c0b8b0 !important; position: relative !important; }
+  td.kekka-cell::after { background: repeating-linear-gradient(135deg,transparent,transparent 4pt,rgba(60,40,20,.35) 4pt,rgba(60,40,20,.35) 6pt) !important; }
+
   * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-}
-  }
-
-  /* 非表示 */
-  #toolbar, #tabbar, #tabbar + *, .right,
-  .nav-arrow, #nav-dots, #notice-area h3,
-  #mobile-bar, #bottom-sheet, #bs-overlay,
-  #_toast { display:none !important; }
-
-  /* ページ・ラッパー */
-  .page{ display:block !important; padding:0; max-width:100%; }
-  .wrapper{ display:block; }
-  .left{ flex:none; width:100%; box-shadow:none; border:none; padding:0; overflow:visible; }
-
-  /* 週ナビ → 週タイトルだけ残す */
-  #week-nav{
-    display:flex !important; justify-content:center;
-    border:none; box-shadow:none; background:none; padding:0 0 5pt; margin-bottom:5pt;
-  }
-  #nav-center{ text-align:center; }
-  #nav-week-label{ font-size:14pt !important; color:#000 !important; }
-  #nav-date-label{ font-size:9pt  !important; color:#444 !important; }
-
-  /* テーブル */
-  table{
-    width:100%; table-layout:fixed; border-collapse:collapse;
-    margin-bottom:5pt; page-break-inside:avoid;
-  }
-  th,td{ border:1pt solid #999 !important; padding:2pt 3pt !important; vertical-align:top; font-size:8pt !important; }
-  th{
-    background:#e8e4de !important; font-weight:700; text-align:center;
-    padding:4pt 3pt !important; font-size:8.5pt !important; border-bottom:2pt solid #777 !important;
-  }
-  .time-col{
-    background:#ddd8d0 !important; width:16pt !important; font-size:8pt !important;
-    font-weight:900 !important; text-align:center; vertical-align:middle;
-    color:#444 !important; border-right:2pt solid #999 !important;
-  }
-
-  /* 授業コマの行高さ — 6コマ×均等 */
-  tr.class-row td{ height:48pt !important; min-height:48pt !important; }
-  tr.break-row td{ height:14pt !important; min-height:14pt !important; }
-
-  /* セル内テキスト */
-  .cell-sub{
-    font-size:9.5pt !important; font-weight:900 !important;
-    border-bottom:0.5pt solid #bbb !important; padding-bottom:1pt !important;
-    margin-bottom:1.5pt !important; color:#000 !important;
-  }
-  .cell-txt{
-    font-size:7pt !important; color:#222 !important; line-height:1.3 !important; min-height:0 !important;
-  }
-  td.editable-cell{ padding:2pt 3pt !important; }
-  td.active-cell{ box-shadow:none !important; background:transparent !important; }
-  tr.break-row td.editable-cell{
-    background:#f2eeea !important; padding:1pt 3pt !important;
-    border-top:0.5pt dashed #bbb !important; border-bottom:0.5pt dashed #bbb !important;
-  }
-  tr.break-row .cell-txt{ font-size:7pt !important; color:#555 !important; text-align:center !important; min-height:0 !important; }
-
-  [contenteditable]:empty:before{ content:"" !important; }
-
-  /* フラグセル */
-  td.holiday-cell{
-    background:repeating-linear-gradient(135deg,#fff0f0,#fff0f0 5pt,#ffd8d8 5pt,#ffd8d8 7pt) !important;
-  }
-  td.furikyu-cell{
-    background:repeating-linear-gradient(135deg,#f0f0ff,#f0f0ff 5pt,#d8e0ff 5pt,#d8e0ff 7pt) !important;
-  }
-
-  /* フローティングボックス */
-  .day-float-box{
-    position:absolute !important; border-radius:5pt !important;
-    border-width:1.5pt !important; box-shadow:none !important; padding:3pt 2pt !important;
-  }
-  .day-float-inner{ font-size:15pt !important; }
-
-  /* 欠課 */
-  td.kekka-cell{ background:#c8bfb0 !important; }
-  td.kekka-cell::after{
-    background:repeating-linear-gradient(135deg,transparent,transparent 4pt,rgba(80,60,40,.4) 4pt,rgba(80,60,40,.4) 6pt) !important;
-  }
-  td.kekka-cell .cell-sub{ color:#555 !important; }
-  td.kekka-cell .cell-txt{ color:#555 !important; }
-
-  /* おしらせ欄 */
-  #notice-wrap{
-    margin-top:5pt; border:1pt solid #999; padding:4pt 7pt;
-    page-break-inside:avoid; display:block !important;
-  }
-  #notice-pad{
-    border:none !important; height:auto !important; min-height:24pt;
-    padding:0 !important; font-size:8pt !important;
-    background:transparent !important; overflow:visible !important;
-  }
-
-  *{ -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important; }
 }
 </style>
 </head>
@@ -508,7 +447,6 @@ td.cell-empty .cell-sub{ background:repeating-linear-gradient(45deg,#fdf0e8,#fdf
   <button class="tab"        onclick="switchTab('jisu')">📊 時数管理</button>
 </div>
 
-<!-- ===== 週案ページ ===== -->
 <div class="page active" id="main-page">
   <div id="week-nav">
     <button class="nav-arrow" onclick="shiftWeek(-1)">‹</button>
@@ -530,14 +468,12 @@ td.cell-empty .cell-sub{ background:repeating-linear-gradient(45deg,#fdf0e8,#fdf
     </div>
 
     <div class="right">
-      <!-- パレット -->
       <div class="card">
         <h3>🎨 教科入力</h3>
         <div class="palette-grid" id="palette"></div>
         <div id="history-suggests"></div>
       </div>
 
-      <!-- 週時数 -->
       <div class="card">
         <h3>📊 週時数</h3>
         <table class="jisu-table" id="jisu-week-table">
@@ -546,7 +482,6 @@ td.cell-empty .cell-sub{ background:repeating-linear-gradient(45deg,#fdf0e8,#fdf
         </table>
       </div>
 
-      <!-- ツール -->
       <div class="card">
         <h3>📌 ツール</h3>
         <label style="font-size:11px;display:flex;align-items:center;gap:4px;margin-bottom:6px;cursor:pointer;">
@@ -565,13 +500,11 @@ td.cell-empty .cell-sub{ background:repeating-linear-gradient(45deg,#fdf0e8,#fdf
   </div>
 </div>
 
-<!-- ===== 時数管理ページ ===== -->
 <div class="page" id="jisu-page">
   <div style="font-family:'Kaisei Decol',serif;font-size:20px;color:var(--accent);font-weight:700;margin-bottom:14px;">📊 時数管理</div>
   <div id="jisu-full-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;"></div>
 </div>
 
-<!-- ===== モバイルバー ===== -->
 <div id="mobile-bar">
   <button onclick="mobileSheet('palette')" id="mb-palette"><span class="bar-icon">🎨</span>教科</button>
   <button onclick="mobileSheet('jisu')"    id="mb-jisu">   <span class="bar-icon">📊</span>時数</button>
@@ -587,35 +520,36 @@ td.cell-empty .cell-sub{ background:repeating-linear-gradient(45deg,#fdf0e8,#fdf
    ============================================================ */
 const BASE_DAYS = ["月","火","水","木","金"];
 const ROWS = [
-  { id:"朝",  type:"break", label:"朝の活動" },
-  { id:"1",   type:"class" }, { id:"2", type:"class" },
-  { id:"中",  type:"break", label:"中休み" },
-  { id:"3",   type:"class" }, { id:"4", type:"class" },
-  { id:"昼①",type:"break", label:"給食" },
-  { id:"昼②",type:"break", label:"昼休み" },
-  { id:"5",   type:"class" }, { id:"6", type:"class" },
+  { id:"朝",    type:"break", label:"朝の活動" },
+  { id:"1",     type:"class" }, { id:"2", type:"class" },
+  { id:"中",    type:"break", label:"中休み" },
+  { id:"3",     type:"class" }, { id:"4", type:"class" },
+  { id:"昼①",  type:"break", label:"給食" },
+  { id:"昼②",  type:"break", label:"昼休み" },
+  { id:"5",     type:"class" }, { id:"6", type:"class" },
+  { id:"持物",  type:"break", label:"持ち物等" },
 ];
 const BREAK_IDS = new Set(ROWS.filter(r=>r.type==="break").map(r=>r.id));
 
 const SUBJECTS = [
-  { name:"国語",  hira:"こくご",    color:"var(--kokugo)",   countAs:"国語"   },
-  { name:"書写",  hira:"しょしゃ",  color:"var(--kokugo)",   countAs:"国語"   },
-  { name:"算数",  hira:"さんすう",  color:"var(--sansu)",    countAs:"算数"   },
-  { name:"生活",  hira:"せいかつ",  color:"var(--seikatsu)", countAs:"生活"   },
-  { name:"理科",  hira:"りか",      color:"var(--rika)",     countAs:"理科"   },
-  { name:"社会",  hira:"しゃかい",  color:"var(--shakai)",   countAs:"社会"   },
-  { name:"音楽",  hira:"おんがく",  color:"var(--ongaku)",   countAs:"音楽"   },
-  { name:"図工",  hira:"ずこう",    color:"var(--zukou)",    countAs:"図工"   },
-  { name:"家庭科",hira:"かていか",  color:"var(--katei)",    countAs:"家庭科" },
-  { name:"体育",  hira:"たいいく",  color:"var(--taiiku)",   countAs:"体育"   },
-  { name:"道徳",  hira:"どうとく",  color:"var(--dotoku)",   countAs:"道徳"   },
-  { name:"外国語",hira:"がいこくご",color:"var(--gaikokugo)",countAs:"外国語" },
-  { name:"総合",  hira:"そうごう",  color:"var(--sogo)",     countAs:"総合"   },
-  { name:"学活",  hira:"がっかつ",  color:"var(--gakkatsu)", countAs:"学活"   },
-  { name:"行事",  hira:"ぎょうじ",  color:"var(--gyoji)",    countAs:"行事"   },
-  { name:"委員会",hira:"いいんかい",color:"var(--iinkai)",   countAs:"委員会" },
-  { name:"クラブ",hira:"くらぶ",    color:"var(--club)",     countAs:"クラブ" },
-  { name:"欠課",  hira:"けっか",    color:"var(--kekka)",    countAs:"欠課"   },
+  { name:"国語",  hira:"こくご",    color:"var(--kokugo)",    countAs:"国語"   },
+  { name:"書写",  hira:"しょしゃ",  color:"var(--syasya)",    countAs:"国語"   },
+  { name:"算数",  hira:"さんすう",  color:"var(--sansu)",     countAs:"算数"   },
+  { name:"生活",  hira:"せいかつ",  color:"var(--seikatsu)",  countAs:"生活"   },
+  { name:"理科",  hira:"りか",      color:"var(--rika)",      countAs:"理科"   },
+  { name:"社会",  hira:"しゃかい",  color:"var(--shakai)",    countAs:"社会"   },
+  { name:"音楽",  hira:"おんがく",  color:"var(--ongaku)",    countAs:"音楽"   },
+  { name:"図工",  hira:"ずこう",    color:"var(--zukou)",     countAs:"図工"   },
+  { name:"家庭科",hira:"かていか",  color:"var(--katei)",     countAs:"家庭科" },
+  { name:"体育",  hira:"たいいく",  color:"var(--taiiku)",    countAs:"体育"   },
+  { name:"道徳",  hira:"どうとく",  color:"var(--dotoku)",    countAs:"道徳"   },
+  { name:"外国語",hira:"がいこくご",color:"var(--gaikokugo)", countAs:"外国語" },
+  { name:"総合",  hira:"そうごう",  color:"var(--sogo)",      countAs:"総合"   },
+  { name:"学活",  hira:"がっかつ",  color:"var(--gakkatsu)",  countAs:"学活"   },
+  { name:"行事",  hira:"ぎょうじ",  color:"var(--gyoji)",     countAs:"行事"   },
+  { name:"委員会",hira:"いいんかい",color:"var(--iinkai)",    countAs:"委員会" },
+  { name:"クラブ",hira:"くらぶ",    color:"var(--club)",      countAs:"クラブ" },
+  { name:"欠課",  hira:"けっか",    color:"var(--kekka)",     countAs:"欠課"   },
 ];
 const SUBJ_ORDER = SUBJECTS.map(s=>s.countAs).filter((v,i,a)=>a.indexOf(v)===i);
 
@@ -797,8 +731,10 @@ function renderWeek(){
   html += "</tr>";
 
   ROWS.forEach(r=>{
-    const isBreak = r.type==="break";
-    html += `<tr class="${isBreak?"break-row":"class-row"}"><td class="time-col">${r.id}</td>`;
+    const isBreak  = r.type==="break";
+    const isItems  = r.id==="持物";
+    const rowCls   = isBreak ? ("break-row" + (isItems?" items-row":"")) : "class-row";
+    html += `<tr class="${rowCls}"><td class="time-col">${r.id}</td>`;
     days.forEach(d=>{
       const key  = `${r.id}_${d}`;
       const cell = w.cells[key]||{sub:"",txt:""};
@@ -811,10 +747,11 @@ function renderWeek(){
 
       const isKekka = cell.sub && (cell.sub.includes("欠課")||cell.sub.includes("けっか"));
       const kCls    = isKekka ? " kekka-cell" : "";
+      const ph      = isItems ? "持ち物・連絡等" : r.label;
 
       if(isBreak){
-        html += `<td class="editable-cell break-cell${kCls}" data-key="${key}" data-type="break" style="position:relative;">
-          <div class="cell-txt" contenteditable="true" placeholder="${r.label}"
+        html += `<td class="editable-cell break-cell${kCls}${isItems?" items-cell":""}" data-key="${key}" data-type="break" style="position:relative;">
+          <div class="cell-txt" contenteditable="true" placeholder="${ph}"
             onfocus="setActive(this)" onblur="saveHist('${key}')"
             oninput="onInput('${key}')" onkeydown="onKey(event,'txt')">${cell.txt||cell.sub||""}</div>
         </td>`;
