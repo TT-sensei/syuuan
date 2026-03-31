@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>サクサク週案</title>
-<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Shippori+Mincho:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Zen+Maru+Gothic:wght@400;500;700;900&family=Shippori+Mincho:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 /* ═══════════════════════════════════════════
    CSS変数・リセット
@@ -435,26 +435,39 @@ td.cell-empty { outline: 2px dashed #e8a880 !important; outline-offset: -2px; }
   }
 
   html, body {
-    margin: 0;
-    padding: 0;
+    margin: 0; padding: 0;
     background: #fff !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
 
-  /* 編集UIを全部消す */
   #app { display: none !important; }
   #modal-overlay { display: none !important; }
   #toast { display: none !important; }
 
-  /* 印刷エリアを表示 */
+  /* ══════════════════════════════════════════
+     印刷エリア本体 — A4縦ピッタリ固定
+     padding: 上10mm / 左右8mm / 下8mm
+     内側高さ: 297 - 10 - 8 = 279mm ≒ 791pt
+     ─ 行高さ計算 ─
+       タイトル行  : 28pt
+       ヘッダー行  : 26pt
+       朝          : 18pt
+       1〜6校時    : 6 × 68pt = 408pt
+       中          : 18pt
+       昼          : 20pt
+       持ち物      : 32pt
+       テーブル合計: 28+26+18+408+18+20+32 = 550pt
+       おしらせ欄  : 4pt margin + 237pt = 241pt
+       総計        : 550 + 241 = 791pt ✓
+  ══════════════════════════════════════════ */
   #print-area {
     display: block !important;
     width: 210mm;
     height: 297mm;
     box-sizing: border-box;
-    padding: 8mm 8mm 6mm 8mm;
-    font-family: "游ゴシック", "Yu Gothic", "メイリオ", Meiryo, sans-serif;
+    padding: 10mm 8mm 8mm 8mm;
+    font-family: 'Zen Maru Gothic', 'M PLUS Rounded 1c', '游丸ゴシック', 'YuMaruGothic', 'Hiragino Maru Gothic Pro', 'ヒラギノ丸ゴ Pro', sans-serif;
     font-size: 9pt;
     line-height: 1.3;
     color: #000;
@@ -462,27 +475,7 @@ td.cell-empty { outline: 2px dashed #e8a880 !important; outline-offset: -2px; }
     overflow: hidden;
   }
 
-  /*
-   * ★ 高さ計算メモ（A4縦）
-   * 用紙: 297mm。padding: 8mm上下 = 16mm消費 → 内側: 281mm = 約796pt
-   * おしらせ欄: ラベル12pt + 本文60pt + margin+border ≒ 80pt
-   * テーブル用: 796 - 80 = 約716pt
-   *
-   * テーブル行構成:
-   *   タイトル行:  22pt
-   *   ヘッダー行:  22pt
-   *   朝:          14pt
-   *   1〜2校時: 2 × 90pt = 180pt
-   *   中休み:      10pt
-   *   3〜4校時: 2 × 90pt = 180pt
-   *   昼①:        10pt
-   *   昼②:        10pt
-   *   5〜6校時: 2 × 90pt = 180pt
-   *   持ち物:      28pt
-   *   合計: 22+22+14+180+10+180+10+10+180+28 = 656pt ← おしらせ80pt込みで736pt ≒ OK
-   */
-
-  /* 印刷テーブル本体 */
+  /* ─── メインテーブル ─── */
   #print-table {
     width: 100%;
     border-collapse: collapse;
@@ -490,66 +483,90 @@ td.cell-empty { outline: 2px dashed #e8a880 !important; outline-offset: -2px; }
     word-wrap: break-word;
     overflow-wrap: anywhere;
   }
-
   #print-table th,
   #print-table td {
-    border: 0.5pt solid #888;
+    border: 0.6pt solid #bbb;
     padding: 0;
     overflow: hidden;
-    vertical-align: top;
     word-wrap: break-word;
     overflow-wrap: anywhere;
   }
 
-  /* タイトル行 */
+  /* ─── タイトル行 ─── */
   .pt-title-row th {
     border: none !important;
     text-align: center;
-    height: 22pt !important;
-    font-size: 16pt;
+    height: 28pt !important;
+    font-size: 17pt;
     font-weight: 900;
-    letter-spacing: .08em;
+    letter-spacing: .12em;
     vertical-align: middle;
-    padding: 0;
   }
 
-  /* ヘッダー行（曜日・日付） */
+  /* ─── ヘッダー行（曜日・日付） ─── */
   .pt-header-row th {
-    background: #f0ede8 !important;
+    background: #f5f3ee !important;
     text-align: center;
     font-size: 8pt;
-    font-weight: 900;
-    height: 22pt !important;
+    font-weight: 700;
+    height: 26pt !important;
     vertical-align: middle;
-    padding: 1pt 2pt;
-    border-bottom: 1.5pt solid #555 !important;
+    padding: 2pt 2pt;
+    border-bottom: 1.5pt solid #888 !important;
+    border-top: 1.5pt solid #888 !important;
   }
   .pt-header-row th.th-holiday-col { background: #fff0f0 !important; color: #900 !important; }
   .pt-header-row th.th-furikyu-col { background: #eff2ff !important; color: #226 !important; }
-  .pt-header-date { font-size: 6.5pt; font-weight: 500; color: #555; display: block; margin-top: 1pt; }
+  .pt-header-date {
+    font-size: 6.5pt;
+    font-weight: 400;
+    color: #555;
+    display: block;
+    margin-top: 1pt;
+  }
 
-  /* 時間列（全行共通） */
-  .pt-time-col {
-    background: #eeebe5 !important;
+  /* ─── 時間ラベル列（縦書き） ─── */
+  /* 授業行の時間列 */
+  .pt-time-col-class {
+    background: #f5f3ee !important;
     width: 14pt !important;
     text-align: center;
     vertical-align: middle;
-    font-size: 7pt;
-    font-weight: 900;
+    font-size: 9pt;
+    font-weight: 700;
     color: #333;
-    border-right: 1.5pt solid #888 !important;
-    writing-mode: vertical-rl;
-    padding: 0;
+    border-right: 1pt solid #bbb !important;
   }
 
-  /* ── 授業セル（1〜6校時） ── */
-  /* height は各行のtrに !important で付けるのが最も確実 */
+  /* ─── 授業行（1〜6校時） ─── */
   tr.pt-class-row td {
-    height: 90pt !important;
+    height: 68pt !important;
+    vertical-align: top;
   }
   tr.pt-class-row td.pt-class-cell {
-    padding: 3pt 4pt !important;
-    vertical-align: top;
+    padding: 4pt 5pt !important;
+  }
+  .pt-sub {
+    font-size: 10.5pt;
+    font-weight: 700;
+    line-height: 1.3;
+    display: block;
+    color: #000;
+    padding-bottom: 2pt;
+    margin-bottom: 3pt;
+    border-bottom: 0.5pt dashed #bbb;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .pt-txt {
+    font-size: 7pt;
+    color: #444;
+    line-height: 1.55;
+    display: block;
+    overflow: hidden;
+    white-space: pre-wrap;
+    word-break: break-all;
   }
   .pt-class-cell.pt-holiday {
     background: repeating-linear-gradient(135deg,#fff8f8,#fff8f8 3pt,#fde8e8 3pt,#fde8e8 5pt) !important;
@@ -557,74 +574,114 @@ td.cell-empty { outline: 2px dashed #e8a880 !important; outline-offset: -2px; }
   .pt-class-cell.pt-furikyu {
     background: repeating-linear-gradient(135deg,#f8f8ff,#f8f8ff 3pt,#e8eaff 3pt,#e8eaff 5pt) !important;
   }
-  .pt-sub {
-    font-size: 10pt;
-    font-weight: 900;
-    line-height: 1.3;
-    display: block;
-    color: #000;
-    padding-bottom: 2pt;
-    margin-bottom: 2pt;
-    border-bottom: 0.5pt dashed #bbb;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  .pt-class-cell.pt-kekka { background: #ddd !important; }
+
+  /* ─── 朝の活動行 ─── */
+  .pt-break-asa td {
+    height: 18pt !important;
+    background: #f3f8ee !important;
+    vertical-align: middle;
   }
-  .pt-txt {
-    font-size: 7.5pt;
-    color: #333;
-    line-height: 1.5;
-    display: block;
-    overflow: hidden;
-    white-space: pre-wrap;
-    word-break: break-all;
+  .pt-break-asa .pt-break-cell { padding: 2pt 5pt !important; }
+
+  /* ─── 中（業間休み）行 ─── */
+  .pt-break-naka td {
+    height: 18pt !important;
+    background: #f0efed !important;
+    vertical-align: middle;
+  }
+  .pt-break-naka .pt-time-col-break {
+    writing-mode: horizontal-tb;
+    font-size: 9pt;
   }
 
-  /* ── ブレーク行 ── */
-  .pt-break-asa td  { height: 14pt !important; background: #f3f7ef !important; }
-  .pt-break-naka td { height: 10pt !important; background: #eeeceb !important; }
-  .pt-break-hiru1 td { height: 10pt !important; background: #f0f0f0 !important; }
-  .pt-break-hiru2 td { height: 10pt !important; background: #f0f0f0 !important; }
+  /* ─── 昼（給食＋昼休み）行 ─── */
+  .pt-break-hiru td {
+    height: 20pt !important;
+    background: #f0efed !important;
+    vertical-align: middle;
+  }
+  .pt-break-hiru .pt-time-col-break {
+    writing-mode: horizontal-tb;
+    font-size: 9pt;
+  }
+
+  /* ─── 持ち物行 ─── */
   .pt-break-items td {
-    height: 28pt !important;
+    height: 32pt !important;
     background: #faf8f4 !important;
     border-top: 1.5pt solid #888 !important;
+    vertical-align: top;
   }
-  .pt-break-cell {
-    padding: 2pt 4pt !important;
+  .pt-break-items .pt-time-col-break {
+    writing-mode: vertical-rl;
+    font-size: 8pt;
     vertical-align: middle !important;
+  }
+
+  /* ブレーク行の時間ラベル列（縦書き） */
+  .pt-time-col-break {
+    background: #f5f3ee !important;
+    width: 14pt !important;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 9pt;
+    font-weight: 700;
+    color: #333;
+    border-right: 1pt solid #bbb !important;
+    writing-mode: vertical-rl;
+  }
+
+  /* ブレーク行のデータセル */
+  .pt-break-cell {
+    padding: 2pt 5pt !important;
+    vertical-align: middle !important;
+  }
+  .pt-break-items .pt-break-cell {
+    padding: 3pt 5pt !important;
+    vertical-align: top !important;
   }
   .pt-break-txt {
     font-size: 7.5pt;
     color: #333;
-    line-height: 1.4;
+    line-height: 1.5;
     white-space: pre-wrap;
     word-break: break-all;
   }
 
-  /* 欠課 */
-  .pt-class-cell.pt-kekka { background: #ddd !important; }
-
-  /* ── おしらせ欄（高さ固定） ── */
+  /* ─── おしらせ欄 ─── */
+  /* 高さ: 791pt（内側） - 550pt（テーブル） - 4pt（margin） = 237pt */
   #pt-notice-area {
-    border: 1pt solid #888;
-    padding: 4pt 8pt;
-    margin-top: 3pt;
-    height: 80pt;        /* ← 固定。テーブルと合わせてA4にぴたり収める */
+    margin-top: 4pt;
+    height: 237pt;
     box-sizing: border-box;
+    border: 0.8pt solid #bbb;
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+  }
+  #pt-notice-label-cell {
+    width: 16pt;
+    background: #f5f3ee;
+    border-right: 0.6pt solid #bbb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    writing-mode: vertical-rl;
+    font-size: 8pt;
+    font-weight: 700;
+    color: #555;
+    letter-spacing: .12em;
+  }
+  #pt-notice-pad-cell {
+    flex: 1;
+    padding: 6pt 8pt;
     overflow: hidden;
   }
-  #pt-notice-label {
-    font-size: 7.5pt;
-    font-weight: 900;
-    color: #555;
-    border-bottom: 0.5pt solid #ccc;
-    padding-bottom: 2pt;
-    margin-bottom: 2pt;
-  }
   #pt-notice-pad {
-    font-size: 8pt;
-    line-height: 1.6;
+    font-size: 8.5pt;
+    line-height: 1.75;
     color: #000;
     white-space: pre-wrap;
     overflow: hidden;
@@ -750,9 +807,12 @@ td.cell-empty { outline: 2px dashed #e8a880 !important; outline-offset: -2px; }
     <thead id="pt-thead"></thead>
     <tbody id="pt-tbody"></tbody>
   </table>
+  <!-- おしらせ欄：縦書きラベル＋本文エリア -->
   <div id="pt-notice-area">
-    <div id="pt-notice-label">おしらせ・連絡事項</div>
-    <div id="pt-notice-pad"></div>
+    <div id="pt-notice-label-cell">おしらせ・連絡事項</div>
+    <div id="pt-notice-pad-cell">
+      <div id="pt-notice-pad"></div>
+    </div>
   </div>
 </div>
 
@@ -1468,12 +1528,11 @@ function setupDrop() {
 ═══════════════════════════════════════════════════ */
 
 /**
- * 教科名から印刷用の背景色（16進数）を返す。
- * 欠課のときはグレーのパターン用クラスを付与するため null を返す。
+ * 教科名 → 印刷用背景色（16進数）
  */
 function getPrintBgColor(sub) {
   if (!sub) return null;
-  if (sub.includes("欠課") || sub.includes("けっか")) return null; // pt-kekkaクラスで処理
+  if (sub.includes("欠課") || sub.includes("けっか")) return null;
   for (const s of SUBJECTS) {
     if (sub.includes(s.name) || sub.includes(s.hira)) {
       return SUBJ_PRINT_COLOR[s.cnt] || null;
@@ -1484,104 +1543,123 @@ function getPrintBgColor(sub) {
 
 /**
  * buildPrint(w, days, c)
- * 印刷専用テーブルを完全に再構築する。
- * ─ colgroup / thead / tbody / noticepad に直接DOMを書き込む。
- * ─ セルに inline style で背景色を指定（印刷時の色再現のため）。
+ * ────────────────────────────────────────────────────
+ * 編集データを印刷専用DOMに流し込む。
+ * 行構成（高さ合計 = A4内側 791pt）:
+ *   タイトル 28 + ヘッダー 26
+ *   朝 18
+ *   1校時 68 / 2校時 68
+ *   中    18
+ *   3校時 68 / 4校時 68
+ *   昼    20
+ *   5校時 68 / 6校時 68
+ *   持ち物 32
+ *   ─────────────── 計 550pt
+ *   おしらせ 237pt（margin 4pt 込み）
+ *   合計 791pt ✓
+ * ────────────────────────────────────────────────────
  */
 function buildPrint(w, days, c) {
-  const mon      = new Date(currentMonday);
   const dayNames = ["日","月","火","水","木","金","土"];
-  const numDays  = days.length; // 5 or 6
+  const numDays  = days.length;
+  const span     = numDays + 1; // 時間ラベル列 + 曜日列
 
-  // ── colgroup ──────────────────────────────────────
-  // 時間列: 14pt固定  |  日付列: 残りを均等分割
-  // mmで書くと印刷時にブラウザ依存が出るのでpt指定
-  const dateCols = `<col style="width:14pt;">` +
-    days.map(() => `<col style="width:auto;">`).join("");
-  document.getElementById("pt-colgroup").innerHTML = dateCols;
+  /* ── colgroup ──
+   *  時間ラベル列: 固定 16pt
+   *  各曜日列: 均等（auto）
+   */
+  document.getElementById("pt-colgroup").innerHTML =
+    `<col style="width:16pt;">` + days.map(() => `<col>`).join("");
 
-  // ── タイトル行 ────────────────────────────────────
-  const titleColspan = numDays + 1; // 時間列 + 日付列
-  const titleTh = `<tr class="pt-title-row">
-    <th colspan="${titleColspan}" style="font-size:18pt;font-weight:900;text-align:center;padding-bottom:4pt;border:none;letter-spacing:.1em;">
-      ${c.grade}年${c.cls || "—組"}　学習予定表
-    </th>
+  /* ── タイトル行 ── */
+  const titleRow = `<tr class="pt-title-row">
+    <th colspan="${span}">${c.grade}年${c.cls || "—組"}　学習予定表</th>
   </tr>`;
 
-  // ── ヘッダー行（曜日・日付） ─────────────────────
-  let headerRow = `<tr class="pt-header-row"><th class="pt-time-col" style="background:#eeebe5;"></th>`;
+  /* ── ヘッダー行（曜日・日付） ── */
+  let hdrRow = `<tr class="pt-header-row">
+    <th class="pt-time-col-class" style="background:#f5f3ee;"></th>`;
   days.forEach((d, i) => {
-    const dt   = new Date(currentMonday); dt.setDate(dt.getDate() + i);
-    const flag = w.dayFlags[d] || null;
-    const cls  = flag === "holiday" ? "th-holiday-col" : flag === "furikyu" ? "th-furikyu-col" : "";
-    const bg   = flag === "holiday" ? "#fff0f0"         : flag === "furikyu" ? "#eff2ff"        : "#f0ede8";
-    const color= flag === "holiday" ? "#900"            : flag === "furikyu" ? "#226"           : "#000";
-    headerRow += `<th class="${cls}" style="background:${bg};color:${color};text-align:center;font-size:9pt;font-weight:900;height:16pt;vertical-align:middle;padding:1pt 2pt;border-bottom:1.5pt solid #555;">
-      ${d}曜日
-      <span class="pt-header-date" style="font-size:7pt;font-weight:500;color:${flag?"inherit":"#555"};display:block;margin-top:1pt;">
-        ${dt.getMonth()+1}月${dt.getDate()}日(${dayNames[dt.getDay()]})
-      </span>
+    const dt    = new Date(currentMonday); dt.setDate(dt.getDate() + i);
+    const flag  = w.dayFlags[d] || null;
+    const cls   = flag === "holiday" ? "th-holiday-col" : flag === "furikyu" ? "th-furikyu-col" : "";
+    const bg    = flag === "holiday" ? "#fff0f0" : flag === "furikyu" ? "#eff2ff" : "#f5f3ee";
+    const col   = flag === "holiday" ? "#900"    : flag === "furikyu" ? "#226"    : "#000";
+    hdrRow += `<th class="${cls}" style="background:${bg};color:${col};">
+      ${d}曜日<span class="pt-header-date">${dt.getMonth()+1}月${dt.getDate()}日(${dayNames[dt.getDay()]})</span>
     </th>`;
   });
-  headerRow += "</tr>";
+  hdrRow += "</tr>";
 
-  document.getElementById("pt-thead").innerHTML = titleTh + headerRow;
+  document.getElementById("pt-thead").innerHTML = titleRow + hdrRow;
 
-  // ── tbody ─────────────────────────────────────────
-  // 印刷用の行定義
+  /* ── tbody ──
+   * 行定義：
+   *   type:"break"  → ブレーク行（朝・中・昼・持ち物）
+   *   type:"class"  → 授業行（1〜6校時）
+   * trCls           → <tr>に付けるCSSクラス
+   * timeCls         → 時間ラベルtdのCSSクラス
+   */
   const PRINT_ROWS = [
-    { id:"朝",   type:"break", trCls:"pt-break-asa",   label:"朝" },
-    { id:"1",    type:"class", label:"1" },
-    { id:"2",    type:"class", label:"2" },
-    { id:"中",   type:"break", trCls:"pt-break-naka",  label:"中" },
-    { id:"3",    type:"class", label:"3" },
-    { id:"4",    type:"class", label:"4" },
-    { id:"昼①", type:"break", trCls:"pt-break-hiru1", label:"昼①" },
-    { id:"昼②", type:"break", trCls:"pt-break-hiru2", label:"昼②" },
-    { id:"5",    type:"class", label:"5" },
-    { id:"6",    type:"class", label:"6" },
-    { id:"持物", type:"break", trCls:"pt-break-items", label:"持ち物" },
+    { id:"朝",   type:"break", trCls:"pt-break-asa",   label:"朝",    timeCls:"pt-time-col-break" },
+    { id:"1",    type:"class", trCls:"pt-class-row",   label:"1",     timeCls:"pt-time-col-class" },
+    { id:"2",    type:"class", trCls:"pt-class-row",   label:"2",     timeCls:"pt-time-col-class" },
+    { id:"中",   type:"break", trCls:"pt-break-naka",  label:"中",    timeCls:"pt-time-col-break" },
+    { id:"3",    type:"class", trCls:"pt-class-row",   label:"3",     timeCls:"pt-time-col-class" },
+    { id:"4",    type:"class", trCls:"pt-class-row",   label:"4",     timeCls:"pt-time-col-class" },
+    { id:"昼",   type:"break", trCls:"pt-break-hiru",  label:"昼",    timeCls:"pt-time-col-break" },
+    { id:"5",    type:"class", trCls:"pt-class-row",   label:"5",     timeCls:"pt-time-col-class" },
+    { id:"6",    type:"class", trCls:"pt-class-row",   label:"6",     timeCls:"pt-time-col-class" },
+    { id:"持物", type:"break", trCls:"pt-break-items", label:"持ち物", timeCls:"pt-time-col-break" },
   ];
 
   let tbody = "";
+
   PRINT_ROWS.forEach(row => {
-    const isBreak  = row.type === "break";
-    const trCls    = isBreak ? row.trCls : "pt-class-row";
-    // 時間列の縦書きラベル
-    const timeCell = `<td class="pt-time-col" style="background:#eeebe5;writing-mode:vertical-rl;text-align:center;vertical-align:middle;font-size:7pt;font-weight:900;color:#333;border-right:1.5pt solid #888;padding:0;">${row.label}</td>`;
+    const isBreak = row.type === "break";
+    tbody += `<tr class="${row.trCls}">`;
 
-    tbody += `<tr class="${trCls}">` + timeCell;
+    /* 時間ラベルtd */
+    tbody += `<td class="${row.timeCls}">${row.label}</td>`;
 
+    /* 各曜日のtd */
     days.forEach(d => {
-      const key  = `${row.id}_${d}`;
-      const cell = w.cells[key] || { sub: "", txt: "" };
-      const flag = w.dayFlags[d] || null;
+      /* 昼行は "昼①" or "昼②" の両方のデータを1セルにまとめて表示 */
+      const key  = row.id === "昼"
+        ? `昼①_${d}`          /* 給食（代表キー） */
+        : `${row.id}_${d}`;
+      const key2 = `昼②_${d}`; /* 昼休み */
 
-      // 祝日・振休
+      const flag  = w.dayFlags[d] || null;
+      const cell  = w.cells[key]  || { sub:"", txt:"" };
+      const cell2 = w.cells[key2] || { sub:"", txt:"" }; // 昼②
+
+      /* 祝日・振休 */
       if (flag === "holiday" || flag === "furikyu") {
         const bg = flag === "holiday"
           ? "repeating-linear-gradient(135deg,#fff8f8,#fff8f8 3pt,#fde8e8 3pt,#fde8e8 5pt)"
           : "repeating-linear-gradient(135deg,#f8f8ff,#f8f8ff 3pt,#e8eaff 3pt,#e8eaff 5pt)";
-        // ブレーク行の祝日: 幅の指定だけ
-        if (isBreak) {
-          tbody += `<td class="pt-break-cell" style="background:${bg};"></td>`;
-        } else {
-          tbody += `<td class="pt-class-cell" style="background:${bg};"></td>`;
-        }
+        tbody += `<td style="background:${bg};"></td>`;
         return;
       }
 
       if (isBreak) {
-        const txt = cell.txt || cell.sub || "";
-        tbody += `<td class="pt-break-cell">
-          <span class="pt-break-txt">${escHtml(txt)}</span>
-        </td>`;
+        /* 昼行は給食＋昼休みを合体表示 */
+        let txt = "";
+        if (row.id === "昼") {
+          const t1 = (cell.txt  || cell.sub  || "").trim();
+          const t2 = (cell2.txt || cell2.sub || "").trim();
+          txt = [t1, t2].filter(Boolean).join(" / ");
+        } else {
+          txt = (cell.txt || cell.sub || "").trim();
+        }
+        tbody += `<td class="pt-break-cell"><span class="pt-break-txt">${escHtml(txt)}</span></td>`;
       } else {
-        const sub    = cell.sub || "";
-        const txt    = cell.txt || "";
-        const isK    = sub.includes("欠課") || sub.includes("けっか");
+        const sub     = (cell.sub || "").trim();
+        const txt     = (cell.txt || "").trim();
+        const isK     = sub.includes("欠課") || sub.includes("けっか");
         const bgColor = isK ? "#e0e0e0" : (getPrintBgColor(sub) || "#fff");
-        tbody += `<td class="pt-class-cell" style="background:${bgColor};">
+        tbody += `<td class="pt-class-cell${isK?" pt-kekka":""}" style="background:${bgColor};">
           <span class="pt-sub">${escHtml(sub)}</span>
           <span class="pt-txt">${escHtml(txt)}</span>
         </td>`;
@@ -1593,10 +1671,8 @@ function buildPrint(w, days, c) {
 
   document.getElementById("pt-tbody").innerHTML = tbody;
 
-  // ── おしらせ欄 ───────────────────────────────────
-  // innerHTML のまま流し込む（改行・書式保持）
-  const noticePad = document.getElementById("pt-notice-pad");
-  noticePad.innerHTML = w.notice || "";
+  /* ── おしらせ欄 ── */
+  document.getElementById("pt-notice-pad").innerHTML = w.notice || "";
 }
 
 /**
