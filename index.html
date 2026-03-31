@@ -17,13 +17,12 @@
   --border-dk: #b8b0a0;
   --text:      #2c2820;
   --sub:       #7a7060;
-  --accent:    #5c6e3f;    /* 落ち着いた緑 */
-  --accent2:   #8b5e3c;   /* 茶 */
+  --accent:    #5c6e3f;
+  --accent2:   #8b5e3c;
   --accent-lt: #d4dfc8;
   --red:       #c0392b;
   --blue:      #2d6a9f;
 
-  /* 教科色 */
   --c-kokugo:    #fef3c7;
   --c-syasya:    #d1fae5;
   --c-sansu:     #dbeafe;
@@ -57,12 +56,10 @@ body {
   font-size: 14px;
 }
 
-button, input, select, textarea {
-  font-family: inherit;
-}
+button, input, select, textarea { font-family: inherit; }
 
 /* ═══════════════════════════════════════════
-   画面レイアウト（スクリーンのみ）
+   編集画面レイアウト
 ═══════════════════════════════════════════ */
 #app {
   display: flex;
@@ -83,7 +80,6 @@ button, input, select, textarea {
   flex-shrink: 0;
   z-index: 100;
 }
-
 .app-logo {
   font-family: 'Shippori Mincho', serif;
   font-size: 17px;
@@ -93,9 +89,7 @@ button, input, select, textarea {
   white-space: nowrap;
   margin-right: 4px;
 }
-
 .sep { width: 1px; height: 24px; background: var(--border); flex-shrink: 0; }
-
 .top-info {
   display: flex;
   align-items: center;
@@ -111,9 +105,7 @@ button, input, select, textarea {
   cursor: pointer;
   text-decoration: underline;
 }
-
 .spacer { flex: 1; }
-
 .tb-btn {
   height: 32px;
   padding: 0 14px;
@@ -164,12 +156,8 @@ button, input, select, textarea {
 .page.active { display: flex; flex: 1; overflow: hidden; }
 
 /* ─── 週案ページ ─── */
-#main-page {
-  flex-direction: row;
-  gap: 0;
-}
+#main-page { flex-direction: row; gap: 0; }
 
-/* 左：テーブルエリア */
 .pane-left {
   flex: 1;
   display: flex;
@@ -178,8 +166,6 @@ button, input, select, textarea {
   padding: 12px;
   gap: 10px;
 }
-
-/* 右：サイドパネル */
 .pane-right {
   width: 280px;
   flex-shrink: 0;
@@ -204,191 +190,94 @@ button, input, select, textarea {
   box-shadow: var(--shadow);
   flex-shrink: 0;
 }
-
 .wn-arrow {
-  width: 30px;
-  height: 30px;
+  width: 30px; height: 30px;
   border-radius: 50%;
   border: 1.5px solid var(--border-dk);
   background: var(--surface);
-  cursor: pointer;
-  font-size: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background .12s;
-  flex-shrink: 0;
+  cursor: pointer; font-size: 16px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .12s; flex-shrink: 0;
 }
 .wn-arrow:hover { background: var(--surface2); }
-
 #wn-center { flex: 1; text-align: center; }
-
 #wn-title {
   font-family: 'Shippori Mincho', serif;
-  font-size: 19px;
-  font-weight: 700;
-  color: var(--accent);
-  letter-spacing: .04em;
+  font-size: 19px; font-weight: 700;
+  color: var(--accent); letter-spacing: .04em;
 }
-#wn-range {
-  font-size: 11px;
-  color: var(--sub);
-  margin-top: 2px;
-}
-
-.wn-dots {
-  display: flex;
-  justify-content: center;
-  gap: 5px;
-  margin-top: 4px;
-}
+#wn-range { font-size: 11px; color: var(--sub); margin-top: 2px; }
+.wn-dots { display: flex; justify-content: center; gap: 5px; margin-top: 4px; }
 .wn-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--border-dk);
-  cursor: pointer;
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--border-dk); cursor: pointer;
   transition: background .15s, transform .15s;
 }
 .wn-dot.cur { background: var(--accent); transform: scale(1.35); }
 .wn-dot.has { background: var(--accent2); opacity: .6; }
-
-.wn-controls {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  flex-shrink: 0;
-}
+.wn-controls { display: flex; flex-direction: column; gap: 5px; flex-shrink: 0; }
 
 /* ─── テーブルエリア ─── */
 .table-scroll {
-  flex: 1;
-  overflow: auto;
+  flex: 1; overflow: auto;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--r);
   box-shadow: var(--shadow);
 }
-
-table#grid {
-  border-collapse: collapse;
-  width: 100%;
-  table-layout: fixed;
-}
-
-/* 列幅 */
+table#grid { border-collapse: collapse; width: 100%; table-layout: fixed; }
 table#grid colgroup .col-time { width: 30px; }
+th, td { border: 1px solid var(--border); font-size: 13px; }
 
-th, td {
-  border: 1px solid var(--border);
-  font-size: 13px;
-}
-
-/* ─── ヘッダー行 ─── */
 thead tr th {
   background: var(--surface2);
-  text-align: center;
-  font-weight: 900;
-  padding: 7px 4px;
-  font-size: 13px;
+  text-align: center; font-weight: 900;
+  padding: 7px 4px; font-size: 13px;
   border-bottom: 2px solid var(--border-dk);
-  position: sticky;
-  top: 0;
-  z-index: 10;
+  position: sticky; top: 0; z-index: 10;
   vertical-align: middle;
 }
 .th-date { display: block; font-size: 11px; font-weight: 500; color: var(--sub); margin-top: 1px; }
-
 th.col-holiday { background: #fff0f0 !important; color: #900 !important; }
 th.col-furikyu { background: #eff2ff !important; color: #223 !important; }
-
 .th-flag {
-  display: inline-block;
-  font-size: 10px;
-  font-weight: 900;
-  padding: 1px 5px;
-  border-radius: 3px;
-  margin-left: 3px;
-  cursor: pointer;
+  display: inline-block; font-size: 10px; font-weight: 900;
+  padding: 1px 5px; border-radius: 3px; margin-left: 3px; cursor: pointer;
 }
 .th-flag.h { background: #e06060; color: #fff; }
 .th-flag.f { background: #6080e0; color: #fff; }
 .th-flag.n { background: var(--border); color: var(--sub); font-size: 10px; }
 
-/* ─── 時間列 ─── */
 .time-cell {
   background: var(--surface2) !important;
-  text-align: center;
-  font-weight: 900;
-  font-size: 13px;
+  text-align: center; font-weight: 900; font-size: 13px;
   color: var(--accent);
   border-right: 2px solid var(--border-dk) !important;
-  vertical-align: middle;
-  padding: 2px 1px;
-  writing-mode: vertical-rl;
-  letter-spacing: .08em;
+  vertical-align: middle; padding: 2px 1px;
+  writing-mode: vertical-rl; letter-spacing: .08em;
 }
 
-/* ─── ブレーク行（朝・休み・昼・持物） ─── */
-.break-row .data-cell {
-  background: #f9f7f3;
-  padding: 4px 7px;
-  vertical-align: top;
-}
-.break-row .data-cell .cell-txt {
-  font-size: 12px;
-  color: var(--sub);
-  min-height: 22px;
-  outline: none;
-  line-height: 1.55;
-}
+.break-row .data-cell { background: #f9f7f3; padding: 4px 7px; vertical-align: top; }
+.break-row .data-cell .cell-txt { font-size: 12px; color: var(--sub); min-height: 22px; outline: none; line-height: 1.55; }
 .break-row.row-asa .data-cell  { background: #f3f7ef; }
 .break-row.row-naka .data-cell { background: #f5f5f5; }
 .break-row.row-hiru .data-cell { background: #f5f5f5; }
 .break-row.row-items .data-cell { background: #fdf9f3; border-top: 2px solid var(--border-dk) !important; }
 
-/* ─── 授業行 ─── */
-.class-row td.data-cell {
-  vertical-align: top;
-  padding: 5px 7px;
-  cursor: pointer;
-  position: relative;
-}
+.class-row td.data-cell { vertical-align: top; padding: 5px 7px; cursor: pointer; position: relative; }
 .class-row td.data-cell .cell-sub {
-  font-size: 14px;
-  font-weight: 900;
-  outline: none;
-  padding-bottom: 3px;
-  margin-bottom: 3px;
+  font-size: 14px; font-weight: 900; outline: none;
+  padding-bottom: 3px; margin-bottom: 3px;
   border-bottom: 1.5px solid rgba(0,0,0,.12);
-  line-height: 1.3;
-  color: #1a1612;
-  letter-spacing: .03em;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  line-height: 1.3; color: #1a1612; letter-spacing: .03em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .class-row td.data-cell .cell-txt {
-  font-size: 11px;
-  color: #5a4e3e;
-  outline: none;
-  line-height: 1.55;
-  min-height: 32px;
+  font-size: 11px; color: #5a4e3e; outline: none; line-height: 1.55; min-height: 32px;
 }
+[contenteditable]:empty::before { content: attr(data-ph); color: #ccc; pointer-events: none; }
 
-[contenteditable]:empty::before {
-  content: attr(data-ph);
-  color: #ccc;
-  pointer-events: none;
-}
-
-/* アクティブセル */
-td.data-cell.active-cell {
-  box-shadow: inset 0 0 0 2.5px var(--accent) !important;
-  background: #fffdf8 !important;
-}
-
-/* ─── 祝日・振休セル ─── */
+td.data-cell.active-cell { box-shadow: inset 0 0 0 2.5px var(--accent) !important; background: #fffdf8 !important; }
 td.cell-holiday {
   background: repeating-linear-gradient(135deg,#fff8f8,#fff8f8 5px,#ffe8e8 5px,#ffe8e8 10px) !important;
   pointer-events: none;
@@ -397,330 +286,137 @@ td.cell-furikyu {
   background: repeating-linear-gradient(135deg,#f8f8ff,#f8f8ff 5px,#e8eaff 5px,#e8eaff 10px) !important;
   pointer-events: none;
 }
-
-/* 祝日フローティングラベル */
-.day-label-box {
-  position: absolute;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none;
-}
-.day-label-inner {
-  writing-mode: vertical-rl;
-  font-size: 16px;
-  font-weight: 900;
-  letter-spacing: .15em;
-  color: #900;
-  opacity: .7;
-}
+.day-label-box { position: absolute; display: flex; align-items: center; justify-content: center; pointer-events: none; }
+.day-label-inner { writing-mode: vertical-rl; font-size: 16px; font-weight: 900; letter-spacing: .15em; color: #900; opacity: .7; }
 .day-label-inner.furi { color: #226; }
-
-/* ─── 欠課セル ─── */
-td.cell-kekka {
-  background: var(--c-kekka) !important;
-  position: relative;
-}
+td.cell-kekka { background: var(--c-kekka) !important; position: relative; }
 td.cell-kekka::after {
-  content: "";
-  position: absolute;
-  inset: 0;
+  content: ""; position: absolute; inset: 0;
   background: repeating-linear-gradient(135deg, transparent, transparent 5px, rgba(0,0,0,.08) 5px, rgba(0,0,0,.08) 7px);
   pointer-events: none;
 }
-
-/* 空欄強調 */
 td.cell-empty { outline: 2px dashed #e8a880 !important; outline-offset: -2px; }
 
-/* おしらせ欄 */
 #notice-area {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--r);
-  box-shadow: var(--shadow);
-  flex-shrink: 0;
-  padding: 10px 12px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r); box-shadow: var(--shadow);
+  flex-shrink: 0; padding: 10px 12px;
 }
 #notice-label {
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--sub);
-  margin-bottom: 6px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  border-bottom: 1px solid var(--border);
-  padding-bottom: 5px;
+  font-size: 12px; font-weight: 700; color: var(--sub);
+  margin-bottom: 6px; display: flex; align-items: center; gap: 4px;
+  border-bottom: 1px solid var(--border); padding-bottom: 5px;
 }
 #notice-pad {
-  outline: none;
-  font-size: 13px;
-  line-height: 1.7;
-  min-height: 44px;
-  max-height: 100px;
-  overflow-y: auto;
-  color: var(--text);
+  outline: none; font-size: 13px; line-height: 1.7;
+  min-height: 44px; max-height: 100px; overflow-y: auto; color: var(--text);
 }
-#notice-pad:empty::before {
-  content: "連絡・おしらせなど…";
-  color: #ccc;
-}
+#notice-pad:empty::before { content: "連絡・おしらせなど…"; color: #ccc; }
 
 /* ─── サイドパネル ─── */
-.panel-card {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: var(--r);
-  padding: 10px;
-}
+.panel-card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--r); padding: 10px; }
 .panel-card h3 {
-  font-size: 12px;
-  font-weight: 900;
-  color: var(--sub);
-  text-transform: uppercase;
-  letter-spacing: .08em;
-  margin-bottom: 8px;
-  padding-bottom: 5px;
-  border-bottom: 1px solid var(--border);
+  font-size: 12px; font-weight: 900; color: var(--sub);
+  text-transform: uppercase; letter-spacing: .08em;
+  margin-bottom: 8px; padding-bottom: 5px; border-bottom: 1px solid var(--border);
 }
-
-/* パレット */
-.palette-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 4px;
-}
+.palette-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
 .pal-btn {
-  border: 1px solid rgba(0,0,0,.1);
-  border-radius: 4px;
-  padding: 6px 2px;
-  text-align: center;
-  cursor: pointer;
-  font-size: 11px;
-  font-weight: 700;
-  transition: transform .1s, box-shadow .1s;
+  border: 1px solid rgba(0,0,0,.1); border-radius: 4px;
+  padding: 6px 2px; text-align: center; cursor: pointer;
+  font-size: 11px; font-weight: 700; transition: transform .1s, box-shadow .1s;
 }
 .pal-btn:hover { transform: translateY(-1px); box-shadow: 0 2px 6px rgba(0,0,0,.1); }
-
-/* 履歴サジェスト */
-#hist-area {
-  margin-top: 8px;
-  padding-top: 7px;
-  border-top: 1px dashed var(--border);
-  font-size: 11px;
-}
-#hist-area .hist-label {
-  color: var(--sub);
-  font-weight: 700;
-  margin-bottom: 5px;
-}
-#hist-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-}
+#hist-area { margin-top: 8px; padding-top: 7px; border-top: 1px dashed var(--border); font-size: 11px; }
+#hist-area .hist-label { color: var(--sub); font-weight: 700; margin-bottom: 5px; }
+#hist-chips { display: flex; flex-wrap: wrap; gap: 4px; }
 .hist-chip {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 3px 9px;
-  font-size: 11px;
-  cursor: pointer;
-  max-width: 130px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 3px 9px; font-size: 11px; cursor: pointer;
+  max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   transition: background .1s;
 }
 .hist-chip:hover { background: var(--accent-lt); }
 
-/* 週時数テーブル */
-.jisu-mini {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 11px;
-}
+.jisu-mini { width: 100%; border-collapse: collapse; font-size: 11px; }
 .jisu-mini th {
-  background: var(--surface2);
-  padding: 3px 5px;
-  text-align: center;
-  font-size: 10px;
-  border: 1px solid var(--border);
-  color: var(--sub);
+  background: var(--surface2); padding: 3px 5px; text-align: center;
+  font-size: 10px; border: 1px solid var(--border); color: var(--sub);
 }
-.jisu-mini td {
-  padding: 2px 5px;
-  border: 1px solid var(--border);
-  font-size: 11px;
-}
-.jisu-mini td.num {
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-}
+.jisu-mini td { padding: 2px 5px; border: 1px solid var(--border); font-size: 11px; }
+.jisu-mini td.num { text-align: right; font-variant-numeric: tabular-nums; }
 .jisu-mini td.warn { color: var(--red); font-weight: 700; }
 .plan-inp {
-  width: 42px;
-  border: 1px solid var(--border);
-  border-radius: 3px;
-  padding: 1px 3px;
-  font-size: 11px;
-  text-align: right;
-  background: var(--surface);
+  width: 42px; border: 1px solid var(--border); border-radius: 3px;
+  padding: 1px 3px; font-size: 11px; text-align: right; background: var(--surface);
 }
 .plan-inp:focus { border-color: var(--accent); outline: none; }
 
-/* ツールボタン */
 .tool-btn {
-  width: 100%;
-  text-align: left;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  padding: 6px 9px;
-  font-size: 12px;
-  font-weight: 700;
-  cursor: pointer;
-  margin-bottom: 4px;
-  transition: background .1s, color .1s;
-  display: block;
+  width: 100%; text-align: left; background: var(--surface);
+  border: 1px solid var(--border); border-radius: 4px;
+  padding: 6px 9px; font-size: 12px; font-weight: 700;
+  cursor: pointer; margin-bottom: 4px;
+  transition: background .1s, color .1s; display: block;
 }
 .tool-btn:hover { background: var(--surface2); color: var(--accent); }
 
 /* ─── 時数ページ ─── */
-#jisu-page {
-  flex-direction: column;
-  padding: 16px;
-  overflow-y: auto;
-  gap: 14px;
-}
-#jisu-page h2 {
-  font-family: 'Shippori Mincho', serif;
-  font-size: 18px;
-  color: var(--accent);
-  font-weight: 700;
-}
-#jisu-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 10px;
-}
-.jisu-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--r);
-  overflow: hidden;
-  box-shadow: var(--shadow);
-}
-.jisu-card-head {
-  padding: 7px 12px;
-  font-weight: 700;
-  font-size: 13px;
-  border-bottom: 1px solid var(--border);
-}
-.jisu-card-body {
-  padding: 9px 12px;
-  font-size: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
+#jisu-page { flex-direction: column; padding: 16px; overflow-y: auto; gap: 14px; }
+#jisu-page h2 { font-family: 'Shippori Mincho', serif; font-size: 18px; color: var(--accent); font-weight: 700; }
+#jisu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; }
+.jisu-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; box-shadow: var(--shadow); }
+.jisu-card-head { padding: 7px 12px; font-weight: 700; font-size: 13px; border-bottom: 1px solid var(--border); }
+.jisu-card-body { padding: 9px 12px; font-size: 12px; display: flex; flex-direction: column; gap: 5px; }
 .jisu-row { display: flex; justify-content: space-between; align-items: center; }
 .jisu-bar-bg { height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; }
 .jisu-bar-fill { height: 100%; border-radius: 3px; transition: width .3s; }
 
 /* ─── 設定モーダル ─── */
 #modal-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.35);
-  z-index: 200;
-  align-items: center;
-  justify-content: center;
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,.35); z-index: 200;
+  align-items: center; justify-content: center;
 }
 #modal-overlay.open { display: flex; }
 #modal-box {
-  background: var(--surface);
-  border-radius: 10px;
-  padding: 24px 28px;
-  width: 380px;
+  background: var(--surface); border-radius: 10px;
+  padding: 24px 28px; width: 380px;
   box-shadow: 0 8px 40px rgba(0,0,0,.18);
 }
-#modal-box h2 {
-  font-family: 'Shippori Mincho', serif;
-  font-size: 18px;
-  color: var(--accent);
-  margin-bottom: 16px;
-}
-.modal-field {
-  margin-bottom: 12px;
-}
-.modal-field label {
-  display: block;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--sub);
-  margin-bottom: 4px;
-  letter-spacing: .04em;
-}
+#modal-box h2 { font-family: 'Shippori Mincho', serif; font-size: 18px; color: var(--accent); margin-bottom: 16px; }
+.modal-field { margin-bottom: 12px; }
+.modal-field label { display: block; font-size: 11px; font-weight: 700; color: var(--sub); margin-bottom: 4px; letter-spacing: .04em; }
 .modal-field input, .modal-field select {
-  width: 100%;
-  padding: 7px 10px;
-  border: 1.5px solid var(--border-dk);
-  border-radius: 5px;
-  font-size: 14px;
-  background: var(--bg);
-  color: var(--text);
-  outline: none;
+  width: 100%; padding: 7px 10px;
+  border: 1.5px solid var(--border-dk); border-radius: 5px;
+  font-size: 14px; background: var(--bg); color: var(--text); outline: none;
 }
-.modal-field input:focus, .modal-field select:focus {
-  border-color: var(--accent);
-}
-.modal-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-  margin-top: 18px;
-}
+.modal-field input:focus, .modal-field select:focus { border-color: var(--accent); }
+.modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 18px; }
 
-/* トースト */
+/* ─── トースト ─── */
 #toast {
-  position: fixed;
-  bottom: 20px;
-  right: 18px;
-  background: var(--accent);
-  color: #fff;
-  padding: 7px 18px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 700;
+  position: fixed; bottom: 20px; right: 18px;
+  background: var(--accent); color: #fff;
+  padding: 7px 18px; border-radius: 20px;
+  font-size: 12px; font-weight: 700;
   box-shadow: 0 4px 14px rgba(0,0,0,.18);
-  opacity: 0;
-  transform: translateY(10px);
+  opacity: 0; transform: translateY(10px);
   transition: opacity .25s, transform .25s;
-  pointer-events: none;
-  z-index: 300;
+  pointer-events: none; z-index: 300;
 }
 #toast.show { opacity: 1; transform: translateY(0); }
 
-/* ドロップゾーン */
+/* ─── ドロップゾーン ─── */
 #drop-zone {
-  border: 2px dashed var(--border-dk);
-  border-radius: 5px;
-  padding: 8px;
-  text-align: center;
-  font-size: 11px;
-  color: var(--sub);
-  cursor: pointer;
-  transition: border-color .15s, background .15s;
+  border: 2px dashed var(--border-dk); border-radius: 5px;
+  padding: 8px; text-align: center; font-size: 11px;
+  color: var(--sub); cursor: pointer; transition: border-color .15s, background .15s;
 }
-#drop-zone:hover, #drop-zone.over {
-  border-color: var(--accent);
-  background: var(--accent-lt);
-  color: var(--accent);
-}
+#drop-zone:hover, #drop-zone.over { border-color: var(--accent); background: var(--accent-lt); color: var(--accent); }
 
-/* テーブルの行高さ */
+/* ─── 行高さ ─── */
 .class-row td { height: 62px; }
 .row-asa td   { height: 28px; }
 .row-naka td  { height: 20px; }
@@ -728,191 +424,176 @@ td.cell-empty { outline: 2px dashed #e8a880 !important; outline-offset: -2px; }
 .row-items td { height: 38px; }
 
 /* ═══════════════════════════════════════════
-   印刷スタイル（A4縦）
+   印刷専用スタイル
 ═══════════════════════════════════════════ */
+#print-area { display: none; }
+
 @media print {
-  @page { size: A4 portrait; margin: 8mm 8mm 8mm 8mm; }
+  @page {
+    size: A4 portrait;
+    margin: 0;
+  }
 
   html, body {
+    margin: 0;
+    padding: 0;
     background: #fff !important;
-    color: #000 !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
-    font-size: 8pt;
   }
 
-  #app { height: auto; overflow: visible; }
-
-  /* 非表示 */
-  #topbar, #tabbar, .pane-right,
-  .wn-arrow, .wn-dots, .wn-controls,
+  /* 編集UIを全部消す */
+  #app { display: none !important; }
+  #modal-overlay { display: none !important; }
   #toast { display: none !important; }
 
-  /* ページ表示 */
-  .page { display: block !important; overflow: visible !important; }
-  #main-page { display: block !important; }
-  #jisu-page { display: none !important; }
-
-  /* レイアウトリセット */
-  .pane-left {
+  /* 印刷エリアを表示 */
+  #print-area {
     display: block !important;
-    padding: 0 !important;
-    overflow: visible !important;
-    flex: none !important;
-    width: 100% !important;
-    gap: 0 !important;
+    width: 210mm;
+    height: 297mm;
+    box-sizing: border-box;
+    padding: 8mm 8mm 6mm 8mm;
+    font-family: "游ゴシック", "Yu Gothic", "メイリオ", Meiryo, sans-serif;
+    font-size: 9pt;
+    line-height: 1.3;
+    color: #000;
+    background: #fff;
+    overflow: hidden;
   }
 
-  /* 週ナビ → タイトルのみ */
-  #week-nav {
-    display: block !important;
-    border: none !important;
-    box-shadow: none !important;
-    background: none !important;
-    padding: 0 0 3pt !important;
-    text-align: center;
-  }
-  #wn-title {
-    font-size: 18pt !important;
-    font-weight: 900 !important;
-    color: #000 !important;
-    letter-spacing: .06em;
-  }
-  #wn-range { font-size: 8pt !important; color: #555 !important; display: block !important; }
-
-  /* テーブルスクロール解除 */
-  .table-scroll {
-    border: none !important;
-    box-shadow: none !important;
-    overflow: visible !important;
-    background: transparent !important;
-  }
-
-  table#grid {
+  /* 印刷テーブル本体 */
+  #print-table {
     width: 100%;
     border-collapse: collapse;
-    border: 1.5pt solid #666;
-    page-break-inside: avoid;
-    margin-bottom: 3pt;
+    table-layout: fixed;
   }
 
-  th, td {
-    border: 0.5pt solid #aaa !important;
-    overflow: hidden !important;
-    vertical-align: top !important;
-    padding: 1.5pt 2pt !important;
+  #print-table th,
+  #print-table td {
+    border: 0.5pt solid #888;
+    padding: 0;
+    overflow: hidden;
+    vertical-align: top;
   }
 
-  thead tr th {
+  /* タイトル行 */
+  .pt-title-row th {
+    border: none;
+    text-align: center;
+    padding-bottom: 3pt;
+    font-size: 18pt;
+    font-weight: 900;
+    letter-spacing: .08em;
+    vertical-align: bottom;
+  }
+
+  /* ヘッダー行（曜日・日付） */
+  .pt-header-row th {
     background: #f0ede8 !important;
-    font-size: 9pt !important;
-    font-weight: 900 !important;
-    text-align: center !important;
-    height: 14pt !important;
-    padding: 1pt 2pt !important;
-    border-bottom: 1.5pt solid #666 !important;
-    position: static !important;
-    color: #000 !important;
+    text-align: center;
+    font-size: 9pt;
+    font-weight: 900;
+    height: 16pt;
+    vertical-align: middle;
+    padding: 1pt 2pt;
+    border-bottom: 1.5pt solid #555 !important;
   }
-  .th-date { font-size: 7pt !important; color: #555 !important; }
+  .pt-header-row th.th-holiday-col { background: #fff0f0 !important; color: #900 !important; }
+  .pt-header-row th.th-furikyu-col { background: #eff2ff !important; color: #226 !important; }
+  .pt-header-date { font-size: 7pt; font-weight: 500; color: #555; display: block; margin-top: 1pt; }
 
-  .time-cell {
+  /* 時間列 */
+  .pt-time-col {
     background: #eeebe5 !important;
     width: 14pt !important;
-    font-size: 7pt !important;
-    font-weight: 900 !important;
-    color: #333 !important;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 8pt;
+    font-weight: 900;
+    color: #333;
     border-right: 1.5pt solid #888 !important;
     writing-mode: vertical-rl;
-    text-align: center;
-    vertical-align: middle !important;
+    padding: 0;
   }
 
-  /* クラス行 */
-  .class-row td { height: 36pt !important; }
-  .class-row td.data-cell { padding: 2pt 3pt !important; }
-
-  .cell-sub {
-    font-size: 10pt !important;
-    font-weight: 900 !important;
-    line-height: 1.2 !important;
-    padding-bottom: 1pt !important;
-    margin-bottom: 1pt !important;
-    border-bottom: 0.5pt dashed #ccc !important;
-    display: block !important;
-    color: #000 !important;
+  /* 授業セル */
+  .pt-class-cell {
+    height: 36pt !important;
+    padding: 2pt 3pt !important;
+    cursor: default;
   }
-  .cell-txt {
-    font-size: 7pt !important;
-    color: #333 !important;
-    line-height: 1.3 !important;
-    min-height: 0 !important;
-    display: block !important;
+  .pt-class-cell.pt-holiday {
+    background: repeating-linear-gradient(135deg,#fff8f8,#fff8f8 3pt,#fde8e8 3pt,#fde8e8 5pt) !important;
+  }
+  .pt-class-cell.pt-furikyu {
+    background: repeating-linear-gradient(135deg,#f8f8ff,#f8f8ff 3pt,#e8eaff 3pt,#e8eaff 5pt) !important;
+  }
+  .pt-sub {
+    font-size: 10pt;
+    font-weight: 900;
+    line-height: 1.2;
+    display: block;
+    color: #000;
+    padding-bottom: 1pt;
+    margin-bottom: 1pt;
+    border-bottom: 0.5pt dashed #ccc;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .pt-txt {
+    font-size: 7pt;
+    color: #333;
+    line-height: 1.3;
+    display: block;
+    overflow: hidden;
   }
 
   /* ブレーク行 */
-  .row-asa td  { height: 14pt !important; background: #f5f5f0 !important; }
-  .row-naka td { height: 7pt  !important; background: #eeecea !important; }
-  .row-hiru td { height: 7pt  !important; background: #eeecea !important; }
-  .row-items td { height: 22pt !important; background: #faf8f4 !important; border-top: 1.5pt solid #999 !important; }
+  .pt-break-asa  td { height: 14pt !important; background: #f3f7ef !important; }
+  .pt-break-naka td { height: 8pt  !important; background: #eeeceb !important; }
+  .pt-break-hiru1 td { height: 8pt !important; background: #f0f0f0 !important; }
+  .pt-break-hiru2 td { height: 8pt !important; background: #f0f0f0 !important; }
+  .pt-break-items td { height: 22pt !important; background: #faf8f4 !important; border-top: 1.5pt solid #888 !important; }
+  .pt-break-cell { padding: 1.5pt 3pt !important; vertical-align: middle !important; }
+  .pt-break-txt { font-size: 7.5pt; color: #333; line-height: 1.3; }
 
-  .break-row .cell-txt {
-    font-size: 7pt !important;
-    color: #444 !important;
-    line-height: 1.2 !important;
-    min-height: 0 !important;
-  }
-
-  /* 祝日・振休 */
-  td.cell-holiday {
-    background: repeating-linear-gradient(135deg,#fff8f8,#fff8f8 3pt,#fde8e8 3pt,#fde8e8 5pt) !important;
-  }
-  td.cell-furikyu {
-    background: repeating-linear-gradient(135deg,#f8f8ff,#f8f8ff 3pt,#e8eaff 3pt,#e8eaff 5pt) !important;
-  }
-
-  /* 欠課 */
-  td.cell-kekka { background: #ddd !important; }
-  td.cell-kekka::after { display: none !important; }
+  /* 欠課セル */
+  .pt-class-cell.pt-kekka { background: #ddd !important; }
 
   /* おしらせ欄 */
-  #notice-area {
-    display: block !important;
-    border: 1pt solid #999 !important;
-    border-radius: 0 !important;
-    box-shadow: none !important;
-    padding: 4pt 8pt !important;
-    margin-top: 3pt !important;
+  #pt-notice-area {
+    border: 1pt solid #888;
+    padding: 4pt 8pt;
+    margin-top: 4pt;
     page-break-inside: avoid;
   }
-  #notice-label {
-    font-size: 7pt !important;
-    color: #555 !important;
-    padding-bottom: 2pt !important;
-    margin-bottom: 2pt !important;
+  #pt-notice-label {
+    font-size: 8pt;
+    font-weight: 900;
+    color: #555;
+    border-bottom: 0.5pt solid #ccc;
+    padding-bottom: 2pt;
+    margin-bottom: 3pt;
   }
-  #notice-pad {
-    font-size: 8pt !important;
-    line-height: 1.65 !important;
-    min-height: 50pt !important;
-    max-height: none !important;
-    overflow: visible !important;
-    color: #000 !important;
+  #pt-notice-pad {
+    font-size: 8pt;
+    line-height: 1.65;
+    min-height: 40pt;
+    color: #000;
+    white-space: pre-wrap;
   }
-
-  [contenteditable]:empty::before { content: "" !important; }
-
-  th.col-holiday { background: #fff0f0 !important; }
-  th.col-furikyu { background: #eff2ff !important; }
-  .th-flag { display: none !important; }
-  td.active-cell { box-shadow: none !important; background: inherit !important; }
-  td.cell-empty { outline: none !important; }
 
   * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
 }
 </style>
 </head>
 <body>
+
+<!-- ═══════════════════════════════════════════════
+     編集画面（#app）
+════════════════════════════════════════════════ -->
 <div id="app">
 
   <!-- ─── トップバー ─── -->
@@ -925,7 +606,7 @@ td.cell-empty { outline: 2px dashed #e8a880 !important; outline-offset: -2px; }
     </div>
     <div class="spacer"></div>
     <button class="tb-btn" onclick="copyPrev()">🔄 前週コピー</button>
-    <button class="tb-btn" onclick="window.print()">🖨 印刷</button>
+    <button class="tb-btn primary" onclick="doPrint()">🖨 PDF出力</button>
   </div>
 
   <!-- ─── タブバー ─── -->
@@ -973,8 +654,6 @@ td.cell-empty { outline: 2px dashed #e8a880 !important; outline-offset: -2px; }
 
     <!-- 右：サイドパネル -->
     <div class="pane-right">
-
-      <!-- パレット -->
       <div class="panel-card">
         <h3>🎨 教科パレット</h3>
         <div class="palette-grid" id="palette"></div>
@@ -983,8 +662,6 @@ td.cell-empty { outline: 2px dashed #e8a880 !important; outline-offset: -2px; }
           <div id="hist-chips"></div>
         </div>
       </div>
-
-      <!-- 週時数 -->
       <div class="panel-card">
         <h3>📊 週時数</h3>
         <table class="jisu-mini">
@@ -992,8 +669,6 @@ td.cell-empty { outline: 2px dashed #e8a880 !important; outline-offset: -2px; }
           <tbody id="jisu-mini-body"></tbody>
         </table>
       </div>
-
-      <!-- ツール -->
       <div class="panel-card">
         <h3>📌 ツール</h3>
         <button class="tool-btn" onclick="saveTemplate()">📥 基本時間割として登録</button>
@@ -1012,10 +687,32 @@ td.cell-empty { outline: 2px dashed #e8a880 !important; outline-offset: -2px; }
     <div id="jisu-grid"></div>
   </div>
 
-</div><!-- #app -->
+</div><!-- /#app -->
+
+<!-- ═══════════════════════════════════════════════
+     印刷専用エリア（#print-area）
+     ── 編集UIとは完全分離。buildPrint()でデータを流し込む ──
+════════════════════════════════════════════════ -->
+<div id="print-area">
+  <!--
+    テーブル構成：
+    行　: タイトル / ヘッダー / 朝 / 1〜6校時 / 中休み / 昼① / 昼② / 持ち物
+    列　: 時間ラベル列 + 月〜金（または月〜土）
+    各セルにid="p-{row}_{day}" を付与してbuildPrint()からデータを流し込む
+  -->
+  <table id="print-table">
+    <colgroup id="pt-colgroup"></colgroup>
+    <thead id="pt-thead"></thead>
+    <tbody id="pt-tbody"></tbody>
+  </table>
+  <div id="pt-notice-area">
+    <div id="pt-notice-label">おしらせ・連絡事項</div>
+    <div id="pt-notice-pad"></div>
+  </div>
+</div>
 
 <!-- ─── 設定モーダル ─── -->
-<div id="modal-overlay" onclick="e=>e.target===this&&closeSettings()">
+<div id="modal-overlay">
   <div id="modal-box">
     <h2>⚙ 基本設定</h2>
     <div class="modal-field">
@@ -1060,7 +757,8 @@ const ROWS = [
   { id:"中",   type:"break", cls:"row-naka",  ph:"中休み" },
   { id:"3",    type:"class" },
   { id:"4",    type:"class" },
-  { id:"昼",   type:"break", cls:"row-hiru",  ph:"給食・昼休み" },
+  { id:"昼①", type:"break", cls:"row-hiru",  ph:"給食" },
+  { id:"昼②", type:"break", cls:"row-hiru",  ph:"昼休み" },
   { id:"5",    type:"class" },
   { id:"6",    type:"class" },
   { id:"持物", type:"break", cls:"row-items", ph:"持ち物・連絡事項" },
@@ -1091,6 +789,28 @@ const SUBJECTS = [
 
 const SUBJ_ORDER = SUBJECTS.map(s=>s.cnt).filter((v,i,a)=>a.indexOf(v)===i);
 
+// 教科名 → 印刷用背景色（16進数）
+const SUBJ_PRINT_COLOR = {
+  "国語":  "#fef3c7",
+  "書写":  "#d1fae5",
+  "算数":  "#dbeafe",
+  "生活":  "#fef9c3",
+  "理科":  "#ccfbf1",
+  "社会":  "#fee2e2",
+  "音楽":  "#ede9fe",
+  "図工":  "#ffedd5",
+  "家庭科":"#bfdbfe",
+  "体育":  "#fde68a",
+  "道徳":  "#cffafe",
+  "外国語":"#dcfce7",
+  "総合":  "#fce7f3",
+  "学活":  "#e0e7ff",
+  "行事":  "#fff7ed",
+  "委員会":"#a5f3fc",
+  "クラブ":"#fecdd3",
+  "欠課":  "#e5e7eb",
+};
+
 const STD_HOURS = {
   1:{ 国語:306, 算数:136, 生活:102, 音楽:68, 図工:68, 体育:102, 道徳:34, 学活:34 },
   2:{ 国語:315, 算数:175, 生活:105, 音楽:70, 図工:70, 体育:105, 道徳:35, 学活:35 },
@@ -1117,12 +837,10 @@ function weekData(key) {
   if (!w.dayLabels) w.dayLabels = {};
   return w;
 }
-
 function cfg() {
   if (!store._cfg) store._cfg = { grade:3, cls:"1組", name:"" };
   return store._cfg;
 }
-
 function jisu() {
   if (!store._jisu) store._jisu = {};
   return store._jisu;
@@ -1137,11 +855,8 @@ window.onload = () => {
   document.getElementById("cfg-class").value = c.cls   || "";
   document.getElementById("cfg-name").value  = c.name  || "";
   updateClassBadge();
-
-  // 設定が未入力なら設定画面を開く
   if (!c.cls) openSettings();
 
-  // 今週の月曜を初期セット
   const today = new Date();
   const diff  = today.getDay() === 0 ? -6 : 1 - today.getDay();
   const mon   = new Date(today); mon.setDate(today.getDate() + diff);
@@ -1174,8 +889,6 @@ function saveSettings() {
   save();
   updateClassBadge();
   closeSettings();
-
-  // 標準時数を自動セット（未設定のもののみ）
   const std = STD_HOURS[c.grade] || {};
   const j   = jisu();
   let updated = false;
@@ -1184,7 +897,6 @@ function saveSettings() {
   }
   if (updated) { save(); toast("標準時数を時数管理に反映しました"); }
   else { toast("設定を保存しました"); }
-
   renderWeek();
 }
 function updateClassBadge() {
@@ -1241,7 +953,6 @@ function updateNav() {
   document.getElementById("wn-range").textContent =
     `${monthNum}/${mon.getDate()}(${dayName[mon.getDay()]}) 〜 ${fri.getMonth()+1}/${fri.getDate()}(${dayName[fri.getDay()]})`;
 
-  // ドット（前後3週）
   const dots = document.getElementById("wn-dots"); dots.innerHTML = "";
   for (let i = -3; i <= 3; i++) {
     const d = new Date(currentMonday); d.setDate(d.getDate() + i * 7);
@@ -1268,7 +979,7 @@ function cycleFlag(day) {
 }
 
 /* ═══════════════════════════════════════════════════
-   テーブル描画
+   編集テーブル描画
 ═══════════════════════════════════════════════════ */
 function renderWeek() {
   const w    = weekData(currentMonday);
@@ -1278,11 +989,9 @@ function renderWeek() {
   document.getElementById("notice-pad").innerHTML = w.notice || "";
   updateNav();
 
-  /* colgroup */
   const cg = document.getElementById("colgroup");
   cg.innerHTML = `<col class="col-time">` + days.map(() => `<col>`).join("");
 
-  /* ヘッダー */
   const dayNames = ["日","月","火","水","木","金","土"];
   let thHTML = `<tr><th class="time-cell" style="background:var(--surface2);border-bottom:2px solid var(--border-dk);position:sticky;top:0;z-index:11;"></th>`;
   days.forEach((d, i) => {
@@ -1302,15 +1011,11 @@ function renderWeek() {
   thHTML += "</tr>";
   document.getElementById("thead").innerHTML = thHTML;
 
-  /* tbody */
   let bodyHTML = "";
   ROWS.forEach(row => {
     const isBreak = row.type === "break";
-    const rowCls  = isBreak
-      ? `break-row ${row.cls || ""}`
-      : "class-row";
+    const rowCls  = isBreak ? `break-row ${row.cls || ""}` : "class-row";
     bodyHTML += `<tr class="${rowCls}"><td class="time-cell">${row.id}</td>`;
-
     days.forEach(d => {
       const key  = `${row.id}_${d}`;
       const cell = w.cells[key] || { sub: "", txt: "" };
@@ -1345,24 +1050,16 @@ function renderWeek() {
     bodyHTML += "</tr>";
   });
   document.getElementById("tbody").innerHTML = bodyHTML;
-
-  // 教科色を適用
   document.querySelectorAll("td.class-cell").forEach(td => applyColor(td));
-
-  // 祝日ラベル
   renderDayLabels(w, days);
-
   renderJisuMini();
 }
 
 function escHtml(str) {
-  return (str||"")
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;");
+  return (str||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 }
 
-/* ─── 祝日ラベル ─── */
+/* ─── 祝日ラベル（編集画面用） ─── */
 function renderDayLabels(w, days) {
   document.querySelectorAll(".day-label-box").forEach(e => e.remove());
   const wrap  = document.getElementById("table-wrap");
@@ -1423,10 +1120,7 @@ function onInput(key) {
   const txt = td.querySelector(".cell-txt");
   w.cells[key] = { sub: sub ? sub.innerText : "", txt: txt ? txt.innerText : "" };
   save();
-  if (td.dataset.type === "class") {
-    applyColor(td);
-    renderJisuMini();
-  }
+  if (td.dataset.type === "class") { applyColor(td); renderJisuMini(); }
   toast("✓", 800);
 }
 
@@ -1589,7 +1283,6 @@ function renderJisuMini() {
     body.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#bbb;font-size:11px;padding:8px;">教科を入力すると集計されます</td></tr>`;
     return;
   }
-
   body.innerHTML = used.map(s => {
     const tw  = thisW[s] || 0;
     const all = allW[s]  || 0;
@@ -1617,7 +1310,6 @@ function renderJisuPage() {
     grid.innerHTML = `<div style="color:#aaa;font-size:13px;">週案に教科を入力すると自動集計されます</div>`;
     return;
   }
-
   grid.innerHTML = used.map(s => {
     const all  = allW[s]  || 0;
     const pl   = j[s]?.plan || 0;
@@ -1725,8 +1417,158 @@ function setupDrop() {
 }
 
 /* ═══════════════════════════════════════════════════
-   トースト
+   ★★ 印刷専用DOM構築 + PDF出力 ★★
+   編集画面のデータを印刷用DOMに流し込んでから window.print() を呼ぶ。
+   ブラウザの「PDFとして保存」でA4縦に完璧に出力される。
 ═══════════════════════════════════════════════════ */
+
+/**
+ * 教科名から印刷用の背景色（16進数）を返す。
+ * 欠課のときはグレーのパターン用クラスを付与するため null を返す。
+ */
+function getPrintBgColor(sub) {
+  if (!sub) return null;
+  if (sub.includes("欠課") || sub.includes("けっか")) return null; // pt-kekkaクラスで処理
+  for (const s of SUBJECTS) {
+    if (sub.includes(s.name) || sub.includes(s.hira)) {
+      return SUBJ_PRINT_COLOR[s.cnt] || null;
+    }
+  }
+  return null;
+}
+
+/**
+ * buildPrint(w, days, c)
+ * 印刷専用テーブルを完全に再構築する。
+ * ─ colgroup / thead / tbody / noticepad に直接DOMを書き込む。
+ * ─ セルに inline style で背景色を指定（印刷時の色再現のため）。
+ */
+function buildPrint(w, days, c) {
+  const mon      = new Date(currentMonday);
+  const dayNames = ["日","月","火","水","木","金","土"];
+  const numDays  = days.length; // 5 or 6
+
+  // ── colgroup ──────────────────────────────────────
+  // 時間列: 14pt固定  |  日付列: 残りを均等分割
+  // mmで書くと印刷時にブラウザ依存が出るのでpt指定
+  const dateCols = `<col style="width:14pt;">` +
+    days.map(() => `<col style="width:auto;">`).join("");
+  document.getElementById("pt-colgroup").innerHTML = dateCols;
+
+  // ── タイトル行 ────────────────────────────────────
+  const titleColspan = numDays + 1; // 時間列 + 日付列
+  const titleTh = `<tr class="pt-title-row">
+    <th colspan="${titleColspan}" style="font-size:18pt;font-weight:900;text-align:center;padding-bottom:4pt;border:none;letter-spacing:.1em;">
+      ${c.grade}年${c.cls || "—組"}　学習予定表
+    </th>
+  </tr>`;
+
+  // ── ヘッダー行（曜日・日付） ─────────────────────
+  let headerRow = `<tr class="pt-header-row"><th class="pt-time-col" style="background:#eeebe5;"></th>`;
+  days.forEach((d, i) => {
+    const dt   = new Date(currentMonday); dt.setDate(dt.getDate() + i);
+    const flag = w.dayFlags[d] || null;
+    const cls  = flag === "holiday" ? "th-holiday-col" : flag === "furikyu" ? "th-furikyu-col" : "";
+    const bg   = flag === "holiday" ? "#fff0f0"         : flag === "furikyu" ? "#eff2ff"        : "#f0ede8";
+    const color= flag === "holiday" ? "#900"            : flag === "furikyu" ? "#226"           : "#000";
+    headerRow += `<th class="${cls}" style="background:${bg};color:${color};text-align:center;font-size:9pt;font-weight:900;height:16pt;vertical-align:middle;padding:1pt 2pt;border-bottom:1.5pt solid #555;">
+      ${d}曜日
+      <span class="pt-header-date" style="font-size:7pt;font-weight:500;color:${flag?"inherit":"#555"};display:block;margin-top:1pt;">
+        ${dt.getMonth()+1}月${dt.getDate()}日(${dayNames[dt.getDay()]})
+      </span>
+    </th>`;
+  });
+  headerRow += "</tr>";
+
+  document.getElementById("pt-thead").innerHTML = titleTh + headerRow;
+
+  // ── tbody ─────────────────────────────────────────
+  // 印刷用の行定義
+  const PRINT_ROWS = [
+    { id:"朝",   type:"break", trCls:"pt-break-asa",   label:"朝" },
+    { id:"1",    type:"class", label:"1" },
+    { id:"2",    type:"class", label:"2" },
+    { id:"中",   type:"break", trCls:"pt-break-naka",  label:"中" },
+    { id:"3",    type:"class", label:"3" },
+    { id:"4",    type:"class", label:"4" },
+    { id:"昼①", type:"break", trCls:"pt-break-hiru1", label:"昼①" },
+    { id:"昼②", type:"break", trCls:"pt-break-hiru2", label:"昼②" },
+    { id:"5",    type:"class", label:"5" },
+    { id:"6",    type:"class", label:"6" },
+    { id:"持物", type:"break", trCls:"pt-break-items", label:"持ち物" },
+  ];
+
+  let tbody = "";
+  PRINT_ROWS.forEach(row => {
+    const isBreak  = row.type === "break";
+    const trCls    = isBreak ? row.trCls : "";
+    // 時間列の縦書きラベル
+    const timeCell = `<td class="pt-time-col" style="background:#eeebe5;writing-mode:vertical-rl;text-align:center;vertical-align:middle;font-size:8pt;font-weight:900;color:#333;border-right:1.5pt solid #888;padding:0;">${row.label}</td>`;
+
+    tbody += `<tr class="${trCls}">` + timeCell;
+
+    days.forEach(d => {
+      const key  = `${row.id}_${d}`;
+      const cell = w.cells[key] || { sub: "", txt: "" };
+      const flag = w.dayFlags[d] || null;
+
+      // 祝日・振休
+      if (flag === "holiday" || flag === "furikyu") {
+        const bg = flag === "holiday"
+          ? "repeating-linear-gradient(135deg,#fff8f8,#fff8f8 3pt,#fde8e8 3pt,#fde8e8 5pt)"
+          : "repeating-linear-gradient(135deg,#f8f8ff,#f8f8ff 3pt,#e8eaff 3pt,#e8eaff 5pt)";
+        // ブレーク行の祝日: 幅の指定だけ
+        if (isBreak) {
+          tbody += `<td class="pt-break-cell" style="background:${bg};"></td>`;
+        } else {
+          tbody += `<td class="pt-class-cell" style="background:${bg};height:36pt;"></td>`;
+        }
+        return;
+      }
+
+      if (isBreak) {
+        const txt = cell.txt || cell.sub || "";
+        tbody += `<td class="pt-break-cell" style="padding:1.5pt 3pt;vertical-align:middle;">
+          <span class="pt-break-txt" style="font-size:7.5pt;color:#333;line-height:1.3;">${escHtml(txt)}</span>
+        </td>`;
+      } else {
+        const sub    = cell.sub || "";
+        const txt    = cell.txt || "";
+        const isK    = sub.includes("欠課") || sub.includes("けっか");
+        const bgColor = isK ? "#e0e0e0" : (getPrintBgColor(sub) || "#fff");
+        tbody += `<td class="pt-class-cell" style="height:36pt;padding:2pt 3pt;vertical-align:top;background:${bgColor};">
+          <span class="pt-sub" style="font-size:10pt;font-weight:900;line-height:1.2;display:block;color:#000;padding-bottom:1pt;margin-bottom:1pt;border-bottom:0.5pt dashed #ccc;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escHtml(sub)}</span>
+          <span class="pt-txt" style="font-size:7pt;color:#333;line-height:1.3;display:block;overflow:hidden;">${escHtml(txt)}</span>
+        </td>`;
+      }
+    });
+
+    tbody += "</tr>";
+  });
+
+  document.getElementById("pt-tbody").innerHTML = tbody;
+
+  // ── おしらせ欄 ───────────────────────────────────
+  // innerHTML のまま流し込む（改行・書式保持）
+  const noticePad = document.getElementById("pt-notice-pad");
+  noticePad.innerHTML = w.notice || "";
+}
+
+/**
+ * doPrint()
+ * ボタンから呼ばれるエントリポイント。
+ * 1. 現在週のデータを印刷専用DOMへ流し込む
+ * 2. window.print() を実行
+ */
+function doPrint() {
+  const w    = weekData(currentMonday);
+  const days = w.hasSat ? [...BASE_DAYS, "土"] : [...BASE_DAYS];
+  const c    = cfg();
+  buildPrint(w, days, c);
+  window.print();
+}
+
+/* ─── トースト ─── */
 function toast(msg, ms = 2000) {
   const el = document.getElementById("toast");
   el.textContent = msg;
