@@ -462,11 +462,33 @@ td.cell-empty { outline: 2px dashed #e8a880 !important; outline-offset: -2px; }
     overflow: hidden;
   }
 
+  /*
+   * ★ 高さ計算メモ（A4縦）
+   * 用紙: 297mm。padding: 8mm上下 = 16mm消費 → 内側: 281mm = 約796pt
+   * おしらせ欄: ラベル12pt + 本文60pt + margin+border ≒ 80pt
+   * テーブル用: 796 - 80 = 約716pt
+   *
+   * テーブル行構成:
+   *   タイトル行:  22pt
+   *   ヘッダー行:  22pt
+   *   朝:          14pt
+   *   1〜2校時: 2 × 90pt = 180pt
+   *   中休み:      10pt
+   *   3〜4校時: 2 × 90pt = 180pt
+   *   昼①:        10pt
+   *   昼②:        10pt
+   *   5〜6校時: 2 × 90pt = 180pt
+   *   持ち物:      28pt
+   *   合計: 22+22+14+180+10+180+10+10+180+28 = 656pt ← おしらせ80pt込みで736pt ≒ OK
+   */
+
   /* 印刷テーブル本体 */
   #print-table {
     width: 100%;
     border-collapse: collapse;
     table-layout: fixed;
+    word-wrap: break-word;
+    overflow-wrap: anywhere;
   }
 
   #print-table th,
@@ -475,41 +497,44 @@ td.cell-empty { outline: 2px dashed #e8a880 !important; outline-offset: -2px; }
     padding: 0;
     overflow: hidden;
     vertical-align: top;
+    word-wrap: break-word;
+    overflow-wrap: anywhere;
   }
 
   /* タイトル行 */
   .pt-title-row th {
-    border: none;
+    border: none !important;
     text-align: center;
-    padding-bottom: 3pt;
-    font-size: 18pt;
+    height: 22pt !important;
+    font-size: 16pt;
     font-weight: 900;
     letter-spacing: .08em;
-    vertical-align: bottom;
+    vertical-align: middle;
+    padding: 0;
   }
 
   /* ヘッダー行（曜日・日付） */
   .pt-header-row th {
     background: #f0ede8 !important;
     text-align: center;
-    font-size: 9pt;
+    font-size: 8pt;
     font-weight: 900;
-    height: 16pt;
+    height: 22pt !important;
     vertical-align: middle;
     padding: 1pt 2pt;
     border-bottom: 1.5pt solid #555 !important;
   }
   .pt-header-row th.th-holiday-col { background: #fff0f0 !important; color: #900 !important; }
   .pt-header-row th.th-furikyu-col { background: #eff2ff !important; color: #226 !important; }
-  .pt-header-date { font-size: 7pt; font-weight: 500; color: #555; display: block; margin-top: 1pt; }
+  .pt-header-date { font-size: 6.5pt; font-weight: 500; color: #555; display: block; margin-top: 1pt; }
 
-  /* 時間列 */
+  /* 時間列（全行共通） */
   .pt-time-col {
     background: #eeebe5 !important;
     width: 14pt !important;
     text-align: center;
     vertical-align: middle;
-    font-size: 8pt;
+    font-size: 7pt;
     font-weight: 900;
     color: #333;
     border-right: 1.5pt solid #888 !important;
@@ -517,11 +542,14 @@ td.cell-empty { outline: 2px dashed #e8a880 !important; outline-offset: -2px; }
     padding: 0;
   }
 
-  /* 授業セル */
-  .pt-class-cell {
-    height: 36pt !important;
-    padding: 2pt 3pt !important;
-    cursor: default;
+  /* ── 授業セル（1〜6校時） ── */
+  /* height は各行のtrに !important で付けるのが最も確実 */
+  tr.pt-class-row td {
+    height: 90pt !important;
+  }
+  tr.pt-class-row td.pt-class-cell {
+    padding: 3pt 4pt !important;
+    vertical-align: top;
   }
   .pt-class-cell.pt-holiday {
     background: repeating-linear-gradient(135deg,#fff8f8,#fff8f8 3pt,#fde8e8 3pt,#fde8e8 5pt) !important;
@@ -532,57 +560,74 @@ td.cell-empty { outline: 2px dashed #e8a880 !important; outline-offset: -2px; }
   .pt-sub {
     font-size: 10pt;
     font-weight: 900;
-    line-height: 1.2;
-    display: block;
-    color: #000;
-    padding-bottom: 1pt;
-    margin-bottom: 1pt;
-    border-bottom: 0.5pt dashed #ccc;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .pt-txt {
-    font-size: 7pt;
-    color: #333;
     line-height: 1.3;
     display: block;
+    color: #000;
+    padding-bottom: 2pt;
+    margin-bottom: 2pt;
+    border-bottom: 0.5pt dashed #bbb;
     overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .pt-txt {
+    font-size: 7.5pt;
+    color: #333;
+    line-height: 1.5;
+    display: block;
+    overflow: hidden;
+    white-space: pre-wrap;
+    word-break: break-all;
   }
 
-  /* ブレーク行 */
-  .pt-break-asa  td { height: 14pt !important; background: #f3f7ef !important; }
-  .pt-break-naka td { height: 8pt  !important; background: #eeeceb !important; }
-  .pt-break-hiru1 td { height: 8pt !important; background: #f0f0f0 !important; }
-  .pt-break-hiru2 td { height: 8pt !important; background: #f0f0f0 !important; }
-  .pt-break-items td { height: 22pt !important; background: #faf8f4 !important; border-top: 1.5pt solid #888 !important; }
-  .pt-break-cell { padding: 1.5pt 3pt !important; vertical-align: middle !important; }
-  .pt-break-txt { font-size: 7.5pt; color: #333; line-height: 1.3; }
+  /* ── ブレーク行 ── */
+  .pt-break-asa td  { height: 14pt !important; background: #f3f7ef !important; }
+  .pt-break-naka td { height: 10pt !important; background: #eeeceb !important; }
+  .pt-break-hiru1 td { height: 10pt !important; background: #f0f0f0 !important; }
+  .pt-break-hiru2 td { height: 10pt !important; background: #f0f0f0 !important; }
+  .pt-break-items td {
+    height: 28pt !important;
+    background: #faf8f4 !important;
+    border-top: 1.5pt solid #888 !important;
+  }
+  .pt-break-cell {
+    padding: 2pt 4pt !important;
+    vertical-align: middle !important;
+  }
+  .pt-break-txt {
+    font-size: 7.5pt;
+    color: #333;
+    line-height: 1.4;
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
 
-  /* 欠課セル */
+  /* 欠課 */
   .pt-class-cell.pt-kekka { background: #ddd !important; }
 
-  /* おしらせ欄 */
+  /* ── おしらせ欄（高さ固定） ── */
   #pt-notice-area {
     border: 1pt solid #888;
     padding: 4pt 8pt;
-    margin-top: 4pt;
-    page-break-inside: avoid;
+    margin-top: 3pt;
+    height: 80pt;        /* ← 固定。テーブルと合わせてA4にぴたり収める */
+    box-sizing: border-box;
+    overflow: hidden;
   }
   #pt-notice-label {
-    font-size: 8pt;
+    font-size: 7.5pt;
     font-weight: 900;
     color: #555;
     border-bottom: 0.5pt solid #ccc;
     padding-bottom: 2pt;
-    margin-bottom: 3pt;
+    margin-bottom: 2pt;
   }
   #pt-notice-pad {
     font-size: 8pt;
-    line-height: 1.65;
-    min-height: 40pt;
+    line-height: 1.6;
     color: #000;
     white-space: pre-wrap;
+    overflow: hidden;
   }
 
   * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
@@ -1501,9 +1546,9 @@ function buildPrint(w, days, c) {
   let tbody = "";
   PRINT_ROWS.forEach(row => {
     const isBreak  = row.type === "break";
-    const trCls    = isBreak ? row.trCls : "";
+    const trCls    = isBreak ? row.trCls : "pt-class-row";
     // 時間列の縦書きラベル
-    const timeCell = `<td class="pt-time-col" style="background:#eeebe5;writing-mode:vertical-rl;text-align:center;vertical-align:middle;font-size:8pt;font-weight:900;color:#333;border-right:1.5pt solid #888;padding:0;">${row.label}</td>`;
+    const timeCell = `<td class="pt-time-col" style="background:#eeebe5;writing-mode:vertical-rl;text-align:center;vertical-align:middle;font-size:7pt;font-weight:900;color:#333;border-right:1.5pt solid #888;padding:0;">${row.label}</td>`;
 
     tbody += `<tr class="${trCls}">` + timeCell;
 
@@ -1521,24 +1566,24 @@ function buildPrint(w, days, c) {
         if (isBreak) {
           tbody += `<td class="pt-break-cell" style="background:${bg};"></td>`;
         } else {
-          tbody += `<td class="pt-class-cell" style="background:${bg};height:36pt;"></td>`;
+          tbody += `<td class="pt-class-cell" style="background:${bg};"></td>`;
         }
         return;
       }
 
       if (isBreak) {
         const txt = cell.txt || cell.sub || "";
-        tbody += `<td class="pt-break-cell" style="padding:1.5pt 3pt;vertical-align:middle;">
-          <span class="pt-break-txt" style="font-size:7.5pt;color:#333;line-height:1.3;">${escHtml(txt)}</span>
+        tbody += `<td class="pt-break-cell">
+          <span class="pt-break-txt">${escHtml(txt)}</span>
         </td>`;
       } else {
         const sub    = cell.sub || "";
         const txt    = cell.txt || "";
         const isK    = sub.includes("欠課") || sub.includes("けっか");
         const bgColor = isK ? "#e0e0e0" : (getPrintBgColor(sub) || "#fff");
-        tbody += `<td class="pt-class-cell" style="height:36pt;padding:2pt 3pt;vertical-align:top;background:${bgColor};">
-          <span class="pt-sub" style="font-size:10pt;font-weight:900;line-height:1.2;display:block;color:#000;padding-bottom:1pt;margin-bottom:1pt;border-bottom:0.5pt dashed #ccc;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escHtml(sub)}</span>
-          <span class="pt-txt" style="font-size:7pt;color:#333;line-height:1.3;display:block;overflow:hidden;">${escHtml(txt)}</span>
+        tbody += `<td class="pt-class-cell" style="background:${bgColor};">
+          <span class="pt-sub">${escHtml(sub)}</span>
+          <span class="pt-txt">${escHtml(txt)}</span>
         </td>`;
       }
     });
